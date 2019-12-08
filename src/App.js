@@ -10,7 +10,7 @@ import Issues from './components/issues/issues'
 function App() {
   return (
     <div>
-    <Link to="/issues">Props!!</Link>
+    <Link to="/issues">Props!!!</Link>
     <Header />
     <Main />
     </div>
