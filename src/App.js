@@ -3,7 +3,8 @@ import logo from './logo.svg';
 import './App.css';
 import { BrowserRouter as Router, Route, Switch, Link } from 'react-router-dom'
 import Login from './components/login/login'
-import Issues from './components/issues/issues'
+import Issue from './components/issue/issue'
+import IssueCreate from './components/issue/issue_create'
 
 
 
@@ -37,7 +38,8 @@ class Main extends React.Component {
       <Switch>
         <Route exact path='/' component={Login}/>
         <Route exact path='/login' component={Login}/>
-        <Route exact path='/issues' component={Issues}/>
+        <Route exact path='/issue' component={Issue}/>
+        <Route exact path='/issue_create' component={IssueCreate}/>
       </Switch>
   </Router>
 

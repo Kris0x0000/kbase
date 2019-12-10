@@ -32,7 +32,7 @@ class Login extends Component {
 
   redirect() {
     if(this.state.isredirected) {
-      return <Redirect to={{ pathname: `/issues` }} />;
+      return <Redirect to={{ pathname: `/issue_create` }} />;
     }
   }
 
