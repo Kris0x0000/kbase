@@ -2,17 +2,27 @@ import React, { Component, Fragment } from 'react';
 import { Button, TextField } from '@material-ui/core';
 import axios from 'axios';
 import { Router, Redirect } from 'react-router-dom';
+import './issue_create.css';
+import { makeStyles } from '@material-ui/core/styles';
+import { styled } from '@material-ui/core/styles';
+import { Grid } from '@material-ui/core';
+
+const MyButton = styled(Button)({
+  justifyContent: 'center'
+});
 
 
 class IssueCreate extends Component {
 
+
     constructor(props) {
       super(props);
       this.state = {
-        title: '',
+        title: this.props.match.params.id,
         body:'',
         tags:''
       };
+
     }
 
 handletitle(data) {
@@ -30,8 +40,9 @@ handletags(data) {
   );
 }
 
+
 submit() {
-console.log(this.state);
+console.log('submit');
   axios.post('http://localhost:1234/api/issue/create', {title: this.state.title, body: this.state.body, tags: this.state.tags }, { withCredentials: true })
   .then(res=>{
     if(res.status == 200) {
@@ -46,15 +57,19 @@ console.log(this.state);
 
 
   render() {
-  return (<Fragment>
-        <TextField id="title" label="title" type="text" variant="outlined" onChange={(r)=>this.handletitle(r.target.value)} />
+  return (
+    <Fragment>
+    <div id="form">
+        <TextField fullWidth={true} id="title" label="title" type="text" variant="outlined" onChange={(r)=>this.handletitle(r.target.value)} />
         <br /><br />
-        <TextField id="body" label="body" type="text" variant="outlined" onChange={(r)=>this.handlebody(r.target.value)} />
+        <TextField multiline={true} rows={10} fullWidth={true} id="abc" label="body" type="text" variant="outlined" onChange={(r)=>this.handlebody(r.target.value)} />
         <br /><br />
-        <TextField id="tags" label="tags" type="text" variant="outlined" onChange={(r)=>this.handletags(r.target.value)} />
+        <TextField fullWidth={true} id="tags" label="tags" type="text" variant="outlined" onChange={(r)=>this.handletags(r.target.value)} />
         <br /><br />
-        <Button variant="outlined" onClick={()=>{this.submit()}}>Submit</Button>
-
+<Grid container alignItems="flex-start" justify="flex-end" direction="row">
+        <MyButton id="form_button" variant="outlined" onClick={()=>{this.submit()}}>Submit</MyButton>
+        </Grid>
+</div>
         </Fragment>
       );
   }
