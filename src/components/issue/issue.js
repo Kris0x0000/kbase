@@ -42,7 +42,7 @@ class Issue extends Component {
 
   submit() {
   console.log(this.state);
-    axios.post('http://localhost:1234/api/issue/get', {tags: this.state.search_tags}, { withCredentials: true })
+    axios.post('http://localhost:1234/api/issue/getByTag', {tags: this.state.search_tags}, { withCredentials: true })
     .then(res=>{
       this.setResultt(res);
     })
@@ -87,9 +87,10 @@ class ShowIssues extends Component {
     };
   }
 
+
   redirect() {
     if(this.state.isredirected) {
-      return <Redirect to={{ pathname: "/issue_edit:"+this.state.id }} />;
+      return <Redirect to={{ pathname: "/issue/edit/"+this.state.id }} />;
     }
   }
 

@@ -38,9 +38,9 @@ class Main extends React.Component {
       <Switch>
         <Route exact path='/' component={Login}/>
         <Route exact path='/login' component={Login}/>
-        <Route exact path='/issue' component={Issue}/>
-        <Route exact path='/issue_create' component={IssueCreate}/>
-        <Route path='/issue_edit:id' component={IssueCreate}/>
+        <Route exact path='/issue/list' component={Issue}/>
+        <Route exact path='/issue/create' component={IssueCreate}/>
+        <Route path='/issue/edit/:id' component={IssueCreate}/>
       </Switch>
   </Router>
 

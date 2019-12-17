@@ -18,9 +18,10 @@ class IssueCreate extends Component {
     constructor(props) {
       super(props);
       this.state = {
-        title: this.props.match.params.id,
+        title: '',
         body:'',
-        tags:''
+        tags:'',
+        displayed: false
       };
 
     }
@@ -57,12 +58,35 @@ console.log('submit');
 
 
   render() {
+
+    // przenieść gdzie indziej żeby uniknąć pętli
+    
+  if(!this.state.displayed) {
+if(this.props.match.params.id) {
+
+console.log(this.props.match.params.id);
+    axios.post('http://localhost:1234/api/issue/getIssueById', {id: this.props.match.params.id}, { withCredentials: true })
+    .then(res=>{
+      console.log(res);
+      this.setState((state, props)=>{
+        return {title: res.data.title,
+        body: res.data.body};
+      });
+    })
+    .catch((e)=>{console.log(e)});
+
+    this.setState((state, props)=>{
+      return {displayed: true};
+    });
+    }
+  }
+
   return (
     <Fragment>
     <div id="form">
-        <TextField fullWidth={true} id="title" label="title" type="text" variant="outlined" onChange={(r)=>this.handletitle(r.target.value)} />
+        <TextField fullWidth={true} id="title" label="title" type="text" variant="outlined" value={this.state.title} onChange={(r)=>this.handletitle(r.target.value)} />
         <br /><br />
-        <TextField multiline={true} rows={10} fullWidth={true} id="abc" label="body" type="text" variant="outlined" onChange={(r)=>this.handlebody(r.target.value)} />
+        <TextField multiline={true} rows={10} fullWidth={true} id="abc" label="body" type="text" variant="outlined" value={this.state.body} onChange={(r)=>this.handlebody(r.target.value)} />
         <br /><br />
         <TextField fullWidth={true} id="tags" label="tags" type="text" variant="outlined" onChange={(r)=>this.handletags(r.target.value)} />
         <br /><br />
