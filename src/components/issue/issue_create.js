@@ -1,30 +1,80 @@
 import React, { Component, Fragment } from 'react';
-import { Button, TextField } from '@material-ui/core';
 import axios from 'axios';
-import { Router, Redirect } from 'react-router-dom';
 import './issue_create.css';
+import ReactQuill from 'react-quill';
+import 'react-quill/dist/quill.snow.css';
+// material ui
+import { Button, TextField } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
 import { styled } from '@material-ui/core/styles';
 import { Grid } from '@material-ui/core';
+import EditIcon from '@material-ui/icons/Edit';
+import { IconButton } from '@material-ui/core';
+import { Chip } from '@material-ui/core';
+import { Autocomplete } from '@material-ui/lab';
 
-const MyButton = styled(Button)({
-  justifyContent: 'center'
-});
 
 
 class IssueCreate extends Component {
-
 
     constructor(props) {
       super(props);
       this.state = {
         title: '',
         body:'',
-        tags:'',
-        displayed: false
+        text:'',
+        id:'',
+        editmode: false,
+        chips: '',
+        all_tags:["all_tags"],
+        tags:["tags"]
       };
+      this.handleChange = this.handleChange.bind(this);
 
     }
+
+componentDidMount() {
+this.init()
+
+}
+
+componentDidUpdate() {
+
+}
+
+
+init() {
+
+  axios.post('http://localhost:1234/api/issue/getalltags',{tag: ''}, { withCredentials: true })
+  .then(res=>{
+    this.setState((state,props)=>{return {all_tags: res.data}});
+  })
+  .catch((e)=>{console.log('error: ', e)});
+
+
+  if(this.props.match.params.id) {
+
+  console.log(this.props.match.params.id);
+  this.setState((state,props)=>{return {editmode: true, id: this.props.match.params.id}});
+
+
+  axios.post('http://localhost:1234/api/issue/getIssueById', {id: this.props.match.params.id}, { withCredentials: true })
+  .then(res=>{
+  console.log("res.data.tags: ", res.data.tags);
+
+
+
+this.setState({
+  title: res.data.title,
+  body: res.data.body,
+tags: res.data.tags});
+  console.log("ddd", this.state.tags);
+  })
+  .catch((e)=>{console.log(e)});
+    }
+
+}
+
 
 handletitle(data) {
   this.setState((state,props)=>{return {title: data}});
@@ -34,64 +84,88 @@ handlebody(data) {
   this.setState((state,props)=>{return {body: data}});
 }
 
-handletags(data) {
-  this.setState((state,props)=>{
-    return {tags: data.split(",")};
-  }
-  );
+handleChange(value) {
+  this.setState({ body: value })
+  console.log(value);
 }
 
 
+
 submit() {
-console.log('submit');
+
+if(this.state.editmode) {
+
+  axios.post('http://localhost:1234/api/issue/edit', {title: this.state.title, body: this.state.body, tags: this.state.tags, id: this.state.id }, { withCredentials: true })
+    .then(res=>{
+      console.log(res);
+    })
+    .catch(e=>{console.log(e)});
+
+} else {
+
   axios.post('http://localhost:1234/api/issue/create', {title: this.state.title, body: this.state.body, tags: this.state.tags }, { withCredentials: true })
   .then(res=>{
     if(res.status == 200) {
-      //this.props.history.push('/issues');
       this.setState((state, props)=>{
         return {isredirected: true};
       });
     }
     console.log(res.status)})
   .catch((e)=>{console.log(e)});
+} //else
+}
+
+
+handleAutocompleteChange(event, value) {
+    this.setState({tags: value});
+    console.log(this.state.tags);
 }
 
 
   render() {
 
-    // przenieść gdzie indziej żeby uniknąć pętli
-    
-  if(!this.state.displayed) {
-if(this.props.match.params.id) {
-
-console.log(this.props.match.params.id);
-    axios.post('http://localhost:1234/api/issue/getIssueById', {id: this.props.match.params.id}, { withCredentials: true })
-    .then(res=>{
-      console.log(res);
-      this.setState((state, props)=>{
-        return {title: res.data.title,
-        body: res.data.body};
-      });
-    })
-    .catch((e)=>{console.log(e)});
-
-    this.setState((state, props)=>{
-      return {displayed: true};
-    });
-    }
-  }
-
   return (
     <Fragment>
+
     <div id="form">
         <TextField fullWidth={true} id="title" label="title" type="text" variant="outlined" value={this.state.title} onChange={(r)=>this.handletitle(r.target.value)} />
         <br /><br />
-        <TextField multiline={true} rows={10} fullWidth={true} id="abc" label="body" type="text" variant="outlined" value={this.state.body} onChange={(r)=>this.handlebody(r.target.value)} />
+        <ReactQuill value={this.state.body}
+                       onChange={this.handleChange} />
         <br /><br />
-        <TextField fullWidth={true} id="tags" label="tags" type="text" variant="outlined" onChange={(r)=>this.handletags(r.target.value)} />
         <br /><br />
+
+        <br />
+
+
+        <Autocomplete
+               multiple
+               freeSolo
+               value={this.state.tags}
+               onChange={(event, value) => this.handleAutocompleteChange(event, value)}
+               id="tags-standard"
+               options={this.state.all_tags}
+               getOptionLabel={option => option}
+
+               renderInput={params => (
+
+                 <TextField
+                   {...params}
+                   variant="standard"
+                   label="Multiple values"
+                   placeholder="Favorites"
+                   fullWidth
+                 />
+               )}
+             />
+
+
+        <br />
 <Grid container alignItems="flex-start" justify="flex-end" direction="row">
-        <MyButton id="form_button" variant="outlined" onClick={()=>{this.submit()}}>Submit</MyButton>
+<IconButton onClick={()=>{this.submit()}}>
+   <EditIcon/>
+</IconButton>
+<br />
         </Grid>
 </div>
         </Fragment>

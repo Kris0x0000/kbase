@@ -1,5 +1,4 @@
 import React from 'react';
-import logo from './logo.svg';
 import './App.css';
 import { BrowserRouter as Router, Route, Switch, Link } from 'react-router-dom'
 import Login from './components/login/login'
@@ -25,9 +24,7 @@ class Header extends React.Component {
   }
 }
 
-function Users() {
-  return <h2>Users</h2>;
-}
+
 
 
 class Main extends React.Component {

@@ -3,6 +3,6 @@
   margin: auto;
 }
 
-MuiButton {
-  text: fff;
+.ql-editor{
+  min-height:400px;
 }

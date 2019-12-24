@@ -1,7 +1,7 @@
 import React, { Component, Fragment } from 'react';
 import { Button, TextField } from '@material-ui/core';
 import axios from 'axios';
-import { Router, Redirect } from 'react-router-dom';
+import { Redirect } from 'react-router-dom';
 
 
 class Login extends Component {
@@ -42,7 +42,7 @@ class Login extends Component {
     console.log(this.state.password);
     axios.post('http://localhost:1234/login', {username: this.state.login, password: this.state.password}, { withCredentials: true })
     .then(res=>{
-      if(res.status == 200) {
+      if(res.status === 200) {
         //this.props.history.push('/issues');
         this.setState((state, props)=>{
           return {isredirected: true};
