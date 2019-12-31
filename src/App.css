@@ -1,3 +1,11 @@
+#header {
+  position: relative;
+  justify-content: center;
+  align-items: center;
+}
+
+H1 { text-align: center }
+
 .App {
   text-align: center;
 }

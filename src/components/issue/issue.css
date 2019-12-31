@@ -1,3 +1,8 @@
+#autocomplete {
+  width: 60%;
+  margin: auto;
+}
+
 table, td {
   border: 1px solid black;
   border-collapse: collapse;
@@ -6,12 +11,12 @@ table, td {
 }
 
 table {
-  width: 80%;
+  width: 100%;
 }
 
       td : {
         border: 1px solid black;
-        
+
           }
 
 

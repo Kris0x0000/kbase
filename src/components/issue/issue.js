@@ -2,11 +2,15 @@ import React, { Component, Fragment } from 'react';
 import { Button, TextField } from '@material-ui/core';
 import axios from 'axios';
 import { Redirect } from 'react-router-dom';
+import * as conf from '../../../src/conf.js';
 import './issue.css';
 import { styled } from '@material-ui/core/styles';
 import EditIcon from '@material-ui/icons/Edit';
 import { IconButton } from '@material-ui/core';
 import DeleteForeverIcon from '@material-ui/icons/DeleteForever';
+import { Autocomplete } from '@material-ui/lab';
+import VisibilityIcon from '@material-ui/icons/Visibility';
+
 
 
 
@@ -24,8 +28,27 @@ class Issue extends Component {
       result:'',
       object:'',
       id: '',
-      showIssues: false
+      showIssues: false,
+      all_tags: []
     };
+  }
+
+
+  componentDidMount() {
+
+    axios.post(conf.api_url_base+'/api/issue/getalltags',{tag: ''}, { withCredentials: true })
+    .then(res=>{
+      this.setState((state,props)=>{return {all_tags: res.data}});
+      console.log("res: ", res);
+    })
+    .catch((e)=>{
+  if( e.response.status === 401) {
+  //  this.setState({isauthenticated: false})
+  }
+      console.log('error: ', e.response.status)}
+
+  );
+
   }
 
   handletags(data) {
@@ -37,8 +60,11 @@ class Issue extends Component {
       });
 
     }, 1000);
+  }
 
-
+  handleAutocompleteChange(event, value) {
+      this.setState({search_tags: value});
+      console.log("search_tags: ", this.state.search_tags);
   }
 
 
@@ -46,11 +72,28 @@ class Issue extends Component {
     render() {
 
     return (<Fragment>
-          <br /><br />
-          <TextField id="tags" label="tags" type="text" variant="outlined" onChange={(r)=>this.handletags(r.target.value)} />
-          <br /><br />
+      <div id="autocomplete">
+                  <Autocomplete
+                         multiple
+                         onChange={(event, value) => this.handleAutocompleteChange(event, value)}
+                         id="tags-standard"
+                         options={this.state.all_tags}
+                         getOptionLabel={option => option}
+
+                         renderInput={params => (
+
+                           <TextField
+                             {...params}
+                             variant="standard"
+                             label="Multiple values"
+                             placeholder="Favorites"
+                             fullWidth
+                           />
+                         )}
+                       />
           <br /><br />
           <ShowIssues search_tags={this.state.search_tags} />
+          </div>
           </Fragment>
         );
     }
@@ -65,11 +108,11 @@ function getTime(millis) {
 
 
 class ShowIssues extends Component {
-  //function DisplayResult(props) {
+
   constructor(props) {
     super(props);
     this.state = {
-      isredirected: false ,
+      redirection_path: '' ,
       id: '',
       object: '',
       table: [],
@@ -82,7 +125,7 @@ class ShowIssues extends Component {
   componentDidMount() {
 console.log('dupa');
 
-axios.post('http://localhost:1234/api/issue/getAllTags',{tag: ''}, { withCredentials: true })
+axios.post(conf.api_url_base+'/api/issue/getAllTags',{tag: ''}, { withCredentials: true })
 .then(res=>{
 console.log(res);
 
@@ -104,7 +147,7 @@ console.log(res);
 
     console.log('item._id');
   console.log(item);
-    axios.post('http://localhost:1234/api/issue/delete', {id: item}, { withCredentials: true })
+    axios.post(conf.api_url_base+'/api/issue/delete', {id: item}, { withCredentials: true })
     .then(res=>{
                 this.fetchData(this.props.search_tags);
     })
@@ -113,19 +156,26 @@ console.log(res);
 
 
   redirect() {
-    if(this.state.isredirected) {
-      return <Redirect to={{ pathname: "/issue/edit/"+this.state.id }} />;
+    if(this.state.redirection_path !== '') {
+      if(this.state.redirection_path === 'edit') {
+        return <Redirect to={{ pathname: "/issue/edit/"+this.state.id }} />;
+      }
+      if(this.state.redirection_path === 'display') {
+        return <Redirect to={{ pathname: "/issue/display/"+this.state.id }} />;
+      }
     }
   }
 
-  setResult(data) {
+  setRedirection(id, path) {
     this.setState((state,props)=>{
-      return {isredirected: true,
-        id: data
+      return {redirection_path: path,
+        id: id
       }
     }
 );
 }
+
+
 
 renderTable(res) {
   if(res) {
@@ -133,16 +183,19 @@ renderTable(res) {
   let tab = res.data.map((item)=>
   <tr key={item._id}>
     <td>{item.title}</td>
-    <td>{item.body}</td>
+
     <td><div>{item.tags}</div></td>
     <td>{item.username}</td>
     <td>{getTime(item.timestamp)}</td>
     <td>
-    <IconButton onClick={()=>this.setResult(item._id)}>
+    <IconButton onClick={()=>this.setRedirection(item._id, 'edit')}>
        <EditIcon/>
     </IconButton>
     <IconButton onClick={()=>this.deleteItem(item._id)}>
        <DeleteForeverIcon/>
+    </IconButton>
+    <IconButton onClick={()=>this.setRedirection(item._id, 'display')}>
+    <VisibilityIcon/>
     </IconButton>
     </td>
   </tr>);
@@ -154,7 +207,7 @@ this.setState((state,props)=>{return {table: tab}}
 
 fetchData(tags) {
   console.log('fetching data...', tags);
-  axios.post('http://localhost:1234/api/issue/getIssueByTag', {tags: tags}, { withCredentials: true })
+  axios.post(conf.api_url_base+'/api/issue/getIssueByTag', {tags: tags}, { withCredentials: true })
   .then(res=>{
 console.log('fetchData: ', res);
 
@@ -168,14 +221,15 @@ render() {
 
     return(
       <Fragment>
-      <div>
+      <div className="form">
       {this.redirect()}
-      </div>
+
 <table>
 <tbody>
 {this.state.table}
 </tbody>
 </table>
+</div>
 </Fragment>
     );
   }

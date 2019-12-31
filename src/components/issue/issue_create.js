@@ -3,10 +3,10 @@ import axios from 'axios';
 import './issue_create.css';
 import ReactQuill from 'react-quill';
 import 'react-quill/dist/quill.snow.css';
+import { Redirect } from 'react-router-dom';
+import * as conf from '../../../src/conf.js';
 // material ui
 import { Button, TextField } from '@material-ui/core';
-import { makeStyles } from '@material-ui/core/styles';
-import { styled } from '@material-ui/core/styles';
 import { Grid } from '@material-ui/core';
 import EditIcon from '@material-ui/icons/Edit';
 import { IconButton } from '@material-ui/core';
@@ -25,9 +25,9 @@ class IssueCreate extends Component {
         text:'',
         id:'',
         editmode: false,
-        chips: '',
         all_tags:["all_tags"],
-        tags:["tags"]
+        tags:["tags"],
+        isauthenticated: true
       };
       this.handleChange = this.handleChange.bind(this);
 
@@ -45,11 +45,18 @@ componentDidUpdate() {
 
 init() {
 
-  axios.post('http://localhost:1234/api/issue/getalltags',{tag: ''}, { withCredentials: true })
+  axios.post(conf.api_url_base+'/api/issue/getalltags',{tag: ''}, { withCredentials: true })
   .then(res=>{
     this.setState((state,props)=>{return {all_tags: res.data}});
+    console.log("res: ", res);
   })
-  .catch((e)=>{console.log('error: ', e)});
+  .catch((e)=>{
+if( e.response.status === 401) {
+  this.setState({isauthenticated: false})
+}
+    console.log('error: ', e.response.status)}
+
+);
 
 
   if(this.props.match.params.id) {
@@ -58,7 +65,7 @@ init() {
   this.setState((state,props)=>{return {editmode: true, id: this.props.match.params.id}});
 
 
-  axios.post('http://localhost:1234/api/issue/getIssueById', {id: this.props.match.params.id}, { withCredentials: true })
+  axios.post(conf.api_url_base+'/api/issue/getIssueById', {id: this.props.match.params.id}, { withCredentials: true })
   .then(res=>{
   console.log("res.data.tags: ", res.data.tags);
 
@@ -95,7 +102,7 @@ submit() {
 
 if(this.state.editmode) {
 
-  axios.post('http://localhost:1234/api/issue/edit', {title: this.state.title, body: this.state.body, tags: this.state.tags, id: this.state.id }, { withCredentials: true })
+  axios.post(conf.api_url_base+'/api/issue/edit', {title: this.state.title, body: this.state.body, tags: this.state.tags, id: this.state.id }, { withCredentials: true })
     .then(res=>{
       console.log(res);
     })
@@ -103,7 +110,7 @@ if(this.state.editmode) {
 
 } else {
 
-  axios.post('http://localhost:1234/api/issue/create', {title: this.state.title, body: this.state.body, tags: this.state.tags }, { withCredentials: true })
+  axios.post(conf.api_url_base+'/api/issue/create', {title: this.state.title, body: this.state.body, tags: this.state.tags }, { withCredentials: true })
   .then(res=>{
     if(res.status == 200) {
       this.setState((state, props)=>{
@@ -112,7 +119,7 @@ if(this.state.editmode) {
     }
     console.log(res.status)})
   .catch((e)=>{console.log(e)});
-} //else
+  } //else
 }
 
 
@@ -122,20 +129,25 @@ handleAutocompleteChange(event, value) {
 }
 
 
+isAuthenticated() {
+  if(!this.state.isauthenticated) {
+    return (<Redirect to={{ pathname: "/login" }} />);
+  }
+}
+
+
   render() {
 
   return (
     <Fragment>
-
+{this.isAuthenticated()}
     <div id="form">
         <TextField fullWidth={true} id="title" label="title" type="text" variant="outlined" value={this.state.title} onChange={(r)=>this.handletitle(r.target.value)} />
         <br /><br />
         <ReactQuill value={this.state.body}
                        onChange={this.handleChange} />
         <br /><br />
-        <br /><br />
 
-        <br />
 
 
         <Autocomplete
