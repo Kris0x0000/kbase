@@ -62,8 +62,8 @@ redirect() {
     if(this.state.redirection_path === 'edit') {
       return <Redirect to={{ pathname: "/issue/edit/"+this.state.id }} />;
     }
-    if(this.state.redirection_path === 'display') {
-      return <Redirect to={{ pathname: "/issue/display/"+this.state.id }} />;
+    if(this.state.redirection_path === 'home') {
+      return <Redirect to={{ pathname: '/' }} />;
     }
   }
 }
