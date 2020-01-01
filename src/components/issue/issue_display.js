@@ -63,7 +63,8 @@ displayHTML(code) {
 redirect() {
   if(this.state.redirection_path !== '') {
     if(this.state.redirection_path === 'edit') {
-      return <Redirect to={{ pathname: "/issue/edit/"+this.state.id }} />;
+      console.log("this.props.location", this.props.location);
+      return <Redirect to={{ pathname: "/issue/edit/"+this.state.id , state: {prev_path: this.props.location}}} />;
     }
     if(this.state.redirection_path === 'back_to_search') {
       return <Redirect to={{

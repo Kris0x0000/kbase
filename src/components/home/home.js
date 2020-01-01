@@ -40,7 +40,7 @@ redirect() {
   if(this.state.gosearch) {
     return <Redirect to={{ pathname: `/issue/list` }} />;
   } else if(this.state.gocreate) {
-    return <Redirect to={{ pathname: `/issue/create` }} />;
+    return <Redirect to={{ pathname: `/issue/create`, state: {prev_path: this.props.location} }} />;
   }
 }
 

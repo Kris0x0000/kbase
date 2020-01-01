@@ -28,13 +28,14 @@ class ShowIssues extends Component {
 
 
   componentDidMount(prevProps) {
-console.log("componentDidMount: ",this.state.search_tags);
-if(this.props.location) {
-console.log(this.props.location.state.search_tags);
+      console.log("this.props.location: ", this.props.prev_path);
+console.log("this.props.search_tags : ",this.props.search_tags);
+if(this.props) {
+console.log(this.props.search_tags);
 }
 //if(prevProps.search_tags != this.props.search_tags ) {
 console.log("prevs...");
-this.setState({search_tags: this.props.search_tags});
+this.setState({search_tags: this.props.search_tags, prev_path: this.props.prev_path});
   this.fetchData(this.props.search_tags);
 //
 axios.post(conf.api_url_base+'/api/issue/getAllTags',{tag: ''}, { withCredentials: true })
@@ -50,9 +51,11 @@ console.log(res);
   }
 
   componentDidUpdate(prevProps) {
-console.log("componentDidUpdate: ",this.state.search_tags);
+
+console.log("componentDidUpdateqqq: ",this.state.search_tags);
       if(prevProps.search_tags != this.props.search_tags ) {
-console.log("prevs...");
+          this.setState({search_tags: this.props.search_tags, prev_path: this.props.prev_path});
+console.log("prevs...2");
 /// ! sprawdzić
         this.setState({search_tags: this.props.search_tags});
         this.fetchData(this.props.search_tags);
@@ -75,7 +78,8 @@ console.log("prevs...");
   redirect() {
     if(this.state.redirection_path !== '') {
       if(this.state.redirection_path === 'edit') {
-        return <Redirect to={{ pathname: "/issue/edit/"+this.state.id }} />;
+        console.log("this.props.location", this.props.location);
+        return <Redirect to={{ pathname: "/issue/edit/"+this.state.id, state: {prev_path: this.state.prev_path, search_tags: this.props.search_tags} }} />;
       }
       if(this.state.redirection_path === 'display') {
         console.log('display: ',this.state.search_tags)

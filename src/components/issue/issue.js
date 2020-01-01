@@ -28,15 +28,19 @@ class Issue extends Component {
       object:'',
       id: '',
       showIssues: false,
-      all_tags: []
+      all_tags: [],
+      isauthenticated: true
     };
   }
 
 
   componentDidMount() {
 
+
+
+
     if(this.props.location.state) {
-      console.log(this.props.location.state);
+      console.log("this.props.location.state: ",this.props.location.state);
       this.setState({search_tags: this.props.location.state.search_tags})
     }
 
@@ -44,10 +48,11 @@ class Issue extends Component {
     .then(res=>{
       this.setState((state,props)=>{return {all_tags: res.data}});
       console.log("res: ", res);
+    //  this.setState({isauthenticated: true});
     })
     .catch((e)=>{
   if( e.response.status === 401) {
-  //  this.setState({isauthenticated: false})
+    this.setState({isauthenticated: false})
   }
       console.log('error: ', e.response.status)}
 
@@ -71,11 +76,18 @@ class Issue extends Component {
       console.log("search_tags: ", this.state.search_tags);
   }
 
+  isAuthenticated() {
+    if(!this.state.isauthenticated) {
+      return (<Redirect to={{ pathname: "/login" }} />);
+    }
+  }
+
 
 
     render() {
 
     return (<Fragment>
+      {this.isAuthenticated()}
       <div id="autocomplete">
                   <Autocomplete
                          multiple
@@ -96,7 +108,7 @@ class Issue extends Component {
                          )}
                        />
           <br /><br />
-          <ShowIssues search_tags={this.state.search_tags} />
+          <ShowIssues search_tags={this.state.search_tags} prev_path={this.props.location} />
           </div>
           </Fragment>
         );

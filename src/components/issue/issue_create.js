@@ -12,6 +12,7 @@ import EditIcon from '@material-ui/icons/Edit';
 import { IconButton } from '@material-ui/core';
 import { Chip } from '@material-ui/core';
 import { Autocomplete } from '@material-ui/lab';
+import DoneIcon from '@material-ui/icons/Done';
 
 
 
@@ -27,58 +28,56 @@ class IssueCreate extends Component {
         editmode: false,
         all_tags:["all_tags"],
         tags:["tags"],
-        isauthenticated: true
+        isauthenticated: true,
+        prev_path: '',
+        go_back: false
       };
       this.handleChange = this.handleChange.bind(this);
 
     }
 
 componentDidMount() {
-this.init()
+
+// if redirected from other components
+if(this.props.location.state) {
+  this.setState({prev_path: this.props.location.state.prev_path, search_tags: this.props.location.state.search_tags});
+}
+    // fetching all tags for autocomplete field
+    axios.post(conf.api_url_base+'/api/issue/getalltags',{tag: ''}, { withCredentials: true })
+    .then(res=>{
+      this.setState((state,props)=>{return {all_tags: res.data}});
+      console.log("res: ", res);
+      
+    })
+    .catch((e)=>{
+  if( e.response.status === 401) {
+    this.setState({isauthenticated: false});
+  }
+      console.log('error: ', e.response.status)}
+
+
+  );
+
+        // if issue id in URL (/edit/id)
+    if(this.props.match.params.id) {
+    this.setState((state,props)=>{return {editmode: true, id: this.props.match.params.id}});
+
+    axios.post(conf.api_url_base+'/api/issue/getIssueById', {id: this.props.match.params.id}, { withCredentials: true })
+    .then(res=>{
+    console.log("res.data.tags: ", res.data.tags);
+
+  this.setState({
+    title: res.data.title,
+    body: res.data.body,
+  tags: res.data.tags});
+    console.log("ddd", this.state.tags);
+    })
+    .catch((e)=>{console.log(e)});
+      }
 
 }
 
 componentDidUpdate() {
-
-}
-
-
-init() {
-
-  axios.post(conf.api_url_base+'/api/issue/getalltags',{tag: ''}, { withCredentials: true })
-  .then(res=>{
-    this.setState((state,props)=>{return {all_tags: res.data}});
-    console.log("res: ", res);
-  })
-  .catch((e)=>{
-if( e.response.status === 401) {
-  this.setState({isauthenticated: false})
-}
-    console.log('error: ', e.response.status)}
-
-);
-
-
-  if(this.props.match.params.id) {
-
-  console.log(this.props.match.params.id);
-  this.setState((state,props)=>{return {editmode: true, id: this.props.match.params.id}});
-
-
-  axios.post(conf.api_url_base+'/api/issue/getIssueById', {id: this.props.match.params.id}, { withCredentials: true })
-  .then(res=>{
-  console.log("res.data.tags: ", res.data.tags);
-
-
-
-this.setState({
-  title: res.data.title,
-  body: res.data.body,
-tags: res.data.tags});
-  console.log("ddd", this.state.tags);
-  })
-  .catch((e)=>{console.log(e)});
-    }
 
 }
 
@@ -100,11 +99,13 @@ handleChange(value) {
 
 submit() {
 
+this.setState({go_back: true});
 if(this.state.editmode) {
 
   axios.post(conf.api_url_base+'/api/issue/edit', {title: this.state.title, body: this.state.body, tags: this.state.tags, id: this.state.id }, { withCredentials: true })
     .then(res=>{
       console.log(res);
+
     })
     .catch(e=>{console.log(e)});
 
@@ -135,20 +136,27 @@ isAuthenticated() {
   }
 }
 
+redirect() {
+  if(this.state.go_back) {
+    if(this.state.prev_path !== '') {
+      console.log(this.state.search_tags);
+      return (<Redirect to={{pathname: this.state.prev_path.pathname, state: {search_tags: this.state.search_tags}}} />);
+    }
+  }
+}
+
 
   render() {
 
   return (
     <Fragment>
+    {this.redirect()}
 {this.isAuthenticated()}
     <div id="form">
         <TextField fullWidth={true} id="title" label="title" type="text" variant="outlined" value={this.state.title} onChange={(r)=>this.handletitle(r.target.value)} />
         <br /><br />
-        <ReactQuill value={this.state.body}
-                       onChange={this.handleChange} />
+        <ReactQuill value={this.state.body} onChange={this.handleChange} />
         <br /><br />
-
-
 
         <Autocomplete
                multiple
@@ -175,7 +183,7 @@ isAuthenticated() {
         <br />
 <Grid container alignItems="flex-start" justify="flex-end" direction="row">
 <IconButton onClick={()=>{this.submit()}}>
-   <EditIcon/>
+   <DoneIcon/>
 </IconButton>
 <br />
         </Grid>
