@@ -3,12 +3,14 @@ import axios from 'axios';
 import './issue_create.css';
 import ReactQuill from 'react-quill';
 import 'react-quill/dist/quill.snow.css';
-import { Redirect } from 'react-router-dom';
 import * as conf from '../../../src/conf.js';
+import { Redirect } from 'react-router-dom';
+import { BrowserRouter as Router, Route, Switch, Link } from 'react-router-dom'
 // material ui
 import { Button, TextField } from '@material-ui/core';
 import { Grid } from '@material-ui/core';
 import EditIcon from '@material-ui/icons/Edit';
+import ArrowBackIcon from '@material-ui/icons/ArrowBack';
 import { IconButton } from '@material-ui/core';
 import { Chip } from '@material-ui/core';
 import { Autocomplete } from '@material-ui/lab';
@@ -25,20 +27,21 @@ class IssueDisplay extends Component {
         text:'',
         id:'',
         tags:["tags"],
-        isauthenticated: true
+        isauthenticated: true,
+        search_tags: ''
       };
     }
 
 componentDidMount() {
-console.log('test');
+this.setState({search_tags: this.props.location.state.search_tags});
   axios.post(conf.api_url_base+'/api/issue/getIssueById', {id: this.props.match.params.id}, { withCredentials: true })
     .then(res=>{
       console.log(res);
-      this.setState({body: res.data.body});
+      this.setState({body: res.data.body, id: this.props.match.params.id});
     })
     .catch(e=>{console.log(e)});
-
 }
+
 componentDidUpdate() {
 
 }
@@ -62,8 +65,11 @@ redirect() {
     if(this.state.redirection_path === 'edit') {
       return <Redirect to={{ pathname: "/issue/edit/"+this.state.id }} />;
     }
-    if(this.state.redirection_path === 'home') {
-      return <Redirect to={{ pathname: '/' }} />;
+    if(this.state.redirection_path === 'back_to_search') {
+      return <Redirect to={{
+        pathname: '/issue/list',
+      state: { search_tags: this.state.search_tags }
+      }} />;
     }
   }
 }
@@ -72,23 +78,23 @@ setRedirection(id, path) {
   this.setState({redirection_path: path, id: id});
 }
 
-
   render() {
-
   return (
     <Fragment>
 
     <div id="form">
     {this.isAuthenticated()}
     {this.displayHTML(this.state.body)}
-
+    {this.redirect()}
         <br /><br />
-
-        <br />
 <Grid container alignItems="flex-start" justify="flex-end" direction="row">
-<IconButton onClick={()=>{this.submit()}}>
+<IconButton onClick={()=>{this.setRedirection(this.state.id, 'edit')}}>
    <EditIcon/>
 </IconButton>
+<IconButton onClick={()=>{this.setRedirection("back", 'back_to_search')}}>
+   <ArrowBackIcon/>
+</IconButton>
+
 <br />
         </Grid>
 </div>
