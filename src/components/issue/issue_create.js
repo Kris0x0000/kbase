@@ -1,6 +1,5 @@
 import React, { Component, Fragment } from 'react';
 import axios from 'axios';
-import './issue_create.css';
 import ReactQuill from 'react-quill';
 import 'react-quill/dist/quill.snow.css';
 import { Redirect } from 'react-router-dom';
@@ -10,9 +9,13 @@ import { Button, TextField } from '@material-ui/core';
 import { Grid } from '@material-ui/core';
 import EditIcon from '@material-ui/icons/Edit';
 import { IconButton } from '@material-ui/core';
+import CloseIcon from '@material-ui/icons/Close';
 import { Chip } from '@material-ui/core';
 import { Autocomplete } from '@material-ui/lab';
 import DoneIcon from '@material-ui/icons/Done';
+import './issue.css';
+import Snackbar from '@material-ui/core/Snackbar';
+import ArrowBackIcon from '@material-ui/icons/ArrowBack';
 
 
 
@@ -21,16 +24,20 @@ class IssueCreate extends Component {
     constructor(props) {
       super(props);
       this.state = {
+        //editfiled / Quill
         title: '',
         body:'',
         text:'',
         id:'',
         editmode: false,
         all_tags:["all_tags"],
-        tags:["tags"],
+        tags:[],
         isauthenticated: true,
         prev_path: '',
-        go_back: false
+        go_back: false,
+        to_many_tags: false,
+        show_warning_too_many_tags: false,
+        accepted: false
       };
       this.handleChange = this.handleChange.bind(this);
 
@@ -47,15 +54,13 @@ if(this.props.location.state) {
     .then(res=>{
       this.setState((state,props)=>{return {all_tags: res.data}});
       console.log("res: ", res);
-      
+
     })
     .catch((e)=>{
   if( e.response.status === 401) {
     this.setState({isauthenticated: false});
   }
       console.log('error: ', e.response.status)}
-
-
   );
 
         // if issue id in URL (/edit/id)
@@ -96,11 +101,10 @@ handleChange(value) {
 }
 
 
+submit(option) {
 
-submit() {
-
-this.setState({go_back: true});
-if(this.state.editmode) {
+if(!(option !== 'accept')) {
+  if(this.state.editmode) {
 
   axios.post(conf.api_url_base+'/api/issue/edit', {title: this.state.title, body: this.state.body, tags: this.state.tags, id: this.state.id }, { withCredentials: true })
     .then(res=>{
@@ -109,7 +113,7 @@ if(this.state.editmode) {
     })
     .catch(e=>{console.log(e)});
 
-} else {
+  } else {
 
   axios.post(conf.api_url_base+'/api/issue/create', {title: this.state.title, body: this.state.body, tags: this.state.tags }, { withCredentials: true })
   .then(res=>{
@@ -123,11 +127,33 @@ if(this.state.editmode) {
   } //else
 }
 
+  this.setState({go_back: true});
+}
+
 
 handleAutocompleteChange(event, value) {
+
+  if(value.length > 5) {
+    this.setState({to_many_tags: true, show_warning_too_many_tags: true});
+    setTimeout(()=>{
+        this.setState({show_warning_too_many_tags: false});
+    }, 1000);
+  } else {
+    this.setState({to_many_tags: false});
+  }
+  console.log("value: ", value);
     this.setState({tags: value});
     console.log(this.state.tags);
 }
+
+removeLastElement() {
+
+  let arr = this.state.tags;
+    arr.splice(arr.length, 1);
+    this.setState({tags: arr});
+};
+
+
 
 
 isAuthenticated() {
@@ -150,9 +176,15 @@ redirect() {
 
   return (
     <Fragment>
+    <Snackbar variant="warning"
+    open={this.state.show_warning_too_many_tags}
+    message="Maksymalna liczba tagów..."
+    anchorOrigin={{ vertical: 'top', horizontal: 'center' }}
+
+    />
     {this.redirect()}
 {this.isAuthenticated()}
-    <div id="form">
+    <div id="container">
         <TextField fullWidth={true} id="title" label="title" type="text" variant="outlined" value={this.state.title} onChange={(r)=>this.handletitle(r.target.value)} />
         <br /><br />
         <ReactQuill value={this.state.body} onChange={this.handleChange} />
@@ -161,6 +193,7 @@ redirect() {
         <Autocomplete
                multiple
                freeSolo
+               disabled={this.state.to_many_tags}
                value={this.state.tags}
                onChange={(event, value) => this.handleAutocompleteChange(event, value)}
                id="tags-standard"
@@ -178,11 +211,12 @@ redirect() {
                  />
                )}
              />
-
-
         <br />
 <Grid container alignItems="flex-start" justify="flex-end" direction="row">
-<IconButton onClick={()=>{this.submit()}}>
+<IconButton onClick={()=>{this.submit('decline')}}>
+   <ArrowBackIcon/>
+</IconButton>
+<IconButton onClick={()=>{this.submit('accept')}}>
    <DoneIcon/>
 </IconButton>
 <br />

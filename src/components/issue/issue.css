@@ -1,27 +1,51 @@
 #autocomplete {
-  width: 60%;
+  width: 50%;
   margin: auto;
 }
 
-table, td {
+#container {
+  width: 80%;
+  margin: auto;
+}
+
+#loading {
+  position: absolute;
+  margin: auto;
+  left: calc(50% - 64px/2);
+  top: calc(50% - 64px/2);
+}
+
+
+
+.ql-editor{
+  min-height:300px;
+}
+
+
+table, td, th {
   border: 1px solid black;
   border-collapse: collapse;
   margin:auto;
   text-align:center;
+
+
 }
 
 table {
-  width: 100%;
+  table-layout: fixed;
+  width: 95%;
 }
 
       td : {
         border: 1px solid black;
-
+      min-width:200px;
           }
 
 
    tr : {
      border: 1px solid black;
-     width: 100%;
+     min-width:200px;
+     height: 200px;
+
 
 }

@@ -38,7 +38,7 @@ class Home extends Component {
 
 redirect() {
   if(this.state.gosearch) {
-    return <Redirect to={{ pathname: `/issue/list` }} />;
+    return <Redirect to={{ pathname: `/issue/find` }} />;
   } else if(this.state.gocreate) {
     return <Redirect to={{ pathname: `/issue/create`, state: {prev_path: this.props.location} }} />;
   }
@@ -67,10 +67,10 @@ render() {
     {this.redirect()}
     <div id="main">
     <IconButton onClick={()=>this.setRedirection("goSearch")}>
-       <SearchIcon style={{fontSize: '256px'}}/>
+       <SearchIcon style={{fontSize: '128px'}}/>
     </IconButton>
     <IconButton onClick={()=>this.setRedirection("goCreate")}>
-       <AddCircleIcon style={{fontSize: '256px'}}/>
+       <AddCircleIcon style={{fontSize: '128px'}}/>
     </IconButton>
     </div>
     </Fragment>

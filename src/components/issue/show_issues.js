@@ -8,8 +8,8 @@ import EditIcon from '@material-ui/icons/Edit';
 import { IconButton } from '@material-ui/core';
 import DeleteForeverIcon from '@material-ui/icons/DeleteForever';
 import VisibilityIcon from '@material-ui/icons/Visibility';
-
-
+import { CircularProgress } from '@material-ui/core';
+import { Chip } from '@material-ui/core';
 
 
 class ShowIssues extends Component {
@@ -22,7 +22,9 @@ class ShowIssues extends Component {
       object: '',
       table: [],
       search_tags: '',
-      all_tags: ''
+      all_tags: '',
+      is_loading_set: false,
+      is_authenticated: true
     };
   }
 
@@ -44,9 +46,11 @@ console.log(res);
 
   this.setState((state,props)=>{return {all_tags: res}});
 })
-.catch((e)=>{console.log('error: ', e)});
-
-
+.catch((e)=>{console.log('error: ', e);
+if( e.response.status === 401) {
+      this.setState({isauthenticated: false})
+  }
+});
 
   }
 
@@ -71,7 +75,12 @@ console.log("prevs...2");
     .then(res=>{
         this.fetchData(this.props.search_tags);
     })
-    .catch((e)=>{console.log('error: ', e)});
+    .catch((e)=>{console.log('error: ', e);
+    if( e.response.status === 401) {
+      this.setState({isauthenticated: false})
+    }
+  });
+
   }
 
 
@@ -97,16 +106,30 @@ console.log("prevs...2");
 );
 }
 
+showLoading() {
+  if(this.state.is_loading_set) {
+    return <CircularProgress />;
+  }
+}
 
+limitString(txt) {
+  if(txt.length >= 60) {
+    return(txt.substr(0,60)+"...");
+  } else {
+  return txt;
+}
+}
 
 renderTable(res) {
   if(res) {
-  console.log('map: ', res);
-  let tab = res.data.map((item)=>
-  <tr key={item._id}>
-    <td>{item.title}</td>
+    {this.showLoading()}
 
-    <td><div>{item.tags}</div></td>
+
+  let tab = res.data.map((item)=>
+
+  <tr key={item._id}>
+    <td>{this.limitString(item.title)}</td>
+    <td>{item.tags.map((element)=><Fragment><Chip label={element}/> </Fragment>)}</td>
     <td>{item.username}</td>
     <td>{getTime(item.timestamp)}</td>
     <td>
@@ -127,10 +150,17 @@ this.setState((state,props)=>{return {table: tab}}
   }
 }
 
+isAuthenticated() {
+  if(!this.state.isauthenticated) {
+    return (<Redirect to={{ pathname: "/login" }} />);
+  }
+}
+
 fetchData(tags) {
-  console.log('fetching data...', tags);
+  this.setState({is_loading_set: true});
   axios.post(conf.api_url_base+'/api/issue/getIssueByTag', {tags: tags}, { withCredentials: true })
   .then(res=>{
+    this.setState({is_loading_set: false});
 console.log('fetchData: ', res);
 
 this.renderTable(res);
@@ -146,7 +176,24 @@ render() {
       <div className="form">
       {this.redirect()}
 
-<table>
+<table class="issuelist">
+<colgroup>
+  <col style={{ width: '30%'}}/>
+  <col style={{ width: '25%'}}/>
+  <col style={{ width: '10%'}}/>
+  <col style={{ width: '10%'}}/>
+  <col style={{ width: '10%'}}/>
+
+</colgroup>
+<thead>
+      <tr>
+          <th style={{ width: '250px', height: '50px' }}>Tytuł</th>
+          <th>Tagi</th>
+          <th>Użytkownik</th>
+          <th>Data modyfikacji</th>
+          <th>Opcje</th>
+      </tr>
+  </thead>
 <tbody>
 {this.state.table}
 </tbody>
@@ -159,7 +206,7 @@ render() {
 
 
 function getTime(millis) {
-  let time = new Date(millis).toDateString();
+  let time = new Date(millis).toLocaleDateString();
 
   return time;
 }

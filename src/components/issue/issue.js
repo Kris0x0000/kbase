@@ -10,6 +10,7 @@ import DeleteForeverIcon from '@material-ui/icons/DeleteForever';
 import { Autocomplete } from '@material-ui/lab';
 import VisibilityIcon from '@material-ui/icons/Visibility';
 import ShowIssues from './show_issues.js';
+import { CircularProgress } from '@material-ui/core';
 
 
 
@@ -19,17 +20,16 @@ class Issue extends Component {
     super(props);
     this.state = {
       search_tags:'',
-      tags:'',
       body:'',
       title:'',
       username:'',
       timestamp:'',
       result:'',
-      object:'',
       id: '',
       showIssues: false,
       all_tags: [],
-      isauthenticated: true
+      isauthenticated: true,
+      is_loading_set: false
     };
   }
 
@@ -37,27 +37,22 @@ class Issue extends Component {
   componentDidMount() {
 
 
-
-
     if(this.props.location.state) {
       console.log("this.props.location.state: ",this.props.location.state);
       this.setState({search_tags: this.props.location.state.search_tags})
     }
 
+      this.setState({is_loading_set: true});
     axios.post(conf.api_url_base+'/api/issue/getalltags',{tag: ''}, { withCredentials: true })
     .then(res=>{
-      this.setState((state,props)=>{return {all_tags: res.data}});
-      console.log("res: ", res);
-    //  this.setState({isauthenticated: true});
+      this.setState({is_loading_set: false, all_tags: res.data, isauthenticated: true});
     })
     .catch((e)=>{
   if( e.response.status === 401) {
     this.setState({isauthenticated: false})
   }
       console.log('error: ', e.response.status)}
-
-  );
-
+    );
   }
 
   handletags(data) {
@@ -82,17 +77,26 @@ class Issue extends Component {
     }
   }
 
-
+  showLoading() {
+    if(this.state.is_loading_set) {
+      return(<div id="loading"><CircularProgress size={64}/></div>);
+    }
+  }
 
     render() {
 
     return (<Fragment>
+
       {this.isAuthenticated()}
       <div id="autocomplete">
+      {this.showLoading()}
                   <Autocomplete
+
                          multiple
                          onChange={(event, value) => this.handleAutocompleteChange(event, value)}
                          id="tags-standard"
+                         loading="true"
+                         loadingText="Ładowanie..."
                          options={this.state.all_tags}
                          getOptionLabel={option => option}
 
@@ -101,23 +105,19 @@ class Issue extends Component {
                            <TextField
                              {...params}
                              variant="standard"
-                             label="Multiple values"
-                             placeholder="Favorites"
+                             label="Wybierz tagi..."
+                             
                              fullWidth
                            />
                          )}
                        />
-          <br /><br />
+          <br /><br /><br /><br />
+            </div>
           <ShowIssues search_tags={this.state.search_tags} prev_path={this.props.location} />
-          </div>
+
           </Fragment>
         );
     }
   }
-
-
-
-
-
 
 export default Issue;

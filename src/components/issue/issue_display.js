@@ -1,6 +1,6 @@
 import React, { Component, Fragment } from 'react';
 import axios from 'axios';
-import './issue_create.css';
+import './issue.css';
 import ReactQuill from 'react-quill';
 import 'react-quill/dist/quill.snow.css';
 import * as conf from '../../../src/conf.js';
@@ -68,7 +68,7 @@ redirect() {
     }
     if(this.state.redirection_path === 'back_to_search') {
       return <Redirect to={{
-        pathname: '/issue/list',
+        pathname: '/issue/find',
       state: { search_tags: this.state.search_tags }
       }} />;
     }
@@ -83,18 +83,19 @@ setRedirection(id, path) {
   return (
     <Fragment>
 
-    <div id="form">
+    <div id="container">
     {this.isAuthenticated()}
     {this.displayHTML(this.state.body)}
     {this.redirect()}
         <br /><br />
 <Grid container alignItems="flex-start" justify="flex-end" direction="row">
-<IconButton onClick={()=>{this.setRedirection(this.state.id, 'edit')}}>
-   <EditIcon/>
-</IconButton>
 <IconButton onClick={()=>{this.setRedirection("back", 'back_to_search')}}>
    <ArrowBackIcon/>
 </IconButton>
+<IconButton onClick={()=>{this.setRedirection(this.state.id, 'edit')}}>
+   <EditIcon/>
+</IconButton>
+
 
 <br />
         </Grid>
