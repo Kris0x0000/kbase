@@ -1,5 +1,4 @@
 import React, { Component, Fragment } from 'react';
-import { Button, TextField } from '@material-ui/core';
 import axios from 'axios';
 import { Redirect } from 'react-router-dom';
 import * as conf from '../../../src/conf.js';
@@ -56,8 +55,8 @@ if( e.response.status === 401) {
 
   componentDidUpdate(prevProps) {
 
-console.log("componentDidUpdateqqq: ",this.state.search_tags);
-      if(prevProps.search_tags != this.props.search_tags ) {
+
+      if(prevProps.search_tags !== this.props.search_tags ) {
           this.setState({search_tags: this.props.search_tags, prev_path: this.props.prev_path});
 console.log("prevs...2");
 /// ! sprawdzić
@@ -122,8 +121,7 @@ limitString(txt) {
 
 renderTable(res) {
   if(res) {
-    {this.showLoading()}
-
+    this.showLoading()
 
   let tab = res.data.map((item)=>
 
@@ -166,7 +164,12 @@ console.log('fetchData: ', res);
 this.renderTable(res);
 
   })
-  .catch((e)=>{console.log(e)});
+  .catch((e)=>{console.log(e)
+    if( e.response.status === 401) {
+      this.setState({isauthenticated: false})
+    }
+  });
+
 }
 
 render() {

@@ -3,6 +3,7 @@ import { Button, TextField } from '@material-ui/core';
 import axios from 'axios';
 import { Redirect } from 'react-router-dom';
 import * as conf from '../../../src/conf.js';
+import './login.css';
 
 
 class Login extends Component {
@@ -58,15 +59,17 @@ class Login extends Component {
   render() {
     return (
       <Fragment>
-      <div>
+      <main>
+      <div id="loginform">
       {this.redirect()}
-      </div>
+
       <TextField id="Login" label="Login" type="text" variant="outlined" onChange={(r)=>this.handleLogin(r.target.value)} />
       <br /><br />
       <TextField id="Login" label="Password" type="password" variant="outlined" onChange={(r)=>this.handlePassword(r.target.value)} />
       <br /><br />
       <Button variant="outlined" onClick={()=>{this.submit()}}>Submit</Button>
-
+      </div>
+      </main>
       </Fragment>
     );
   }

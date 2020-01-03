@@ -5,18 +5,16 @@ import 'react-quill/dist/quill.snow.css';
 import { Redirect } from 'react-router-dom';
 import * as conf from '../../../src/conf.js';
 // material ui
-import { Button, TextField } from '@material-ui/core';
+import { TextField } from '@material-ui/core';
 import { Grid } from '@material-ui/core';
-import EditIcon from '@material-ui/icons/Edit';
 import { IconButton } from '@material-ui/core';
-import CloseIcon from '@material-ui/icons/Close';
-import { Chip } from '@material-ui/core';
 import { Autocomplete } from '@material-ui/lab';
 import DoneIcon from '@material-ui/icons/Done';
 import './issue.css';
 import Snackbar from '@material-ui/core/Snackbar';
 import ArrowBackIcon from '@material-ui/icons/ArrowBack';
 import Navi from '../../components/navi/navi';
+import { CircularProgress } from '@material-ui/core';
 
 
 
@@ -38,7 +36,8 @@ class IssueCreate extends Component {
         go_back: false,
         to_many_tags: false,
         show_warning_too_many_tags: false,
-        accepted: false
+        accepted: false,
+        is_loading_set: false
       };
       this.handleChange = this.handleChange.bind(this);
 
@@ -50,12 +49,13 @@ componentDidMount() {
 if(this.props.location.state) {
   this.setState({prev_path: this.props.location.state.prev_path, search_tags: this.props.location.state.search_tags});
 }
+    this.setState({is_loading_set: true});
     // fetching all tags for autocomplete field
     axios.post(conf.api_url_base+'/api/issue/getalltags',{tag: ''}, { withCredentials: true })
     .then(res=>{
       this.setState((state,props)=>{return {all_tags: res.data}});
       console.log("res: ", res);
-
+      this.setState({is_loading_set: false});
     })
     .catch((e)=>{
   if( e.response.status === 401) {
@@ -68,9 +68,11 @@ if(this.props.location.state) {
     if(this.props.match.params.id) {
     this.setState((state,props)=>{return {editmode: true, id: this.props.match.params.id}});
 
+    this.setState({is_loading_set: true});
     axios.post(conf.api_url_base+'/api/issue/getIssueById', {id: this.props.match.params.id}, { withCredentials: true })
     .then(res=>{
-    console.log("res.data.tags: ", res.data.tags);
+      this.setState({is_loading_set: false});
+
 
   this.setState({
     title: res.data.title,
@@ -107,18 +109,21 @@ submit(option) {
 if(!(option !== 'accept')) {
   if(this.state.editmode) {
 
+this.setState({is_loading_set: true});
   axios.post(conf.api_url_base+'/api/issue/edit', {title: this.state.title, body: this.state.body, tags: this.state.tags, id: this.state.id }, { withCredentials: true })
     .then(res=>{
-      console.log(res);
 
+      this.setState({is_loading_set: false});
     })
     .catch(e=>{console.log(e)});
 
   } else {
 
+this.setState({is_loading_set: true});
   axios.post(conf.api_url_base+'/api/issue/create', {title: this.state.title, body: this.state.body, tags: this.state.tags }, { withCredentials: true })
   .then(res=>{
-    if(res.status == 200) {
+    this.setState({is_loading_set: false});
+    if(res.status === 200) {
       this.setState((state, props)=>{
         return {isredirected: true};
       });
@@ -155,6 +160,11 @@ removeLastElement() {
 };
 
 
+showLoading() {
+  if(this.state.is_loading_set) {
+    return(<div id="loading"><CircularProgress size={64}/></div>);
+  }
+}
 
 
 isAuthenticated() {
@@ -178,6 +188,7 @@ redirect() {
   return (
     <Fragment>
     <Navi />
+    {this.showLoading()}
     <Snackbar variant="warning"
     open={this.state.show_warning_too_many_tags}
     message="Maksymalna liczba tagów..."
@@ -207,8 +218,8 @@ redirect() {
                  <TextField
                    {...params}
                    variant="standard"
-                   label="Multiple values"
-                   placeholder="Favorites"
+                   label="Wybierz tagi..."
+
                    fullWidth
                  />
                )}

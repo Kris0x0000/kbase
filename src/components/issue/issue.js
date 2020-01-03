@@ -1,14 +1,10 @@
 import React, { Component, Fragment } from 'react';
-import { Button, TextField } from '@material-ui/core';
+import {TextField } from '@material-ui/core';
 import axios from 'axios';
 import { Redirect } from 'react-router-dom';
 import * as conf from '../../../src/conf.js';
 import './issue.css';
-import EditIcon from '@material-ui/icons/Edit';
-import { IconButton } from '@material-ui/core';
-import DeleteForeverIcon from '@material-ui/icons/DeleteForever';
 import { Autocomplete } from '@material-ui/lab';
-import VisibilityIcon from '@material-ui/icons/Visibility';
 import ShowIssues from './show_issues.js';
 import { CircularProgress } from '@material-ui/core';
 import Navi from '../../components/navi/navi';

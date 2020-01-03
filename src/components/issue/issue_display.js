@@ -1,19 +1,15 @@
 import React, { Component, Fragment } from 'react';
 import axios from 'axios';
 import './issue.css';
-import ReactQuill from 'react-quill';
 import 'react-quill/dist/quill.snow.css';
 import * as conf from '../../../src/conf.js';
 import { Redirect } from 'react-router-dom';
-import { BrowserRouter as Router, Route, Switch, Link } from 'react-router-dom'
 // material ui
-import { Button, TextField } from '@material-ui/core';
 import { Grid } from '@material-ui/core';
 import EditIcon from '@material-ui/icons/Edit';
 import ArrowBackIcon from '@material-ui/icons/ArrowBack';
 import { IconButton } from '@material-ui/core';
 import { Chip } from '@material-ui/core';
-import { Autocomplete } from '@material-ui/lab';
 import Navi from '../../components/navi/navi';
 
 

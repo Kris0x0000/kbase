@@ -1,21 +1,15 @@
-import React, { Component, Fragment } from 'react';
+import React from 'react';
 import './App.css';
-import { BrowserRouter as Router, Route, Switch, Link } from 'react-router-dom'
+import { BrowserRouter as Router, Route, Switch } from 'react-router-dom'
 import Login from './components/login/login'
 import Issue from './components/issue/issue'
 import IssueCreate from './components/issue/issue_create'
 import IssueDisplay from './components/issue/issue_display'
 import Home from './components/home/home'
-import { IconButton } from '@material-ui/core';
-import { Redirect } from 'react-router-dom';
+
+
 
 class App extends React.Component {
-
-  constructor(props) {
-    super(props);
-
-  }
-
 
 render() {
   return(
