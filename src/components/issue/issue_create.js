@@ -16,6 +16,7 @@ import DoneIcon from '@material-ui/icons/Done';
 import './issue.css';
 import Snackbar from '@material-ui/core/Snackbar';
 import ArrowBackIcon from '@material-ui/icons/ArrowBack';
+import Navi from '../../components/navi/navi';
 
 
 
@@ -176,6 +177,7 @@ redirect() {
 
   return (
     <Fragment>
+    <Navi />
     <Snackbar variant="warning"
     open={this.state.show_warning_too_many_tags}
     message="Maksymalna liczba tagów..."

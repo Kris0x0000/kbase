@@ -11,7 +11,7 @@ import { Autocomplete } from '@material-ui/lab';
 import VisibilityIcon from '@material-ui/icons/Visibility';
 import ShowIssues from './show_issues.js';
 import { CircularProgress } from '@material-ui/core';
-
+import Navi from '../../components/navi/navi';
 
 
 class Issue extends Component {
@@ -86,7 +86,7 @@ class Issue extends Component {
     render() {
 
     return (<Fragment>
-
+      <Navi />
       {this.isAuthenticated()}
       <div id="autocomplete">
       {this.showLoading()}
@@ -95,7 +95,6 @@ class Issue extends Component {
                          multiple
                          onChange={(event, value) => this.handleAutocompleteChange(event, value)}
                          id="tags-standard"
-                         loading="true"
                          loadingText="Ładowanie..."
                          options={this.state.all_tags}
                          getOptionLabel={option => option}
@@ -106,7 +105,7 @@ class Issue extends Component {
                              {...params}
                              variant="standard"
                              label="Wybierz tagi..."
-                             
+
                              fullWidth
                            />
                          )}

@@ -14,6 +14,7 @@ import ArrowBackIcon from '@material-ui/icons/ArrowBack';
 import { IconButton } from '@material-ui/core';
 import { Chip } from '@material-ui/core';
 import { Autocomplete } from '@material-ui/lab';
+import Navi from '../../components/navi/navi';
 
 
 
@@ -82,7 +83,7 @@ setRedirection(id, path) {
   render() {
   return (
     <Fragment>
-
+<Navi />
     <div id="container">
     {this.isAuthenticated()}
     {this.displayHTML(this.state.body)}
