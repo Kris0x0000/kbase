@@ -121,8 +121,6 @@ limitString(txt) {
 
 renderTable(res) {
   if(res) {
-    this.showLoading()
-
   let tab = res.data.map((item)=>
 
   <tr key={item._id}>
@@ -143,8 +141,9 @@ renderTable(res) {
     </td>
   </tr>);
 
-this.setState((state,props)=>{return {table: tab}}
-);
+  console.log(tab);
+
+this.setState((state,props)=>{return {table: tab}});
   }
 }
 
@@ -159,9 +158,7 @@ fetchData(tags) {
   axios.post(conf.api_url_base+'/api/issue/getIssueByTag', {tags: tags}, { withCredentials: true })
   .then(res=>{
     this.setState({is_loading_set: false});
-console.log('fetchData: ', res);
-
-this.renderTable(res);
+    this.renderTable(res);
 
   })
   .catch((e)=>{console.log(e)
@@ -177,6 +174,7 @@ render() {
     return(
       <Fragment>
       <div className="form">
+      {this.showLoading()}
       {this.redirect()}
 
 <table class="issuelist">
@@ -190,7 +188,7 @@ render() {
 </colgroup>
 <thead>
       <tr>
-          <th style={{ width: '250px', height: '50px' }}>Tytuł</th>
+          <th>Tytuł</th>
           <th>Tagi</th>
           <th>Użytkownik</th>
           <th>Data modyfikacji</th>
