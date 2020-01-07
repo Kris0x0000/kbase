@@ -119,7 +119,34 @@ limitString(txt) {
 }
 }
 
-renderTable(res) {
+
+
+renderTableRows(res) {
+
+  let table = <table class="issuelist">
+  <colgroup>
+    <col style={{ width: '30%'}}/>
+    <col style={{ width: '25%'}}/>
+    <col style={{ width: '10%'}}/>
+    <col style={{ width: '10%'}}/>
+    <col style={{ width: '10%'}}/>
+
+  </colgroup>
+  <thead>
+        <tr>
+            <th>Tytuł</th>
+            <th>Tagi</th>
+            <th>Użytkownik</th>
+            <th>Data modyfikacji</th>
+            <th>Opcje</th>
+        </tr>
+    </thead>
+  <tbody>
+  {this.state.table}
+  </tbody>
+  </table>;
+
+
   if(res) {
   let tab = res.data.map((item)=>
 
@@ -158,7 +185,7 @@ fetchData(tags) {
   axios.post(conf.api_url_base+'/api/issue/getIssueByTag', {tags: tags}, { withCredentials: true })
   .then(res=>{
     this.setState({is_loading_set: false});
-    this.renderTable(res);
+    this.renderTableRows(res);
 
   })
   .catch((e)=>{console.log(e)
@@ -171,34 +198,36 @@ fetchData(tags) {
 
 render() {
 
+  let table = <table class="issuelist">
+  <colgroup>
+    <col style={{ width: '30%'}}/>
+    <col style={{ width: '25%'}}/>
+    <col style={{ width: '10%'}}/>
+    <col style={{ width: '10%'}}/>
+    <col style={{ width: '10%'}}/>
+
+  </colgroup>
+  <thead>
+        <tr>
+            <th>Tytuł</th>
+            <th>Tagi</th>
+            <th>Użytkownik</th>
+            <th>Data modyfikacji</th>
+            <th>Opcje</th>
+        </tr>
+    </thead>
+  <tbody>
+  {this.state.table}
+  </tbody>
+  </table>;
+
     return(
       <Fragment>
       <div className="form">
       {this.showLoading()}
       {this.redirect()}
+{this.state.table.length>0? table : null}
 
-<table class="issuelist">
-<colgroup>
-  <col style={{ width: '30%'}}/>
-  <col style={{ width: '25%'}}/>
-  <col style={{ width: '10%'}}/>
-  <col style={{ width: '10%'}}/>
-  <col style={{ width: '10%'}}/>
-
-</colgroup>
-<thead>
-      <tr>
-          <th>Tytuł</th>
-          <th>Tagi</th>
-          <th>Użytkownik</th>
-          <th>Data modyfikacji</th>
-          <th>Opcje</th>
-      </tr>
-  </thead>
-<tbody>
-{this.state.table}
-</tbody>
-</table>
 </div>
 </Fragment>
     );

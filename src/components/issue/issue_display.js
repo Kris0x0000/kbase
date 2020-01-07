@@ -34,7 +34,7 @@ this.setState({search_tags: this.props.location.state.search_tags});
   axios.post(conf.api_url_base+'/api/issue/getIssueById', {id: this.props.match.params.id}, { withCredentials: true })
     .then(res=>{
       console.log(res);
-      this.setState({body: res.data.body, id: this.props.match.params.id});
+      this.setState({body: res.data.body, id: this.props.match.params.id, title: res.data.title});
     })
     .catch(e=>{console.log(e)});
 }
@@ -82,7 +82,11 @@ setRedirection(id, path) {
 <Navi />
     <div id="container">
     {this.isAuthenticated()}
-    {this.displayHTML(this.state.body)}
+    <h2>
+    {this.displayHTML(this.state.title)}
+    </h2>
+    <br /><br />
+    {this.displayHTML(this.state.body)}<br /><br />
     {this.redirect()}
         <br /><br />
 <Grid container alignItems="flex-start" justify="flex-end" direction="row">

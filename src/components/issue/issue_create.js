@@ -15,6 +15,7 @@ import Snackbar from '@material-ui/core/Snackbar';
 import ArrowBackIcon from '@material-ui/icons/ArrowBack';
 import Navi from '../../components/navi/navi';
 import { CircularProgress } from '@material-ui/core';
+import { Chip } from '@material-ui/core';
 
 
 
@@ -212,6 +213,13 @@ redirect() {
                id="tags-standard"
                options={this.state.all_tags}
                getOptionLabel={option => option}
+
+               renderTags={(value, getTagProps) =>
+                 value.map((option, index) => (
+                   <Chip  variant="outlined" label={option} color="primary" {...getTagProps({ index })} />
+                 ))
+               }
+
 
                renderInput={params => (
 

@@ -8,6 +8,7 @@ import { Autocomplete } from '@material-ui/lab';
 import ShowIssues from './show_issues.js';
 import { CircularProgress } from '@material-ui/core';
 import Navi from '../../components/navi/navi';
+import { Chip } from '@material-ui/core';
 
 
 class Issue extends Component {
@@ -87,13 +88,20 @@ class Issue extends Component {
       <div id="autocomplete">
       {this.showLoading()}
                   <Autocomplete
-
+                    
                          multiple
+
                          onChange={(event, value) => this.handleAutocompleteChange(event, value)}
                          id="tags-standard"
                          loadingText="Ładowanie..."
                          options={this.state.all_tags}
                          getOptionLabel={option => option}
+
+                         renderTags={(value, getTagProps) =>
+                           value.map((option, index) => (
+                             <Chip  variant="outlined" label={option} color="primary" style={{colorPrimary: 'green'}} {...getTagProps({ index })} />
+                           ))
+                         }
 
                          renderInput={params => (
 
@@ -105,6 +113,8 @@ class Issue extends Component {
                              fullWidth
                            />
                          )}
+
+
                        />
           <br /><br /><br /><br />
             </div>
