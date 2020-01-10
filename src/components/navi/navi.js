@@ -15,6 +15,18 @@ class Navi extends Component {
     };
   }
 
+  componentDidMount() {
+    ///modyfikacja
+
+      axios.post(conf.api_url_base+'/api/user/isadmin', {}, { withCredentials: true })
+        .then(res=>{
+          console.log("200");
+
+        })
+        .catch(e=>{console.log(e.response.status)});
+
+  }
+
   redirect() {
     if(this.state.redirection_path !== '') {
       if(this.state.redirection_path === 'home') {

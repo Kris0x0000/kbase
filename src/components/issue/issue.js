@@ -9,7 +9,15 @@ import ShowIssues from './show_issues.js';
 import { CircularProgress } from '@material-ui/core';
 import Navi from '../../components/navi/navi';
 import { Chip } from '@material-ui/core';
+import { createMuiTheme } from '@material-ui/core/styles';
+import blue from '@material-ui/core/colors/blue';
+import { ThemeProvider } from '@material-ui/styles';
 
+const theme = createMuiTheme({
+  palette: {
+    primary: blue,
+  },
+});
 
 class Issue extends Component {
 
@@ -29,6 +37,7 @@ class Issue extends Component {
       is_loading_set: false
     };
   }
+
 
 
   componentDidMount() {
@@ -87,8 +96,9 @@ class Issue extends Component {
       {this.isAuthenticated()}
       <div id="autocomplete">
       {this.showLoading()}
+      <ThemeProvider theme={theme}>
                   <Autocomplete
-                    
+
                          multiple
 
                          onChange={(event, value) => this.handleAutocompleteChange(event, value)}
@@ -99,7 +109,9 @@ class Issue extends Component {
 
                          renderTags={(value, getTagProps) =>
                            value.map((option, index) => (
+
                              <Chip  variant="outlined" label={option} color="primary" style={{colorPrimary: 'green'}} {...getTagProps({ index })} />
+
                            ))
                          }
 
@@ -113,9 +125,8 @@ class Issue extends Component {
                              fullWidth
                            />
                          )}
-
-
                        />
+                       </ThemeProvider>
           <br /><br /><br /><br />
             </div>
           <ShowIssues search_tags={this.state.search_tags} prev_path={this.props.location} />

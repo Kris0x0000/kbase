@@ -9,6 +9,15 @@ import DeleteForeverIcon from '@material-ui/icons/DeleteForever';
 import VisibilityIcon from '@material-ui/icons/Visibility';
 import { CircularProgress } from '@material-ui/core';
 import { Chip } from '@material-ui/core';
+import { createMuiTheme } from '@material-ui/core/styles';
+import blue from '@material-ui/core/colors/blue';
+import { ThemeProvider } from '@material-ui/styles';
+
+const theme = createMuiTheme({
+  palette: {
+    primary: blue,
+  },
+});
 
 
 class ShowIssues extends Component {
@@ -23,45 +32,39 @@ class ShowIssues extends Component {
       search_tags: '',
       all_tags: '',
       is_loading_set: false,
-      is_authenticated: true
+      is_authenticated: true,
+      once: false
     };
   }
 
 
   componentDidMount(prevProps) {
-      console.log("this.props.location: ", this.props.prev_path);
-console.log("this.props.search_tags : ",this.props.search_tags);
-if(this.props) {
-console.log(this.props.search_tags);
-}
-//if(prevProps.search_tags != this.props.search_tags ) {
-console.log("prevs...");
+
+
 this.setState({search_tags: this.props.search_tags, prev_path: this.props.prev_path});
-  this.fetchData(this.props.search_tags);
+  //this.fetchData(this.props.search_tags);
 //
 axios.post(conf.api_url_base+'/api/issue/getAllTags',{tag: ''}, { withCredentials: true })
 .then(res=>{
-console.log(res);
-
+  this.setState({is_authenticated: true})
   this.setState((state,props)=>{return {all_tags: res}});
 })
 .catch((e)=>{console.log('error: ', e);
 if( e.response.status === 401) {
-      this.setState({isauthenticated: false})
+      this.setState({is_authenticated: false})
   }
 });
 
   }
 
-  componentDidUpdate(prevProps) {
+  componentDidUpdate(prevProps, prevState) {
 
+      if(prevState.search_tags !== this.props.search_tags ) {
 
-      if(prevProps.search_tags !== this.props.search_tags ) {
-          this.setState({search_tags: this.props.search_tags, prev_path: this.props.prev_path});
-console.log("prevs...2");
-/// ! sprawdzić
-        this.setState({search_tags: this.props.search_tags});
+        console.log("prevState.search_tags !== this.props.search_tags");
+
         this.fetchData(this.props.search_tags);
+          this.setState({search_tags: this.props.search_tags, prev_path: this.props.prev_path});
       }
   }
 
@@ -73,10 +76,11 @@ console.log("prevs...2");
     axios.post(conf.api_url_base+'/api/issue/delete', {id: item}, { withCredentials: true })
     .then(res=>{
         this.fetchData(this.props.search_tags);
+          this.setState({is_authenticated: true})
     })
     .catch((e)=>{console.log('error: ', e);
     if( e.response.status === 401) {
-      this.setState({isauthenticated: false})
+     this.setState({is_authenticated: false});
     }
   });
 
@@ -107,7 +111,7 @@ console.log("prevs...2");
 
 showLoading() {
   if(this.state.is_loading_set) {
-    return <CircularProgress />;
+    return <CircularProgress size={64} />;
   }
 }
 
@@ -123,7 +127,7 @@ limitString(txt) {
 
 renderTableRows(res) {
 
-  let table = <table class="issuelist">
+  let table = <table className="issuelist">
   <colgroup>
     <col style={{ width: '30%'}}/>
     <col style={{ width: '25%'}}/>
@@ -148,34 +152,37 @@ renderTableRows(res) {
 
 
   if(res) {
+
   let tab = res.data.map((item)=>
 
   <tr key={item._id}>
     <td>{this.limitString(item.title)}</td>
-    <td>{item.tags.map((element)=><Fragment><Chip label={element}/> </Fragment>)}</td>
+    <td>{item.tags.map((element)=><Fragment><Chip variant="outlined" label={element}/> </Fragment>)}</td>
     <td>{item.username}</td>
     <td>{getTime(item.timestamp)}</td>
     <td>
-    <IconButton onClick={()=>this.setRedirection(item._id, 'edit')}>
-       <EditIcon/>
+<ThemeProvider theme={theme}>
+    <IconButton color="primary" onClick={()=>this.setRedirection(item._id, 'edit')}>
+    <EditIcon/>
     </IconButton>
-    <IconButton onClick={()=>this.deleteItem(item._id)}>
+    <IconButton color="primary" onClick={()=>this.deleteItem(item._id)}>
        <DeleteForeverIcon/>
     </IconButton>
-    <IconButton onClick={()=>this.setRedirection(item._id, 'display')}>
+    <IconButton color="primary" onClick={()=>this.setRedirection(item._id, 'display')}>
     <VisibilityIcon/>
     </IconButton>
+</ThemeProvider>
     </td>
   </tr>);
 
-  console.log(tab);
+
 
 this.setState((state,props)=>{return {table: tab}});
   }
 }
 
 isAuthenticated() {
-  if(!this.state.isauthenticated) {
+  if(!this.state.is_authenticated) {
     return (<Redirect to={{ pathname: "/login" }} />);
   }
 }
@@ -190,7 +197,8 @@ fetchData(tags) {
   })
   .catch((e)=>{console.log(e)
     if( e.response.status === 401) {
-      this.setState({isauthenticated: false})
+     this.setState({is_authenticated: false});
+
     }
   });
 
@@ -198,7 +206,7 @@ fetchData(tags) {
 
 render() {
 
-  let table = <table class="issuelist">
+  let table = <table className="issuelist">
   <colgroup>
     <col style={{ width: '30%'}}/>
     <col style={{ width: '25%'}}/>
@@ -223,11 +231,12 @@ render() {
 
     return(
       <Fragment>
+      <div id="loading">{this.showLoading()}</div>
       <div className="form">
-      {this.showLoading()}
+
       {this.redirect()}
 {this.state.table.length>0? table : null}
-
+{this.isAuthenticated()}
 </div>
 </Fragment>
     );
