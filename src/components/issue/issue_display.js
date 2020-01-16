@@ -1,6 +1,6 @@
 import React, { Component, Fragment } from 'react';
 import axios from 'axios';
-import './issue.css';
+import '../../global.css';
 import 'react-quill/dist/quill.snow.css';
 import * as conf from '../../../src/conf.js';
 import { Redirect } from 'react-router-dom';

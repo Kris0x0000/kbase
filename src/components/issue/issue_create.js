@@ -10,12 +10,23 @@ import { Grid } from '@material-ui/core';
 import { IconButton } from '@material-ui/core';
 import { Autocomplete } from '@material-ui/lab';
 import DoneIcon from '@material-ui/icons/Done';
-import './issue.css';
+import '../../global.css';
 import Snackbar from '@material-ui/core/Snackbar';
 import ArrowBackIcon from '@material-ui/icons/ArrowBack';
 import Navi from '../../components/navi/navi';
 import { CircularProgress } from '@material-ui/core';
 import { Chip } from '@material-ui/core';
+import { SnackbarContent } from '@material-ui/core';
+import { createMuiTheme } from '@material-ui/core/styles';
+import blue from '@material-ui/core/colors/blue';
+import { ThemeProvider } from '@material-ui/styles';
+
+
+const theme = createMuiTheme({
+  palette: {
+    primary: blue,
+  },
+});
 
 
 
@@ -35,10 +46,10 @@ class IssueCreate extends Component {
         isauthenticated: true,
         prev_path: '',
         go_back: false,
-        to_many_tags: false,
-        show_warning_too_many_tags: false,
+        show_warning: false,
         accepted: false,
-        is_loading_set: false
+        is_loading_set: false,
+        warning_body:''
       };
       this.handleChange = this.handleChange.bind(this);
 
@@ -107,16 +118,21 @@ handleChange(value) {
 
 submit(option) {
 
-if(!(option !== 'accept')) {
+if(option === 'accept') {
   if(this.state.editmode) {
 
 this.setState({is_loading_set: true});
   axios.post(conf.api_url_base+'/api/issue/edit', {title: this.state.title, body: this.state.body, tags: this.state.tags, id: this.state.id }, { withCredentials: true })
     .then(res=>{
-
-      this.setState({is_loading_set: false});
+console.log(res);
+      //this.setState({is_loading_set: false});
+      this.setState({go_back: true});
     })
-    .catch(e=>{console.log(e)});
+    .catch(e=>{console.log(e)
+      if(e.response.status === 405) {
+        this.setState({show_warning: true, warning_body: "Nie możesz edytować wpisu którego nie jesteś właścicielem"});
+      }
+    });
 
   } else {
 
@@ -125,26 +141,26 @@ this.setState({is_loading_set: true});
   .then(res=>{
     this.setState({is_loading_set: false});
     if(res.status === 200) {
-      this.setState((state, props)=>{
-        return {isredirected: true};
-      });
+    this.setState({go_back: true});
     }
     console.log(res.status)})
   .catch((e)=>{console.log(e)});
   } //else
+} else {
+  this.setState({go_back: true});
 }
 
-  this.setState({go_back: true});
 }
 
 
 handleAutocompleteChange(event, value) {
 
-  if(value.length > 5) {
-    this.setState({to_many_tags: true, show_warning_too_many_tags: true});
+  if(value.length > 6) {
+    value = this.removeLastElement(value);
+    this.setState({to_many_tags: true, show_warning: true, warning_body: "Nie możesz ustawić więcej niż 6 tagów"});
     setTimeout(()=>{
-        this.setState({show_warning_too_many_tags: false});
-    }, 1000);
+        this.setState({show_warning: false});
+    }, 2000);
   } else {
     this.setState({to_many_tags: false});
   }
@@ -153,11 +169,12 @@ handleAutocompleteChange(event, value) {
     console.log(this.state.tags);
 }
 
-removeLastElement() {
+removeLastElement(arr) {
 
-  let arr = this.state.tags;
-    arr.splice(arr.length, 1);
-    this.setState({tags: arr});
+console.log(arr.length);
+let arr2 = arr.splice(arr.length -1, 1);
+console.log("removed: ", arr2);
+    return arr;
 };
 
 
@@ -190,24 +207,25 @@ redirect() {
     <Fragment>
     <Navi />
     {this.showLoading()}
+    <ThemeProvider theme={theme}>
     <Snackbar variant="warning"
-    open={this.state.show_warning_too_many_tags}
-    message="Maksymalna liczba tagów..."
-    anchorOrigin={{ vertical: 'top', horizontal: 'center' }}
-
-    />
+    open={this.state.show_warning}
+    anchorOrigin={{ vertical: 'top', horizontal: 'center' }} >
+      <SnackbarContent message={this.state.warning_body}/>
+    </Snackbar>
+    </ThemeProvider>
     {this.redirect()}
 {this.isAuthenticated()}
     <div id="container">
-        <TextField fullWidth={true} id="title" label="title" type="text" variant="outlined" value={this.state.title} onChange={(r)=>this.handletitle(r.target.value)} />
+        <TextField fullWidth={true} autoComplete="off" id="title" label="title" type="text" variant="outlined" value={this.state.title} onChange={(r)=>this.handletitle(r.target.value)} />
         <br /><br />
-        <ReactQuill value={this.state.body} onChange={this.handleChange} />
+        <ReactQuill value={this.state.body} onChange={this.handleChange} color="primary" />
         <br /><br />
 
         <Autocomplete
                multiple
                freeSolo
-               disabled={this.state.to_many_tags}
+
                value={this.state.tags}
                onChange={(event, value) => this.handleAutocompleteChange(event, value)}
                id="tags-standard"
@@ -225,7 +243,7 @@ redirect() {
 
                  <TextField
                    {...params}
-                   variant="standard"
+                   variant="outlined"
                    label="Wybierz tagi..."
 
                    fullWidth

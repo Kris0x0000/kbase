@@ -2,7 +2,7 @@ import React, { Component, Fragment } from 'react';
 import axios from 'axios';
 import { Redirect } from 'react-router-dom';
 import * as conf from '../../../src/conf.js';
-import './issue.css';
+import '../../global.css';
 import EditIcon from '@material-ui/icons/Edit';
 import { IconButton } from '@material-ui/core';
 import DeleteForeverIcon from '@material-ui/icons/DeleteForever';
@@ -12,10 +12,14 @@ import { Chip } from '@material-ui/core';
 import { createMuiTheme } from '@material-ui/core/styles';
 import blue from '@material-ui/core/colors/blue';
 import { ThemeProvider } from '@material-ui/styles';
+import Snackbar from '@material-ui/core/Snackbar';
+import { SnackbarContent } from '@material-ui/core';
+
 
 const theme = createMuiTheme({
   palette: {
     primary: blue,
+
   },
 });
 
@@ -33,7 +37,9 @@ class ShowIssues extends Component {
       all_tags: '',
       is_loading_set: false,
       is_authenticated: true,
-      once: false
+      once: false,
+      show_warning: false,
+      warning_body: ''
     };
   }
 
@@ -82,32 +88,59 @@ if( e.response.status === 401) {
     if( e.response.status === 401) {
      this.setState({is_authenticated: false});
     }
+    if( e.response.status === 405) {
+     this.setState({show_warning: true, warning_body: "Nie możesz usunąć tego wpisu ponieważ nie jesteś jego właścicielem."});
+     setTimeout(()=>{
+         this.setState({show_warning: false});
+     }, 2000);
+    }
+
   });
 
   }
 
 
+
   redirect() {
-    if(this.state.redirection_path !== '') {
+
       if(this.state.redirection_path === 'edit') {
-        console.log("this.props.location", this.props.location);
-        return <Redirect to={{ pathname: "/issue/edit/"+this.state.id, state: {prev_path: this.state.prev_path, search_tags: this.props.search_tags} }} />;
-      }
+               return (<Redirect to={{ pathname: "/issue/edit/"+this.state.id, state: {prev_path: this.state.prev_path, search_tags: this.props.search_tags} }} />);
+            }
+
       if(this.state.redirection_path === 'display') {
-        console.log('display: ',this.state.search_tags)
         return <Redirect to={{ pathname: "/issue/display/"+this.state.id, state: { search_tags: this.state.search_tags } }} />;
       }
-    }
+
   }
 
   setRedirection(id, path) {
-    this.setState((state,props)=>{
-      return {redirection_path: path,
-        id: id
-      }
+
+    if(path === 'edit') {
+
+    axios.post(conf.api_url_base+'/api/issue/isOwner', {id: id}, { withCredentials: true })
+      .then(res=>{
+        console.log(res);
+        if(res.status === 200) {
+        this.setState({redirection_path: path, id: id});
+        }
+      })
+      .catch(e=>{
+        console.log(e);
+        if(e.response.status === 405) {
+          this.setState({show_warning: true, warning_body: "Nie możesz edytować tego wpisu ponieważ nie jesteś jego właścicielem", redirection_path:''});
+          setTimeout(()=>{
+              this.setState({show_warning: false});
+          }, 2000);
+        }
+      });
+
     }
-);
-}
+
+    if(path === 'display') {
+      this.setState({redirection_path: path, id: id});
+    }
+  }
+
 
 showLoading() {
   if(this.state.is_loading_set) {
@@ -127,30 +160,6 @@ limitString(txt) {
 
 renderTableRows(res) {
 
-  let table = <table className="issuelist">
-  <colgroup>
-    <col style={{ width: '30%'}}/>
-    <col style={{ width: '25%'}}/>
-    <col style={{ width: '10%'}}/>
-    <col style={{ width: '10%'}}/>
-    <col style={{ width: '10%'}}/>
-
-  </colgroup>
-  <thead>
-        <tr>
-            <th>Tytuł</th>
-            <th>Tagi</th>
-            <th>Użytkownik</th>
-            <th>Data modyfikacji</th>
-            <th>Opcje</th>
-        </tr>
-    </thead>
-  <tbody>
-  {this.state.table}
-  </tbody>
-  </table>;
-
-
   if(res) {
 
   let tab = res.data.map((item)=>
@@ -162,6 +171,7 @@ renderTableRows(res) {
     <td>{getTime(item.timestamp)}</td>
     <td>
 <ThemeProvider theme={theme}>
+
     <IconButton color="primary" onClick={()=>this.setRedirection(item._id, 'edit')}>
     <EditIcon/>
     </IconButton>
@@ -174,8 +184,6 @@ renderTableRows(res) {
 </ThemeProvider>
     </td>
   </tr>);
-
-
 
 this.setState((state,props)=>{return {table: tab}});
   }
@@ -191,7 +199,7 @@ fetchData(tags) {
   this.setState({is_loading_set: true});
   axios.post(conf.api_url_base+'/api/issue/getIssueByTag', {tags: tags}, { withCredentials: true })
   .then(res=>{
-    this.setState({is_loading_set: false});
+    this.setState({object: res.data, is_loading_set: false});
     this.renderTableRows(res);
 
   })
@@ -231,6 +239,14 @@ render() {
 
     return(
       <Fragment>
+
+
+      <Snackbar variant="warning"
+      open={this.state.show_warning}
+      anchorOrigin={{ vertical: 'top', horizontal: 'center' }}
+      >
+      <SnackbarContent message={this.state.warning_body} style={{backgroundColor:'#cc0000'}}/>
+      </Snackbar>
       <div id="loading">{this.showLoading()}</div>
       <div className="form">
 

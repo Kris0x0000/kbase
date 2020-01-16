@@ -3,7 +3,7 @@ import {TextField } from '@material-ui/core';
 import axios from 'axios';
 import { Redirect } from 'react-router-dom';
 import * as conf from '../../../src/conf.js';
-import './issue.css';
+import '../../global.css';
 import { Autocomplete } from '@material-ui/lab';
 import ShowIssues from './show_issues.js';
 import { CircularProgress } from '@material-ui/core';
@@ -12,12 +12,19 @@ import { Chip } from '@material-ui/core';
 import { createMuiTheme } from '@material-ui/core/styles';
 import blue from '@material-ui/core/colors/blue';
 import { ThemeProvider } from '@material-ui/styles';
+import matchSorter from 'match-sorter';
+import Header from '../header';
+import { Grid } from '@material-ui/core';
 
 const theme = createMuiTheme({
   palette: {
     primary: blue,
   },
 });
+
+const filterOptions = (options, { inputValue }) =>
+  matchSorter(options, inputValue, {threshold: matchSorter.rankings.STRING_CASE_ACRONYM});
+
 
 class Issue extends Component {
 
@@ -41,8 +48,6 @@ class Issue extends Component {
 
 
   componentDidMount() {
-
-
     if(this.props.location.state) {
       console.log("this.props.location.state: ",this.props.location.state);
       this.setState({search_tags: this.props.location.state.search_tags})
@@ -92,7 +97,12 @@ class Issue extends Component {
     render() {
 
     return (<Fragment>
-      <Navi />
+      <Grid container alignItems="flex-start" justify="flex-start" direction="row">
+      <Navi /><Header/>
+      </Grid>
+
+      <br/>
+
       {this.isAuthenticated()}
       <div id="autocomplete">
       {this.showLoading()}
@@ -100,18 +110,15 @@ class Issue extends Component {
                   <Autocomplete
 
                          multiple
-
+                         filterOptions={filterOptions}
                          onChange={(event, value) => this.handleAutocompleteChange(event, value)}
                          id="tags-standard"
                          loadingText="Ładowanie..."
                          options={this.state.all_tags}
                          getOptionLabel={option => option}
-
                          renderTags={(value, getTagProps) =>
                            value.map((option, index) => (
-
                              <Chip  variant="outlined" label={option} color="primary" style={{colorPrimary: 'green'}} {...getTagProps({ index })} />
-
                            ))
                          }
 
@@ -119,9 +126,9 @@ class Issue extends Component {
 
                            <TextField
                              {...params}
-                             variant="standard"
+                             variant="outlined"
                              label="Wybierz tagi..."
-
+                             color="primary"
                              fullWidth
                            />
                          )}

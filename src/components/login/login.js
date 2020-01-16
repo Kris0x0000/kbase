@@ -3,8 +3,20 @@ import { Button, TextField } from '@material-ui/core';
 import axios from 'axios';
 import { Redirect } from 'react-router-dom';
 import * as conf from '../../../src/conf.js';
-import './login.css';
+import '../../global.css';
+import { Grid } from '@material-ui/core';
+import { IconButton } from '@material-ui/core';
+import DoneIcon from '@material-ui/icons/Done';
+import { createMuiTheme } from '@material-ui/core/styles';
+import blue from '@material-ui/core/colors/blue';
+import { ThemeProvider } from '@material-ui/styles';
+import Header from '../header';
 
+const theme = createMuiTheme({
+  palette: {
+    primary: blue,
+  },
+});
 
 class Login extends Component {
 
@@ -59,7 +71,7 @@ class Login extends Component {
   render() {
     return (
       <Fragment>
-      <main>
+      <Header/>
       <div id="loginform">
       {this.redirect()}
 
@@ -67,9 +79,16 @@ class Login extends Component {
       <br /><br />
       <TextField id="Login" label="Password" type="password" variant="outlined" onChange={(r)=>this.handlePassword(r.target.value)} />
       <br /><br />
-      <Button variant="outlined" onClick={()=>{this.submit()}}>Submit</Button>
+
+<Grid container alignItems="center" justify="center" direction="row">
+<ThemeProvider theme={theme} >
+      <IconButton color="primary" onClick={()=>{this.submit()}}>
+         <DoneIcon/>
+      </IconButton>
+      </ThemeProvider>
+</Grid>
       </div>
-      </main>
+
       </Fragment>
     );
   }
