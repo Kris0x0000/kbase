@@ -9,18 +9,10 @@ import ShowIssues from './show_issues.js';
 import { CircularProgress } from '@material-ui/core';
 import Navi from '../../components/navi/navi';
 import { Chip } from '@material-ui/core';
-import { createMuiTheme } from '@material-ui/core/styles';
-import blue from '@material-ui/core/colors/blue';
-import { ThemeProvider } from '@material-ui/styles';
 import matchSorter from 'match-sorter';
 import Header from '../header';
 import { Grid } from '@material-ui/core';
 
-const theme = createMuiTheme({
-  palette: {
-    primary: blue,
-  },
-});
 
 const filterOptions = (options, { inputValue }) =>
   matchSorter(options, inputValue, {threshold: matchSorter.rankings.STRING_CASE_ACRONYM});
@@ -106,7 +98,7 @@ class Issue extends Component {
       {this.isAuthenticated()}
       <div id="autocomplete">
       {this.showLoading()}
-      <ThemeProvider theme={theme}>
+
                   <Autocomplete
 
                          multiple
@@ -133,7 +125,7 @@ class Issue extends Component {
                            />
                          )}
                        />
-                       </ThemeProvider>
+                       
           <br /><br /><br /><br />
             </div>
           <ShowIssues search_tags={this.state.search_tags} prev_path={this.props.location} />

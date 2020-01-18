@@ -13,16 +13,7 @@ import { CircularProgress } from '@material-ui/core';
 import { SnackbarContent } from '@material-ui/core';
 import '../../global.css';
 import Switch from '@material-ui/core/Switch';
-import { createMuiTheme } from '@material-ui/core/styles';
-import blue from '@material-ui/core/colors/blue';
-import { ThemeProvider } from '@material-ui/styles';
 
-
-const theme = createMuiTheme({
-  palette: {
-    primary: blue,
-  },
-});
 
 
 class UserCreate extends Component {
@@ -183,14 +174,14 @@ submit(option) {
    />
    <br/><br/>
    <Grid container alignItems="flex-start" justify="flex-end" direction="row">
-   <ThemeProvider theme={theme}>
-   <IconButton color="primary" onClick={()=>{this.submit('decline')}}>
+
+   <IconButton color="secondary" onClick={()=>{this.submit('decline')}}>
       <ArrowBackIcon/>
    </IconButton>
    <IconButton color="primary" onClick={()=>{this.submit('accept')}}>
       <DoneIcon/>
    </IconButton>
-   </ThemeProvider>
+
         <br />
            </Grid>
         </div>

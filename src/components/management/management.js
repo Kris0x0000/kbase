@@ -10,20 +10,13 @@ import DeleteForeverIcon from '@material-ui/icons/DeleteForever';
 import VisibilityIcon from '@material-ui/icons/Visibility';
 import { CircularProgress } from '@material-ui/core';
 import { Chip } from '@material-ui/core';
-import { createMuiTheme } from '@material-ui/core/styles';
-import blue from '@material-ui/core/colors/blue';
-import { ThemeProvider } from '@material-ui/styles';
 import Navi from '../../components/navi/navi';
 import Checkbox from '@material-ui/core/Checkbox';
 import AddCircleIcon from '@material-ui/icons/AddCircle';
 import { Grid } from '@material-ui/core';
 
 
-const theme = createMuiTheme({
-  palette: {
-    primary: blue,
-  },
-});
+
 
 class Management extends Component {
 
@@ -65,14 +58,14 @@ class Management extends Component {
   />
       </td>
       <td>
-  <ThemeProvider theme={theme}>
+
   <IconButton color="primary" onClick={()=>this.setRedirection(item._id, 'edit')}>
   <EditIcon/>
   </IconButton>
-        <IconButton color="primary" onClick={()=>this.deleteItem(item._id)}>
+        <IconButton color="secondary" onClick={()=>this.deleteItem(item._id)}>
          <DeleteForeverIcon/>
       </IconButton>
-  </ThemeProvider>
+
       </td>
     </tr>);
   this.setState((state,props)=>{return {table: tab}});
@@ -136,11 +129,11 @@ class Management extends Component {
 {this.state.table.length>0? table : null}
 
 <Grid container alignItems="flex-start" justify="flex-end" direction="row">
-<ThemeProvider theme={theme}>
+
       <IconButton color="primary" onClick={()=>this.setRedirection('','create')}>
        <AddCircleIcon/>
     </IconButton>
-</ThemeProvider>
+
 </Grid>
 </div>
 

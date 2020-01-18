@@ -7,16 +7,9 @@ import '../../global.css';
 import { Grid } from '@material-ui/core';
 import { IconButton } from '@material-ui/core';
 import DoneIcon from '@material-ui/icons/Done';
-import { createMuiTheme } from '@material-ui/core/styles';
-import blue from '@material-ui/core/colors/blue';
-import { ThemeProvider } from '@material-ui/styles';
 import Header from '../header';
 
-const theme = createMuiTheme({
-  palette: {
-    primary: blue,
-  },
-});
+
 
 class Login extends Component {
 
@@ -81,11 +74,11 @@ class Login extends Component {
       <br /><br />
 
 <Grid container alignItems="center" justify="center" direction="row">
-<ThemeProvider theme={theme} >
+
       <IconButton color="primary" onClick={()=>{this.submit()}}>
          <DoneIcon/>
       </IconButton>
-      </ThemeProvider>
+
 </Grid>
       </div>
 

@@ -54,7 +54,7 @@ createHTML(code) {
 }
 
 displayHTML(code) {
-  return <div dangerouslySetInnerHTML={this.createHTML(code)} />;
+  return <p dangerouslySetInnerHTML={this.createHTML(code)} />;
 }
 
 redirect() {
@@ -79,21 +79,38 @@ setRedirection(id, path) {
   render() {
   return (
     <Fragment>
-<Navi />
+    <Navi />
     <div id="container">
     {this.isAuthenticated()}
-    <h2>
-    {this.displayHTML(this.state.title)}
-    </h2>
-    <br /><br />
-    {this.displayHTML(this.state.body)}<br /><br />
+
+    <table>
+<thead>
+      <tr>
+      <th>
+      {this.displayHTML(this.state.title)}
+      </th>
+</tr>
+</thead>
+
+
+    <tbody>
+      <tr>
+      <td>
+        {this.displayHTML(this.state.body)}
+        </td>
+      </tr>
+    </tbody>
+    </table>
+  <br />
+
     {this.redirect()}
-        <br /><br />
+
+
 <Grid container alignItems="flex-start" justify="flex-end" direction="row">
-<IconButton onClick={()=>{this.setRedirection("back", 'back_to_search')}}>
+<IconButton color="secondary" onClick={()=>{this.setRedirection("back", 'back_to_search')}}>
    <ArrowBackIcon/>
 </IconButton>
-<IconButton onClick={()=>{this.setRedirection(this.state.id, 'edit')}}>
+<IconButton color="primary" onClick={()=>{this.setRedirection(this.state.id, 'edit')}}>
    <EditIcon/>
 </IconButton>
 

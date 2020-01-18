@@ -17,16 +17,6 @@ import Navi from '../../components/navi/navi';
 import { CircularProgress } from '@material-ui/core';
 import { Chip } from '@material-ui/core';
 import { SnackbarContent } from '@material-ui/core';
-import { createMuiTheme } from '@material-ui/core/styles';
-import blue from '@material-ui/core/colors/blue';
-import { ThemeProvider } from '@material-ui/styles';
-
-
-const theme = createMuiTheme({
-  palette: {
-    primary: blue,
-  },
-});
 
 
 
@@ -124,7 +114,6 @@ if(option === 'accept') {
 this.setState({is_loading_set: true});
   axios.post(conf.api_url_base+'/api/issue/edit', {title: this.state.title, body: this.state.body, tags: this.state.tags, id: this.state.id }, { withCredentials: true })
     .then(res=>{
-console.log(res);
       //this.setState({is_loading_set: false});
       this.setState({go_back: true});
     })
@@ -207,13 +196,13 @@ redirect() {
     <Fragment>
     <Navi />
     {this.showLoading()}
-    <ThemeProvider theme={theme}>
+
     <Snackbar variant="warning"
     open={this.state.show_warning}
     anchorOrigin={{ vertical: 'top', horizontal: 'center' }} >
       <SnackbarContent message={this.state.warning_body}/>
     </Snackbar>
-    </ThemeProvider>
+
     {this.redirect()}
 {this.isAuthenticated()}
     <div id="container">
@@ -252,10 +241,10 @@ redirect() {
              />
         <br />
 <Grid container alignItems="flex-start" justify="flex-end" direction="row">
-<IconButton onClick={()=>{this.submit('decline')}}>
+<IconButton color="secondary" onClick={()=>{this.submit('decline')}}>
    <ArrowBackIcon/>
 </IconButton>
-<IconButton onClick={()=>{this.submit('accept')}}>
+<IconButton color="primary" onClick={()=>{this.submit('accept')}}>
    <DoneIcon/>
 </IconButton>
 <br />

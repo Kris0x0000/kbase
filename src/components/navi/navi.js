@@ -6,19 +6,7 @@ import { IconButton } from '@material-ui/core';
 import HomeIcon from '@material-ui/icons/Home';
 import SettingsIcon from '@material-ui/icons/Settings';
 import '../../global.css';
-import { createMuiTheme } from '@material-ui/core/styles';
-import blue from '@material-ui/core/colors/blue';
-import orange from '@material-ui/core/colors/orange';
-import { ThemeProvider } from '@material-ui/styles';
 
-
-const theme = createMuiTheme({
-  palette: {
-    primary: {
-      main: '#90caf9',
-    }
-  },
-});
 
 
 class Navi extends Component {
@@ -75,13 +63,13 @@ class Navi extends Component {
       <Fragment>
 
       {this.redirect()}
-      <ThemeProvider theme={theme}>
+
       <IconButton color="primary" onClick={()=>this.setRedirection("home")}>
          <HomeIcon/>
       </IconButton>
 
         {this.settings()}
-        </ThemeProvider>
+    
       </Fragment>
     );
   }

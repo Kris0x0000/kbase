@@ -7,16 +7,7 @@ import SearchIcon from '@material-ui/icons/Search';
 import AddCircleIcon from '@material-ui/icons/AddCircle';
 import '../../global.css';
 import Header from '../header';
-import { createMuiTheme } from '@material-ui/core/styles';
-import blue from '@material-ui/core/colors/blue';
-import { ThemeProvider } from '@material-ui/styles';
-
-
-const theme = createMuiTheme({
-  palette: {
-    primary: blue,
-  },
-});
+import Tooltip from '@material-ui/core/Tooltip';
 
 
 
@@ -78,14 +69,17 @@ render() {
     {this.isAuthenticated()}
     {this.redirect()}
     <div id="home_icons">
-    <ThemeProvider theme={theme}>
+  <Tooltip title="Szukaj">
     <IconButton color="primary" onClick={()=>this.setRedirection("goSearch")}>
        <SearchIcon style={{fontSize: '128px'}}/>
     </IconButton>
+    </Tooltip>
+      <Tooltip title="Dodaj">
     <IconButton color="primary" onClick={()=>this.setRedirection("goCreate")}>
        <AddCircleIcon style={{fontSize: '128px'}}/>
     </IconButton>
-    </ThemeProvider>
+    </Tooltip>
+
     </div>
     </Fragment>
   );

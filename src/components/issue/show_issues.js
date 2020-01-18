@@ -9,19 +9,10 @@ import DeleteForeverIcon from '@material-ui/icons/DeleteForever';
 import VisibilityIcon from '@material-ui/icons/Visibility';
 import { CircularProgress } from '@material-ui/core';
 import { Chip } from '@material-ui/core';
-import { createMuiTheme } from '@material-ui/core/styles';
-import blue from '@material-ui/core/colors/blue';
-import { ThemeProvider } from '@material-ui/styles';
 import Snackbar from '@material-ui/core/Snackbar';
 import { SnackbarContent } from '@material-ui/core';
+import Tooltip from '@material-ui/core/Tooltip';
 
-
-const theme = createMuiTheme({
-  palette: {
-    primary: blue,
-
-  },
-});
 
 
 class ShowIssues extends Component {
@@ -167,21 +158,26 @@ renderTableRows(res) {
   <tr key={item._id}>
     <td>{this.limitString(item.title)}</td>
     <td>{item.tags.map((element)=><Fragment><Chip variant="outlined" label={element}/> </Fragment>)}</td>
-    <td>{item.username}</td>
+    <td>{item.owner}</td>
     <td>{getTime(item.timestamp)}</td>
     <td>
-<ThemeProvider theme={theme}>
+<Tooltip title="Usuń">
+    <IconButton color="secondary" onClick={()=>this.deleteItem(item._id)}>
+       <DeleteForeverIcon/>
+    </IconButton>
 
+    </Tooltip>
+    <Tooltip title="Edytuj">
     <IconButton color="primary" onClick={()=>this.setRedirection(item._id, 'edit')}>
     <EditIcon/>
     </IconButton>
-    <IconButton color="primary" onClick={()=>this.deleteItem(item._id)}>
-       <DeleteForeverIcon/>
-    </IconButton>
+    </Tooltip>
+
+<Tooltip title="Pokaż">
     <IconButton color="primary" onClick={()=>this.setRedirection(item._id, 'display')}>
     <VisibilityIcon/>
     </IconButton>
-</ThemeProvider>
+</Tooltip>
     </td>
   </tr>);
 
@@ -214,7 +210,7 @@ fetchData(tags) {
 
 render() {
 
-  let table = <table className="issuelist">
+  let table = <table id="issuelist">
   <colgroup>
     <col style={{ width: '30%'}}/>
     <col style={{ width: '25%'}}/>
