@@ -5,14 +5,31 @@ import * as serviceWorker from './serviceWorker';
 import {BrowserRouter as Router} from 'react-router-dom';
 import { createMuiTheme } from '@material-ui/core/styles';
 import blue from '@material-ui/core/colors/blue';
+import green from '@material-ui/core/colors/green';
 import { ThemeProvider } from '@material-ui/styles';
 
-
+const defaultTheme = createMuiTheme();
 const theme = createMuiTheme({
   palette: {
     primary: blue,
   },
-});
+  overrides: {
+
+    MuiOutlinedInput: { // Name of the component ⚛️ / style sheet
+          root: { // Name of the rule
+            "& $notchedOutline": {
+               borderColor: "#2196f3"
+             },
+             "&:hover $notchedOutline": {
+               borderColor: "#2196f3"
+             },
+             "&$focused $notchedOutline": {
+               borderColor: "#2196f3"
+             }
+
+          }
+        },
+}});
 
 
 ReactDOM.render((

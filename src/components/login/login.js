@@ -43,6 +43,14 @@ class Login extends Component {
     }
   }
 
+  onKeyPress = (e) => {
+           if (e.key === 'Enter') {
+             console.log('Enter key pressed');
+             this.submit();
+           }
+   }
+
+
   submit() {
 
     console.log(this.state.login);
@@ -62,20 +70,23 @@ class Login extends Component {
   }
 
   render() {
+    const { classes } = this.props;
+
     return (
       <Fragment>
       <Header/>
       <div id="loginform">
       {this.redirect()}
 
-      <TextField id="Login" label="Login" type="text" variant="outlined" onChange={(r)=>this.handleLogin(r.target.value)} />
+      <TextField  color="primary" autoFocus="true" id="Login" label="Login" type="text" variant="outlined" onChange={(r)=>this.handleLogin(r.target.value)} />
+
       <br /><br />
-      <TextField id="Login" label="Password" type="password" variant="outlined" onChange={(r)=>this.handlePassword(r.target.value)} />
+      <TextField id="Login" color="primary"  label="Password" type="password" variant="outlined" onChange={(r)=>this.handlePassword(r.target.value)} />
       <br /><br />
 
 <Grid container alignItems="center" justify="center" direction="row">
 
-      <IconButton color="primary" onClick={()=>{this.submit()}}>
+      <IconButton color="primary" onKeyPress={()=>{this.onKeyPress()}} onClick={()=>{this.submit()}}>
          <DoneIcon/>
       </IconButton>
 

@@ -24,7 +24,8 @@ render() {
           <Route path='/issue/edit/:id' component={IssueCreate}/>
           <Route exact path='/home' component={Home}/>
           <Route exact path='/management/main' component={Management}/>
-          <Route path='/management/user/create' component={UserCreate}/>
+          <Route exact path='/management/user/create' component={UserCreate}/>
+          <Route exact path='/management/user/edit/:id' component={UserCreate}/>
         </Switch>
     </Router>
   );

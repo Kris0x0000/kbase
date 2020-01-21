@@ -17,6 +17,7 @@ import Navi from '../../components/navi/navi';
 import { CircularProgress } from '@material-ui/core';
 import { Chip } from '@material-ui/core';
 import { SnackbarContent } from '@material-ui/core';
+import Header from '../header';
 
 
 
@@ -73,13 +74,14 @@ if(this.props.location.state) {
     this.setState({is_loading_set: true});
     axios.post(conf.api_url_base+'/api/issue/getIssueById', {id: this.props.match.params.id}, { withCredentials: true })
     .then(res=>{
+      console.log("res: ", res);
       this.setState({is_loading_set: false});
 
 
   this.setState({
-    title: res.data.title,
-    body: res.data.body,
-  tags: res.data.tags});
+    title: res.data[0].title,
+    body: res.data[0].body,
+    tags: res.data[0].tags});
     console.log("ddd", this.state.tags);
     })
     .catch((e)=>{console.log(e)});
@@ -194,7 +196,9 @@ redirect() {
 
   return (
     <Fragment>
-    <Navi />
+    <Grid container alignItems="flex-start" justify="flex-start" direction="row">
+    <Navi /><Header/>
+    </Grid><br/><br /><br />
     {this.showLoading()}
 
     <Snackbar variant="warning"
@@ -205,9 +209,10 @@ redirect() {
 
     {this.redirect()}
 {this.isAuthenticated()}
+
     <div id="container">
-        <TextField fullWidth={true} autoComplete="off" id="title" label="title" type="text" variant="outlined" value={this.state.title} onChange={(r)=>this.handletitle(r.target.value)} />
-        <br /><br />
+        <TextField fullWidth={true} autoComplete="off" id="title" label="Tytuł" type="text" variant="outlined" value={this.state.title} onChange={(r)=>this.handletitle(r.target.value)} />
+        <br /><br /><br />
         <ReactQuill value={this.state.body} onChange={this.handleChange} color="primary" />
         <br /><br />
 

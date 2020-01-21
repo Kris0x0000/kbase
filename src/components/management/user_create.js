@@ -23,7 +23,6 @@ class UserCreate extends Component {
       uname: '',
       password: '',
       password2: '',
-      isadmin: false,
       is_authenticated: true,
       error_password2:false,
       helper_password2: '',
@@ -33,11 +32,49 @@ class UserCreate extends Component {
       helper_password1: '',
       show_warning: false,
       warning_body: '',
+      prev_path: '',
+      is_redirected: false,
+      editmode: false,
+      is_admin: false,
+      id:'',
 
     };
   }
 
 componentDidMount() {
+
+  if(this.props.location.state) {
+    this.setState({prev_path: this.props.location.state.prev_path});
+  }
+
+
+  // if issue id in URL (/edit/id)
+  if(this.props.match.params.id) {
+  this.setState((state,props)=>{return {editmode: true, id: this.props.match.params.id}});
+
+  //this.setState({is_loading_set: true});
+  axios.post(conf.api_url_base+'/api/user/getUserById', {id: this.props.match.params.id}, { withCredentials: true })
+  .then(res=>{
+
+  this.setState({is_loading_set: false});
+  console.log("res", res);
+
+  this.setState({
+
+  uname: res.data.username,
+  password: res.data.password,
+  is_admin: res.data.is_admin,
+  res: res.data._id,
+});
+
+this.setState({password2: this.state.password});
+
+})
+  .catch((e)=>{console.log(e)});
+  }
+
+
+
   axios.post(conf.api_url_base+'/api/isauthenticated', {}, { withCredentials: true })
     .then(res=>{
       console.log("200");
@@ -60,25 +97,21 @@ isAuthenticated() {
 
 handleswitch(id, value) {
   if(id === 'is_admin') {
-
-
-    console.log("value:",value);
-    this.setState({isadmin: value});
+    this.setState({is_admin: value});
   }
 }
 
 
 handletextfield(id, data) {
-  setTimeout(()=>{
-
   if(id === 'uname') {
 
 if(!(data === '')) {
       axios.post(conf.api_url_base+'/api/user/getUserByName', {username: data}, { withCredentials: true })
         .then(res=>{
-          console.log(res);
-          if(res.data !== "") {
+          console.log(res.data._id, this.state.id);
+          if((res.data !== "") && (res.data._id !== this.state.id)) {
             this.setState({uname_helper: 'Podana nazwa użytkownika istnieje już w systemie.', error_uname: true});
+            this.setState({uname: data});
           } else {
             this.setState({uname_helper: '', error_uname: false});
             this.setState({uname: data});
@@ -89,8 +122,10 @@ if(!(data === '')) {
         });
       } else {
         this.setState({error_uname: true});
+        this.setState({uname: data});
       }
   }
+
 
   if( id === 'password') {
     if(data.length >= 8) {
@@ -100,38 +135,69 @@ if(!(data === '')) {
     } else {
       this.setState({error_password1: true});
       this.setState({helper_password1: 'hasło musi mieć minimum 8 znaków'});
+      this.setState({password: data});
     }
   }
+
 
   if(id === 'password2') {
     if(this.state.password !== data) {
         this.setState({error_password2: true});
         this.setState({helper_password2: 'hasła nie są zgodne'});
+        this.setState({password2: data});
     } else {
       this.setState({error_password2: false});
       this.setState({helper_password2: ''});
+      this.setState({password2: data});
     }
 
-  } else {
-    this.setState({password2: data});
   }
+}
 
-  }, 500);
+
+setRedirection(path) {
+  this.setState({prev_path: path, is_redirected: true});
+}
+
+
+redirect() {
+  if(this.state.is_redirected) {
+      return (<Redirect to={{pathname: this.state.prev_path}} />);
+  }
 }
 
 
 submit(option) {
+
+  setTimeout(()=>{
+
   if(option === 'accept') {
-    if((this.state.uname === '') || (this.state.password === '') || (this.state.password2 === '')){
-        this.setState({show_warning: true, warning_body: "Wypełnij wszyskie Pola."});
+
+    if((this.state.uname === '') || (this.state.password === '') || (this.state.password2 === '') || this.state.error_password1 || this.state.error_uname || this.state.error_password2){
+        this.setState({show_warning: true, warning_body: "Wypełnij prawidłowo wszyskie pola."});
         setTimeout(()=>{
           this.setState({show_warning: false, warning_body: ""});
         }, 2000);
     } else {
 
-  axios.post(conf.api_url_base+'/api/user/create',{username: this.state.uname, password: this.state.password2, is_admin: this.state.isadmin}, { withCredentials: true })
+if(this.state.editmode) {
+
+  console.log("editmode");
+  //this.setState({is_loading_set: true});
+  axios.post(conf.api_url_base+'/api/user/edit', {username: this.state.uname, password: this.state.password, is_admin: this.state.is_admin, id: this.state.id }, { withCredentials: true })
     .then(res=>{
-      console.log(res);
+      //this.setState({is_loading_set: false});
+      console.log("res::", res);
+      this.setRedirection('/management/main/');
+    })
+    .catch(e=>{console.log(e)
+    });
+
+
+} else {
+  axios.post(conf.api_url_base+'/api/user/create',{username: this.state.uname, password: this.state.password2, is_admin: this.state.is_admin}, { withCredentials: true })
+    .then(res=>{
+      this.setRedirection('/management/main/');
     })
     .catch(e=>{
       if( e.response.status === 401) {
@@ -140,7 +206,15 @@ submit(option) {
 
     });
 
-  }
+    }
+
+    }
+
+} //accept
+},500);
+
+  if(option === 'back') {
+    this.setRedirection('/management/main/');
   }
 }
 
@@ -149,6 +223,7 @@ submit(option) {
     return(
       <Fragment>
       {this.isAuthenticated()}
+      {this.redirect()}
       <Navi/>
       <Snackbar variant="warning"
       open={this.state.show_warning}
@@ -157,25 +232,26 @@ submit(option) {
       </Snackbar>
 
         <div id="container">
-        <h1>Dodawanie nowego użytkownika</h1>
-        <TextField fullWidth={true} autoComplete='off' error={this.state.error_uname} helperText={this.state.uname_helper} id="uname" label="nazwa użytkownika" type="text" variant="outlined" onChange={(r)=>this.handletextfield(r.target.id, r.target.value)} />
+        {(this.state.editmode)? <h1>Edycja użytkownika</h1> :<h1>Dodawanie nowego użytkownika</h1> }
+
+        <TextField  value={this.state.uname} fullWidth={true} autoComplete='off' error={this.state.error_uname} helperText={this.state.uname_helper} id="uname" label="nazwa użytkownika" type="text" variant="outlined" onChange={(r)=>this.handletextfield(r.target.id, r.target.value)} />
         <br/><br/>
-        <TextField  fullWidth={true} autoComplete="new-password" error={this.state.error_password1} helperText={this.state.helper_password1} id="password" label="hasło" type="password" variant="outlined" onChange={(r)=>this.handletextfield(r.target.id, r.target.value)} />
+        <TextField   value={this.state.password} fullWidth={true} autoComplete="new-password" error={this.state.error_password1} helperText={this.state.helper_password1} id="password" label="hasło" type="password" variant="outlined" onChange={(r)=>this.handletextfield(r.target.id, r.target.value)} />
         <br/><br/>
-        <TextField fullWidth={true} autoComplete="new-password" error={this.state.error_password2} helperText={this.state.helper_password2} id="password2" label="powtórz hasło" type="password" variant="outlined" onChange={(r)=>this.handletextfield(r.target.id, r.target.value)} />
+        <TextField  value={this.state.password2} fullWidth={true} autoComplete="new-password" error={this.state.error_password2} helperText={this.state.helper_password2} id="password2" label="powtórz hasło" type="password" variant="outlined" onChange={(r)=>this.handletextfield(r.target.id, r.target.value)} />
         <br/><br/>
         Administrator
         <Switch
         id="is_admin"
-     onChange={(r)=>this.handleswitch(r.target.id, r.target.checked)}
-     value={false}
+     onChange={(r)=>this.handleswitch(r.target.id, !this.state.is_admin)}
+     checked={this.state.is_admin}
      color="primary"
      inputProps={{ 'aria-label': 'primary checkbox' }}
    />
    <br/><br/>
    <Grid container alignItems="flex-start" justify="flex-end" direction="row">
 
-   <IconButton color="secondary" onClick={()=>{this.submit('decline')}}>
+   <IconButton color="secondary" onClick={()=>{this.submit('back')}}>
       <ArrowBackIcon/>
    </IconButton>
    <IconButton color="primary" onClick={()=>{this.submit('accept')}}>

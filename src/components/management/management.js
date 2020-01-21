@@ -43,6 +43,17 @@ class Management extends Component {
   }
 
 
+  fetchData() {
+    axios.post(conf.api_url_base+'/api/user/getAllUsers',{}, { withCredentials: true })
+      .then(res=>{
+        console.log(res);
+        //this.setState({users: res.data});
+        this.renderTableRows(res);
+      })
+      .catch(e=>{console.log(e)});
+  }
+
+
   renderTableRows(res) {
 
     if(res) {
@@ -53,6 +64,7 @@ class Management extends Component {
       <td>
       <Checkbox
     checked={item.is_admin}
+    disabled={true}
     color="primary"
     inputProps={{ 'aria-label': 'primary checkbox' }}
   />
@@ -72,6 +84,22 @@ class Management extends Component {
     }
   }
 
+  deleteItem(item) {
+
+    console.log('item._id');
+    console.log(item);
+    axios.post(conf.api_url_base+'/api/user/delete', {id: item}, { withCredentials: true })
+    .then(res=>{
+      console.log("res",res);
+        this.fetchData();
+          this.setState({is_authenticated: true})
+    })
+    .catch((e)=>{console.log('error: ', e);
+
+  });
+
+  }
+
 
 
   setRedirection(id, path) {
@@ -89,7 +117,7 @@ class Management extends Component {
   redirect() {
 
       if(this.state.redirection_path === 'edit') {
-               return (<Redirect to={{ pathname: "/user/edit/"+this.state.id, state: {prev_path: this.state.prev_path, search_tags: this.props.search_tags} }} />);
+               return (<Redirect to={{ pathname: "/management/user/edit/"+this.state.id, state: {prev_path: this.state.prev_path} }} />);
             }
 
       if(this.state.redirection_path === 'create') {
@@ -124,10 +152,11 @@ class Management extends Component {
     return (
       <Fragment>
       <Navi />
+      <br/><br/>
       {this.redirect()}
       <div id="container">
 {this.state.table.length>0? table : null}
-
+<br/>
 <Grid container alignItems="flex-start" justify="flex-end" direction="row">
 
       <IconButton color="primary" onClick={()=>this.setRedirection('','create')}>

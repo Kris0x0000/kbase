@@ -158,8 +158,8 @@ renderTableRows(res) {
   <tr key={item._id}>
     <td>{this.limitString(item.title)}</td>
     <td>{item.tags.map((element)=><Fragment><Chip variant="outlined" label={element}/> </Fragment>)}</td>
-    <td>{item.owner}</td>
-    <td>{getTime(item.timestamp)}</td>
+    <td>{item.creator}</td>
+    <td>{getTime(item.create_timestamp)}</td>
     <td>
 <Tooltip title="Usuń">
     <IconButton color="secondary" onClick={()=>this.deleteItem(item._id)}>
@@ -195,6 +195,7 @@ fetchData(tags) {
   this.setState({is_loading_set: true});
   axios.post(conf.api_url_base+'/api/issue/getIssueByTag', {tags: tags}, { withCredentials: true })
   .then(res=>{
+    console.log("res.data: ",res.data);
     this.setState({object: res.data, is_loading_set: false});
     this.renderTableRows(res);
 
@@ -202,7 +203,6 @@ fetchData(tags) {
   .catch((e)=>{console.log(e)
     if( e.response.status === 401) {
      this.setState({is_authenticated: false});
-
     }
   });
 
@@ -223,8 +223,8 @@ render() {
         <tr>
             <th>Tytuł</th>
             <th>Tagi</th>
-            <th>Użytkownik</th>
-            <th>Data modyfikacji</th>
+            <th>Dodane przez</th>
+            <th>W dniu</th>
             <th>Opcje</th>
         </tr>
     </thead>
@@ -236,7 +236,6 @@ render() {
     return(
       <Fragment>
 
-
       <Snackbar variant="warning"
       open={this.state.show_warning}
       anchorOrigin={{ vertical: 'top', horizontal: 'center' }}
@@ -244,7 +243,7 @@ render() {
       <SnackbarContent message={this.state.warning_body} style={{backgroundColor:'#cc0000'}}/>
       </Snackbar>
       <div id="loading">{this.showLoading()}</div>
-      <div className="form">
+      <div id="container">
 
       {this.redirect()}
 {this.state.table.length>0? table : null}
@@ -258,7 +257,6 @@ render() {
 
 function getTime(millis) {
   let time = new Date(millis).toLocaleDateString();
-
   return time;
 }
 

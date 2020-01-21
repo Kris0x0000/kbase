@@ -4,9 +4,6 @@ body {
 }
 
 
-
-
-
 #home_icons {
   position: fixed;
   top: calc(50% - 128px/2);
@@ -20,7 +17,7 @@ body {
 }
 
 #container {
-  width: 96%;
+  width: 95%;
   margin: auto;
 }
 
@@ -44,28 +41,26 @@ table {
   border-collapse: collapse;
   margin:auto;
   text-align:center;
-  border-bottom: 1px solid #3366ff;
+  border-bottom: 1px solid #2196f3;
   table-layout: fixed;
-  width: 95%;
+  width: 100%;
 
 }
 
 
  th : {
-  border: 1px solid #3366ff;
+  border: 1px solid #2196f3;
     }
 
      td {
 
       min-width:200px;
-        border-top: 1px solid #3366ff;
+        border-top: 1px solid #2196f3;
           }
 
 
    tr : {
-
-
-       border-bottom: 1px solid #3366ff;
+       border-bottom: 1px solid #2196f3;
 }
 
 tr:nth-child(even) {
@@ -108,4 +103,17 @@ tr:nth-child(odd) {
 }
 
 
+table#issuedisplaytab {
+
+ min-height:400px;
+text-align:left;
+     }
+
+
+
 /* header end */
+/* Snow Theme */
+
+.quill {
+  border: 1px solid #2196f3;
+}

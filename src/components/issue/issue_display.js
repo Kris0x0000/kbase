@@ -25,7 +25,11 @@ class IssueDisplay extends Component {
         id:'',
         tags:["tags"],
         isauthenticated: true,
-        search_tags: ''
+        search_tags: '',
+        create_timestamp: '',
+         creator: '',
+         edit_timestamp: '',
+         editor: ''
       };
     }
 
@@ -34,7 +38,15 @@ this.setState({search_tags: this.props.location.state.search_tags});
   axios.post(conf.api_url_base+'/api/issue/getIssueById', {id: this.props.match.params.id}, { withCredentials: true })
     .then(res=>{
       console.log(res);
-      this.setState({body: res.data.body, id: this.props.match.params.id, title: res.data.title});
+      this.setState({
+        body: res.data[0].body,
+         id: this.props.match.params.id,
+          title: res.data[0].title,
+           create_timestamp: res.data[0].create_timestamp,
+            creator: res.data[0].creator,
+            edit_timestamp: res.data[0].edit_timestamp,
+            editor: res.data[0].editor
+          });
     })
     .catch(e=>{console.log(e)});
 }
@@ -76,6 +88,13 @@ setRedirection(id, path) {
   this.setState({redirection_path: path, id: id});
 }
 
+
+getTime(millis) {
+  let time = new Date(millis).toLocaleDateString();
+  return time;
+}
+
+
   render() {
   return (
     <Fragment>
@@ -83,7 +102,7 @@ setRedirection(id, path) {
     <div id="container">
     {this.isAuthenticated()}
 
-    <table>
+    <table id="issuedisplaytab">
 <thead>
       <tr>
       <th>
@@ -95,15 +114,23 @@ setRedirection(id, path) {
 
     <tbody>
       <tr>
-      <td>
+      <td valign="top">
         {this.displayHTML(this.state.body)}
         </td>
       </tr>
     </tbody>
     </table>
   <br />
-
     {this.redirect()}
+<br/>
+
+<br/>
+ Utworzony przez <b>{this.state.creator}</b>, w dniu <b>{this.getTime(this.state.create_timestamp)}</b>.
+ <br/>
+ {(this.state.editor !== '') ? <p>Zmodyfikowany przez <b>{(this.state.editor !== '') ? this.state.editor :''}</b>, w dniu <b>{this.getTime(this.state.edit_timestamp)}.</b></p> :''}
+
+ <br/>
+
 
 
 <Grid container alignItems="flex-start" justify="flex-end" direction="row">

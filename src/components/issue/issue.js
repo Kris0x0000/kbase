@@ -93,7 +93,7 @@ class Issue extends Component {
       <Navi /><Header/>
       </Grid>
 
-      <br/>
+      <br/><br/><br/>
 
       {this.isAuthenticated()}
       <div id="autocomplete">
@@ -125,7 +125,7 @@ class Issue extends Component {
                            />
                          )}
                        />
-                       
+
           <br /><br /><br /><br />
             </div>
           <ShowIssues search_tags={this.state.search_tags} prev_path={this.props.location} />
