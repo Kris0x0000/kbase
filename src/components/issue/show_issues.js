@@ -12,6 +12,8 @@ import { Chip } from '@material-ui/core';
 import Snackbar from '@material-ui/core/Snackbar';
 import { SnackbarContent } from '@material-ui/core';
 import Tooltip from '@material-ui/core/Tooltip';
+import ArrowBackIcon from '@material-ui/icons/ArrowBack';
+import Footer from '../footer';
 
 
 
@@ -30,7 +32,8 @@ class ShowIssues extends Component {
       is_authenticated: true,
       once: false,
       show_warning: false,
-      warning_body: ''
+      warning_body: '',
+      this_path:''
     };
   }
 
@@ -38,7 +41,7 @@ class ShowIssues extends Component {
   componentDidMount(prevProps) {
 
 
-this.setState({search_tags: this.props.search_tags, prev_path: this.props.prev_path});
+this.setState({search_tags: this.props.search_tags, this_path: this.props.prev_path});
   //this.fetchData(this.props.search_tags);
 //
 axios.post(conf.api_url_base+'/api/issue/getAllTags',{tag: ''}, { withCredentials: true })
@@ -61,7 +64,7 @@ if( e.response.status === 401) {
         console.log("prevState.search_tags !== this.props.search_tags");
 
         this.fetchData(this.props.search_tags);
-          this.setState({search_tags: this.props.search_tags, prev_path: this.props.prev_path});
+          this.setState({search_tags: this.props.search_tags, this_path: this.props.prev_path});
       }
   }
 
@@ -95,16 +98,25 @@ if( e.response.status === 401) {
   redirect() {
 
       if(this.state.redirection_path === 'edit') {
-               return (<Redirect to={{ pathname: "/issue/edit/"+this.state.id, state: {prev_path: this.state.prev_path, search_tags: this.props.search_tags} }} />);
+        console.log("this.state.prev_path: ",this.state.prev_path);
+               return (<Redirect to={{ pathname: "/issue/edit/"+this.state.id, state: {prev_path: this.state.this_path, search_tags: this.props.search_tags} }} />);
             }
 
       if(this.state.redirection_path === 'display') {
-        return <Redirect to={{ pathname: "/issue/display/"+this.state.id, state: { search_tags: this.state.search_tags } }} />;
+        return <Redirect to={{ pathname: "/issue/display/"+this.state.id, state: { prev_path: this.state.this_path, search_tags: this.state.search_tags } }} />;
+      }
+
+      if(this.state.redirection_path === 'back') {
+        return <Redirect to={{ pathname: "/home/", state: { prev_path: this.state.this_path}}} />;
       }
 
   }
 
   setRedirection(id, path) {
+
+    if(path === 'back') {
+      this.setState({redirection_path: path});
+    }
 
     if(path === 'edit') {
 
@@ -248,6 +260,14 @@ render() {
       {this.redirect()}
 {this.state.table.length>0? table : null}
 {this.isAuthenticated()}
+
+</div>
+<div class="bottom_navi">
+<Tooltip title="Wróć">
+<IconButton color="secondary" onClick={()=>{this.setRedirection('','back')}}>
+   <ArrowBackIcon/>
+</IconButton>
+</Tooltip>
 </div>
 </Fragment>
     );

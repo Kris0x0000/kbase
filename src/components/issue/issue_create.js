@@ -18,6 +18,8 @@ import { CircularProgress } from '@material-ui/core';
 import { Chip } from '@material-ui/core';
 import { SnackbarContent } from '@material-ui/core';
 import Header from '../header';
+import Tooltip from '@material-ui/core/Tooltip';
+import Footer from '../footer';
 
 
 
@@ -146,7 +148,7 @@ this.setState({is_loading_set: true});
 
 handleAutocompleteChange(event, value) {
 
-  if(value.length > 6) {
+  if(value.length > 8) {
     value = this.removeLastElement(value);
     this.setState({to_many_tags: true, show_warning: true, warning_body: "Nie możesz ustawić więcej niż 6 tagów"});
     setTimeout(()=>{
@@ -155,10 +157,28 @@ handleAutocompleteChange(event, value) {
   } else {
     this.setState({to_many_tags: false});
   }
-  console.log("value: ", value);
-    this.setState({tags: value});
-    console.log(this.state.tags);
+
+  this.ProcessArray(value).then(data => {
+    this.setState({tags: data});
+  });
+
+  //// !!!!
 }
+
+
+ProcessArray = async (docs) => {
+  console.log("docs::", docs);
+  return Promise.all(docs.map((item)=>this.ProcessItem(item)));
+}
+
+ProcessItem = async (item) => {
+  console.log("item: ", item);
+let item2 = item.toLowerCase();
+let item3 = item2.replace("-", " ").replace("_"," ").replace("error","");
+
+  return item3;
+}
+
 
 removeLastElement(arr) {
 
@@ -185,10 +205,15 @@ isAuthenticated() {
 redirect() {
   if(this.state.go_back) {
     if(this.state.prev_path !== '') {
-      console.log(this.state.search_tags);
-      return (<Redirect to={{pathname: this.state.prev_path.pathname, state: {search_tags: this.state.search_tags}}} />);
+      console.log("this.props.location: ", this.props.location);
+      console.log("this.props.location.state.prev_path: ", this.props.location.state.prev_path);
+      return (<Redirect to={{pathname: this.props.location.state.prev_path, state: {search_tags: this.state.search_tags, prev_path: this.props.location}}} />);
     }
   }
+}
+
+normalizeTag(tag) {
+  return tag.toLowerCase();
 }
 
 
@@ -225,8 +250,8 @@ redirect() {
                id="tags-standard"
                options={this.state.all_tags}
                getOptionLabel={option => option}
-
                renderTags={(value, getTagProps) =>
+
                  value.map((option, index) => (
                    <Chip  variant="outlined" label={option} color="primary" {...getTagProps({ index })} />
                  ))
@@ -234,7 +259,6 @@ redirect() {
 
 
                renderInput={params => (
-
                  <TextField
                    {...params}
                    variant="outlined"
@@ -245,16 +269,24 @@ redirect() {
                )}
              />
         <br />
-<Grid container alignItems="flex-start" justify="flex-end" direction="row">
+
+</div>
+<div class="bottom_navi">
+<Grid container alignItems="flex-start" justify="flex-start" direction="row">
+<Tooltip title="Wróć">
 <IconButton color="secondary" onClick={()=>{this.submit('decline')}}>
    <ArrowBackIcon/>
 </IconButton>
+</Tooltip>
+<Tooltip title="Zatwierdź">
 <IconButton color="primary" onClick={()=>{this.submit('accept')}}>
    <DoneIcon/>
 </IconButton>
-<br />
+</Tooltip>
         </Grid>
-</div>
+        </div>
+        <br /><br /><br /><br />
+        <Footer/>
         </Fragment>
       );
   }

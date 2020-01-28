@@ -13,6 +13,9 @@ import { CircularProgress } from '@material-ui/core';
 import { SnackbarContent } from '@material-ui/core';
 import '../../global.css';
 import Switch from '@material-ui/core/Switch';
+import Tooltip from '@material-ui/core/Tooltip';
+import Header from '../../components/header';
+import Footer from '../../components/footer';
 
 
 
@@ -37,6 +40,7 @@ class UserCreate extends Component {
       editmode: false,
       is_admin: false,
       id:'',
+      usermode: false,
 
     };
   }
@@ -44,7 +48,14 @@ class UserCreate extends Component {
 componentDidMount() {
 
   if(this.props.location.state) {
-    this.setState({prev_path: this.props.location.state.prev_path});
+    if(this.props.location.state.prev_path) {
+      this.setState({prev_path: this.props.location.state.prev_path});
+    }
+
+    if(this.props.location.state.usermode) {
+      this.setState({usermode: true});
+      console.log("usermode");
+    }
   }
 
 
@@ -159,18 +170,27 @@ setRedirection(path) {
   this.setState({prev_path: path, is_redirected: true});
 }
 
-
 redirect() {
   if(this.state.is_redirected) {
       return (<Redirect to={{pathname: this.state.prev_path}} />);
   }
 }
 
+adminSwitch() {
+  if(!this.state.usermode) {
+  return(<div><p>Administrator</p>
+    <Switch
+    id="is_admin"
+ onChange={(r)=>this.handleswitch(r.target.id, !this.state.is_admin)}
+ checked={this.state.is_admin}
+ color="primary"
+ inputProps={{ 'aria-label': 'primary checkbox' }} /></div>);
+
+  }
+}
 
 submit(option) {
-
   setTimeout(()=>{
-
   if(option === 'accept') {
 
     if((this.state.uname === '') || (this.state.password === '') || (this.state.password2 === '') || this.state.error_password1 || this.state.error_uname || this.state.error_password2){
@@ -180,7 +200,7 @@ submit(option) {
         }, 2000);
     } else {
 
-if(this.state.editmode) {
+if(this.state.editmode && !this.state.usermode) {
 
   console.log("editmode");
   //this.setState({is_loading_set: true});
@@ -194,6 +214,19 @@ if(this.state.editmode) {
     });
 
 
+} else if (this.state.usermode) {
+
+  console.log("usermode");
+  //this.setState({is_loading_set: true});
+  axios.post(conf.api_url_base+'/api/user/editMyUser', {username: this.state.uname, password: this.state.password}, { withCredentials: true })
+    .then(res=>{
+      //this.setState({is_loading_set: false});
+      console.log("res::", res);
+      this.setRedirection('/home');
+    })
+    .catch(e=>{console.log(e)
+    });
+
 } else {
   axios.post(conf.api_url_base+'/api/user/create',{username: this.state.uname, password: this.state.password2, is_admin: this.state.is_admin}, { withCredentials: true })
     .then(res=>{
@@ -203,18 +236,17 @@ if(this.state.editmode) {
       if( e.response.status === 401) {
         this.setState({is_authenticated: false});
       }
-
     });
-
     }
-
     }
 
 } //accept
 },500);
 
-  if(option === 'back') {
+  if(option === 'back' && !this.state.usermode) {
     this.setRedirection('/management/main/');
+  } else {
+    this.setRedirection('/home/');
   }
 }
 
@@ -224,7 +256,9 @@ if(this.state.editmode) {
       <Fragment>
       {this.isAuthenticated()}
       {this.redirect()}
-      <Navi/>
+      <Grid container alignItems="flex-start" justify="flex-start" direction="row">
+      <Navi /><Header/>
+      </Grid><br/><br /><br />
       <Snackbar variant="warning"
       open={this.state.show_warning}
       anchorOrigin={{ vertical: 'top', horizontal: 'center' }} >
@@ -240,27 +274,22 @@ if(this.state.editmode) {
         <br/><br/>
         <TextField  value={this.state.password2} fullWidth={true} autoComplete="new-password" error={this.state.error_password2} helperText={this.state.helper_password2} id="password2" label="powtórz hasło" type="password" variant="outlined" onChange={(r)=>this.handletextfield(r.target.id, r.target.value)} />
         <br/><br/>
-        Administrator
-        <Switch
-        id="is_admin"
-     onChange={(r)=>this.handleswitch(r.target.id, !this.state.is_admin)}
-     checked={this.state.is_admin}
-     color="primary"
-     inputProps={{ 'aria-label': 'primary checkbox' }}
-   />
+
    <br/><br/>
-   <Grid container alignItems="flex-start" justify="flex-end" direction="row">
-
-   <IconButton color="secondary" onClick={()=>{this.submit('back')}}>
-      <ArrowBackIcon/>
-   </IconButton>
-   <IconButton color="primary" onClick={()=>{this.submit('accept')}}>
-      <DoneIcon/>
-   </IconButton>
-
-        <br />
-           </Grid>
+        {this.adminSwitch()}
         </div>
+        <div class="bottom_navi">
+        <Grid container alignItems="flex-start" justify="flex-start" direction="row">
+        <IconButton color="secondary" onClick={()=>{this.submit('back')}}>
+           <ArrowBackIcon/>
+        </IconButton>
+        <IconButton color="primary" onClick={()=>{this.submit('accept')}}>
+           <DoneIcon/>
+        </IconButton>
+                </Grid>
+
+        </div>
+        <Footer/>
       </Fragment>
     );
   }

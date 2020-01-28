@@ -27,7 +27,6 @@ class Navi extends Component {
           this.setState({is_admin: true});
         })
         .catch(e=>{console.log(e.response)});
-
   }
 
   settings() {
@@ -69,7 +68,7 @@ class Navi extends Component {
       </IconButton>
 
         {this.settings()}
-    
+
       </Fragment>
     );
   }

@@ -12,6 +12,7 @@ import { Chip } from '@material-ui/core';
 import matchSorter from 'match-sorter';
 import Header from '../header';
 import { Grid } from '@material-ui/core';
+import Footer from '../footer';
 
 
 const filterOptions = (options, { inputValue }) =>
@@ -33,7 +34,10 @@ class Issue extends Component {
       showIssues: false,
       all_tags: [],
       isauthenticated: true,
-      is_loading_set: false
+      is_loading_set: false,
+      is_redirected: false,
+      path:'',
+
     };
   }
 
@@ -41,7 +45,7 @@ class Issue extends Component {
 
   componentDidMount() {
     if(this.props.location.state) {
-      console.log("this.props.location.state: ",this.props.location.state);
+      console.log("this.props.location: ",this.props.location);
       this.setState({search_tags: this.props.location.state.search_tags})
     }
 
@@ -57,6 +61,18 @@ class Issue extends Component {
       console.log('error: ', e.response.status)}
     );
   }
+
+  redirect() {
+    if(this.state.is_redirected) {
+      return <Redirect to={{ pathname: this.props.location.state.prev_path, state: {prev_path: this.props.location.pathname} }} />;
+    }
+  }
+
+  setRedirection(path) {
+    this.setState({path: path, is_redirected: true});
+  }
+
+
 
   handletags(data) {
     //let data1 = data;
@@ -128,8 +144,9 @@ class Issue extends Component {
 
           <br /><br /><br /><br />
             </div>
-          <ShowIssues search_tags={this.state.search_tags} prev_path={this.props.location} />
-
+          <ShowIssues search_tags={this.state.search_tags} prev_path={this.props.location.pathname} />
+          <br /><br /><br /><br />
+          <Footer/>
           </Fragment>
         );
     }

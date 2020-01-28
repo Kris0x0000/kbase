@@ -11,6 +11,9 @@ import ArrowBackIcon from '@material-ui/icons/ArrowBack';
 import { IconButton } from '@material-ui/core';
 import { Chip } from '@material-ui/core';
 import Navi from '../../components/navi/navi';
+import Tooltip from '@material-ui/core/Tooltip';
+import Header from '../header';
+import Footer from '../footer';
 
 
 
@@ -48,7 +51,11 @@ this.setState({search_tags: this.props.location.state.search_tags});
             editor: res.data[0].editor
           });
     })
-    .catch(e=>{console.log(e)});
+    .catch(e=>{
+      console.log(e);
+      this.setState({isauthenticated: false});
+
+    });
 }
 
 componentDidUpdate() {
@@ -73,12 +80,12 @@ redirect() {
   if(this.state.redirection_path !== '') {
     if(this.state.redirection_path === 'edit') {
       console.log("this.props.location", this.props.location);
-      return <Redirect to={{ pathname: "/issue/edit/"+this.state.id , state: {prev_path: this.props.location}}} />;
+      return <Redirect to={{ pathname: "/issue/edit/"+this.state.id , state: {prev_path: this.props.location.pathname}}} />;
     }
     if(this.state.redirection_path === 'back_to_search') {
       return <Redirect to={{
         pathname: '/issue/find',
-      state: { search_tags: this.state.search_tags }
+      state: { search_tags: this.state.search_tags, prev_path: this.props.location.pathname }
       }} />;
     }
   }
@@ -98,7 +105,9 @@ getTime(millis) {
   render() {
   return (
     <Fragment>
-    <Navi />
+    <Grid container alignItems="flex-start" justify="flex-start" direction="row">
+    <Navi /><Header/>
+    </Grid><br/>
     <div id="container">
     {this.isAuthenticated()}
 
@@ -122,29 +131,30 @@ getTime(millis) {
     </table>
   <br />
     {this.redirect()}
-<br/>
 
-<br/>
  Utworzony przez <b>{this.state.creator}</b>, w dniu <b>{this.getTime(this.state.create_timestamp)}</b>.
  <br/>
  {(this.state.editor !== '') ? <p>Zmodyfikowany przez <b>{(this.state.editor !== '') ? this.state.editor :''}</b>, w dniu <b>{this.getTime(this.state.edit_timestamp)}.</b></p> :''}
 
- <br/>
 
-
-
+</div>
+<div class="bottom_navi">
 <Grid container alignItems="flex-start" justify="flex-end" direction="row">
+<Tooltip title="Wróć">
 <IconButton color="secondary" onClick={()=>{this.setRedirection("back", 'back_to_search')}}>
    <ArrowBackIcon/>
 </IconButton>
+</Tooltip>
+<Tooltip title="Edytuj">
 <IconButton color="primary" onClick={()=>{this.setRedirection(this.state.id, 'edit')}}>
    <EditIcon/>
 </IconButton>
+</Tooltip>
+  </Grid>
 
-
-<br />
-        </Grid>
 </div>
+<br /><br /><br /><br />
+<Footer />
         </Fragment>
       );
   }

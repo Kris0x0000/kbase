@@ -3,7 +3,7 @@ import '../global.css';
 import logo from '../res/zikom_logo.jpg';
 
 
-class Header extends Component {
+class Footer extends Component {
   constructor(props){
     super(props);
 
@@ -15,13 +15,16 @@ class Header extends Component {
   render() {
     return(
       <Fragment>
-      <div id="header">
-        <img src={logo} alt="Logo" width="20%" height="20%" />   &nbsp; Baza Wiedzy
+      <div className="footer">
+      <br/>
+
+        <hr className="hr-text"/>
+
+        Baza Wiedzy by Krzysztof Kosowski, 2020-2021. Wszelkie prawa zastrzeżone.
         </div>
-        <br/><br/>
       </Fragment>
     );
   }
 }
 
-export default Header;
+export default Footer;

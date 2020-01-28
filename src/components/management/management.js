@@ -14,7 +14,10 @@ import Navi from '../../components/navi/navi';
 import Checkbox from '@material-ui/core/Checkbox';
 import AddCircleIcon from '@material-ui/icons/AddCircle';
 import { Grid } from '@material-ui/core';
-
+import ArrowBackIcon from '@material-ui/icons/ArrowBack';
+import Tooltip from '@material-ui/core/Tooltip';
+import Header from '../../components/header';
+import Footer from '../../components/footer';
 
 
 
@@ -111,6 +114,10 @@ class Management extends Component {
     if(path === 'create') {
       this.setState({redirection_path: path});
     }
+
+    if(path === 'back') {
+      this.setState({redirection_path: path});
+    }
   }
 
 
@@ -122,6 +129,10 @@ class Management extends Component {
 
       if(this.state.redirection_path === 'create') {
         return <Redirect to={{ pathname: "/management/user/create"}} />;
+      }
+
+      if(this.state.redirection_path === 'back') {
+        return <Redirect to={{ pathname: this.state.prev_path}} />;
       }
 
   }
@@ -151,21 +162,33 @@ class Management extends Component {
 
     return (
       <Fragment>
-      <Navi />
+      <Grid container alignItems="flex-start" justify="flex-start" direction="row">
+      <Navi /><Header/>
+      </Grid><br/><br /><br />
       <br/><br/>
       {this.redirect()}
       <div id="container">
 {this.state.table.length>0? table : null}
 <br/>
+
+
+
+</div>
+<div class="bottom_navi">
 <Grid container alignItems="flex-start" justify="flex-end" direction="row">
-
-      <IconButton color="primary" onClick={()=>this.setRedirection('','create')}>
-       <AddCircleIcon/>
-    </IconButton>
-
+<Tooltip title="Wróć">
+<IconButton color="secondary" onClick={()=>{this.setRedirection('','back')}}>
+   <ArrowBackIcon/>
+</IconButton>
+</Tooltip>
+<Tooltip title="Dodaj">
+<IconButton color="primary" onClick={()=>this.setRedirection('','create')}>
+ <AddCircleIcon/>
+</IconButton>
+</Tooltip>
 </Grid>
 </div>
-
+<Footer/>
       </Fragment>
     );
   }
