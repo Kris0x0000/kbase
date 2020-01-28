@@ -15,7 +15,6 @@ class Login extends Component {
 
   constructor(props) {
     super(props);
-    console.log(props);
     this.state = {
       login: '',
       password: '',
@@ -45,7 +44,6 @@ class Login extends Component {
 
   onKeyPress = (e) => {
            if (e.key === 'Enter') {
-             console.log('Enter key pressed');
              this.submit();
            }
    }
@@ -53,8 +51,6 @@ class Login extends Component {
 
   submit() {
 
-    console.log(this.state.login);
-    console.log(this.state.password);
     axios.post(conf.api_url_base+'/login', {username: this.state.login, password: this.state.password}, { withCredentials: true })
     .then(res=>{
       if(res.status === 200) {
@@ -65,7 +61,7 @@ class Login extends Component {
 
 
       }
-      console.log(res.status)})
+      })
     .catch((e)=>{console.log(e)});
   }
 

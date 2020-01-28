@@ -45,7 +45,7 @@ class Issue extends Component {
 
   componentDidMount() {
     if(this.props.location.state) {
-      console.log("this.props.location: ",this.props.location);
+
       this.setState({search_tags: this.props.location.state.search_tags})
     }
 
@@ -58,7 +58,7 @@ class Issue extends Component {
   if( e.response.status === 401) {
     this.setState({isauthenticated: false})
   }
-      console.log('error: ', e.response.status)}
+      }
     );
   }
 
@@ -77,7 +77,6 @@ class Issue extends Component {
   handletags(data) {
     //let data1 = data;
     setTimeout((data1)=>{
-      console.log("h: ",data);
       this.setState((state,props)=>{
          return {search_tags: data.split(",")};
       });
@@ -87,7 +86,6 @@ class Issue extends Component {
 
   handleAutocompleteChange(event, value) {
       this.setState({search_tags: value});
-      console.log("search_tags: ", this.state.search_tags);
   }
 
   isAuthenticated() {

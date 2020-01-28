@@ -40,7 +40,7 @@ componentDidMount() {
 this.setState({search_tags: this.props.location.state.search_tags});
   axios.post(conf.api_url_base+'/api/issue/getIssueById', {id: this.props.match.params.id}, { withCredentials: true })
     .then(res=>{
-      console.log(res);
+
       this.setState({
         body: res.data[0].body,
          id: this.props.match.params.id,
@@ -52,7 +52,7 @@ this.setState({search_tags: this.props.location.state.search_tags});
           });
     })
     .catch(e=>{
-      console.log(e);
+
       this.setState({isauthenticated: false});
 
     });
@@ -79,7 +79,7 @@ displayHTML(code) {
 redirect() {
   if(this.state.redirection_path !== '') {
     if(this.state.redirection_path === 'edit') {
-      console.log("this.props.location", this.props.location);
+
       return <Redirect to={{ pathname: "/issue/edit/"+this.state.id , state: {prev_path: this.props.location.pathname}}} />;
     }
     if(this.state.redirection_path === 'back_to_search') {

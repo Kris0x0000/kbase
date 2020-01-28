@@ -23,7 +23,6 @@ class Navi extends Component {
 
       axios.post(conf.api_url_base+'/api/user/isadmin', {}, { withCredentials: true })
         .then(res=>{
-          console.log("200");
           this.setState({is_admin: true});
         })
         .catch(e=>{console.log(e.response)});
@@ -54,7 +53,6 @@ class Navi extends Component {
   setRedirection(path) {
 
     this.setState({redirection_path: path});
-      console.log(this.state.redirection_path);
     }
 
   render() {

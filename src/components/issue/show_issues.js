@@ -49,7 +49,7 @@ axios.post(conf.api_url_base+'/api/issue/getAllTags',{tag: ''}, { withCredential
   this.setState({is_authenticated: true})
   this.setState((state,props)=>{return {all_tags: res}});
 })
-.catch((e)=>{console.log('error: ', e);
+.catch((e)=>{
 if( e.response.status === 401) {
       this.setState({is_authenticated: false})
   }
@@ -61,8 +61,6 @@ if( e.response.status === 401) {
 
       if(prevState.search_tags !== this.props.search_tags ) {
 
-        console.log("prevState.search_tags !== this.props.search_tags");
-
         this.fetchData(this.props.search_tags);
           this.setState({search_tags: this.props.search_tags, this_path: this.props.prev_path});
       }
@@ -71,14 +69,12 @@ if( e.response.status === 401) {
 
   deleteItem(item) {
 
-    console.log('item._id');
-    console.log(item);
     axios.post(conf.api_url_base+'/api/issue/delete', {id: item}, { withCredentials: true })
     .then(res=>{
         this.fetchData(this.props.search_tags);
           this.setState({is_authenticated: true})
     })
-    .catch((e)=>{console.log('error: ', e);
+    .catch((e)=>{
     if( e.response.status === 401) {
      this.setState({is_authenticated: false});
     }
@@ -98,7 +94,6 @@ if( e.response.status === 401) {
   redirect() {
 
       if(this.state.redirection_path === 'edit') {
-        console.log("this.state.prev_path: ",this.state.prev_path);
                return (<Redirect to={{ pathname: "/issue/edit/"+this.state.id, state: {prev_path: this.state.this_path, search_tags: this.props.search_tags} }} />);
             }
 
@@ -122,13 +117,11 @@ if( e.response.status === 401) {
 
     axios.post(conf.api_url_base+'/api/issue/isOwner', {id: id}, { withCredentials: true })
       .then(res=>{
-        console.log(res);
         if(res.status === 200) {
         this.setState({redirection_path: path, id: id});
         }
       })
       .catch(e=>{
-        console.log(e);
         if(e.response.status === 405) {
           this.setState({show_warning: true, warning_body: "Nie możesz edytować tego wpisu ponieważ nie jesteś jego właścicielem", redirection_path:''});
           setTimeout(()=>{
@@ -207,7 +200,6 @@ fetchData(tags) {
   this.setState({is_loading_set: true});
   axios.post(conf.api_url_base+'/api/issue/getIssueByTag', {tags: tags}, { withCredentials: true })
   .then(res=>{
-    console.log("res.data: ",res.data);
     this.setState({object: res.data, is_loading_set: false});
     this.renderTableRows(res);
 

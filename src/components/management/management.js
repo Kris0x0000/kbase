@@ -37,8 +37,6 @@ class Management extends Component {
 
     axios.post(conf.api_url_base+'/api/user/getAllUsers',{}, { withCredentials: true })
       .then(res=>{
-        console.log(res);
-        //this.setState({users: res.data});
         this.renderTableRows(res);
       })
       .catch(e=>{console.log(e)});
@@ -49,8 +47,6 @@ class Management extends Component {
   fetchData() {
     axios.post(conf.api_url_base+'/api/user/getAllUsers',{}, { withCredentials: true })
       .then(res=>{
-        console.log(res);
-        //this.setState({users: res.data});
         this.renderTableRows(res);
       })
       .catch(e=>{console.log(e)});
@@ -89,11 +85,8 @@ class Management extends Component {
 
   deleteItem(item) {
 
-    console.log('item._id');
-    console.log(item);
     axios.post(conf.api_url_base+'/api/user/delete', {id: item}, { withCredentials: true })
     .then(res=>{
-      console.log("res",res);
         this.fetchData();
           this.setState({is_authenticated: true})
     })

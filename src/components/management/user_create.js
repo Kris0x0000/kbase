@@ -54,7 +54,6 @@ componentDidMount() {
 
     if(this.props.location.state.usermode) {
       this.setState({usermode: true});
-      console.log("usermode");
     }
   }
 
@@ -68,7 +67,6 @@ componentDidMount() {
   .then(res=>{
 
   this.setState({is_loading_set: false});
-  console.log("res", res);
 
   this.setState({
 
@@ -88,7 +86,6 @@ this.setState({password2: this.state.password});
 
   axios.post(conf.api_url_base+'/api/isauthenticated', {}, { withCredentials: true })
     .then(res=>{
-      console.log("200");
       this.setState({is_authenticated: true});
     })
     .catch(e=>{
@@ -119,7 +116,6 @@ handletextfield(id, data) {
 if(!(data === '')) {
       axios.post(conf.api_url_base+'/api/user/getUserByName', {username: data}, { withCredentials: true })
         .then(res=>{
-          console.log(res.data._id, this.state.id);
           if((res.data !== "") && (res.data._id !== this.state.id)) {
             this.setState({uname_helper: 'Podana nazwa użytkownika istnieje już w systemie.', error_uname: true});
             this.setState({uname: data});
@@ -202,12 +198,8 @@ submit(option) {
 
 if(this.state.editmode && !this.state.usermode) {
 
-  console.log("editmode");
-  //this.setState({is_loading_set: true});
   axios.post(conf.api_url_base+'/api/user/edit', {username: this.state.uname, password: this.state.password, is_admin: this.state.is_admin, id: this.state.id }, { withCredentials: true })
     .then(res=>{
-      //this.setState({is_loading_set: false});
-      console.log("res::", res);
       this.setRedirection('/management/main/');
     })
     .catch(e=>{console.log(e)
@@ -216,12 +208,8 @@ if(this.state.editmode && !this.state.usermode) {
 
 } else if (this.state.usermode) {
 
-  console.log("usermode");
-  //this.setState({is_loading_set: true});
   axios.post(conf.api_url_base+'/api/user/editMyUser', {username: this.state.uname, password: this.state.password}, { withCredentials: true })
     .then(res=>{
-      //this.setState({is_loading_set: false});
-      console.log("res::", res);
       this.setRedirection('/home');
     })
     .catch(e=>{console.log(e)

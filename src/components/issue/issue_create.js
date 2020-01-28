@@ -59,15 +59,15 @@ if(this.props.location.state) {
     axios.post(conf.api_url_base+'/api/issue/getalltags',{tag: ''}, { withCredentials: true })
     .then(res=>{
       this.setState((state,props)=>{return {all_tags: res.data}});
-      console.log("res: ", res);
+
       this.setState({is_loading_set: false});
     })
     .catch((e)=>{
   if( e.response.status === 401) {
     this.setState({isauthenticated: false});
   }
-      console.log('error: ', e.response.status)}
-  );
+
+});
 
         // if issue id in URL (/edit/id)
     if(this.props.match.params.id) {
@@ -76,7 +76,7 @@ if(this.props.location.state) {
     this.setState({is_loading_set: true});
     axios.post(conf.api_url_base+'/api/issue/getIssueById', {id: this.props.match.params.id}, { withCredentials: true })
     .then(res=>{
-      console.log("res: ", res);
+
       this.setState({is_loading_set: false});
 
 
@@ -84,9 +84,9 @@ if(this.props.location.state) {
     title: res.data[0].title,
     body: res.data[0].body,
     tags: res.data[0].tags});
-    console.log("ddd", this.state.tags);
+
     })
-    .catch((e)=>{console.log(e)});
+    .catch((e)=>{});
       }
 
 }
@@ -106,7 +106,7 @@ handlebody(data) {
 
 handleChange(value) {
   this.setState({ body: value })
-  console.log(value);
+
 }
 
 
@@ -121,7 +121,7 @@ this.setState({is_loading_set: true});
       //this.setState({is_loading_set: false});
       this.setState({go_back: true});
     })
-    .catch(e=>{console.log(e)
+    .catch(e=>{
       if(e.response.status === 405) {
         this.setState({show_warning: true, warning_body: "Nie możesz edytować wpisu którego nie jesteś właścicielem"});
       }
@@ -136,8 +136,8 @@ this.setState({is_loading_set: true});
     if(res.status === 200) {
     this.setState({go_back: true});
     }
-    console.log(res.status)})
-  .catch((e)=>{console.log(e)});
+}
+  ).catch((e)=>{});
   } //else
 } else {
   this.setState({go_back: true});
@@ -167,12 +167,12 @@ handleAutocompleteChange(event, value) {
 
 
 ProcessArray = async (docs) => {
-  console.log("docs::", docs);
+
   return Promise.all(docs.map((item)=>this.ProcessItem(item)));
 }
 
 ProcessItem = async (item) => {
-  console.log("item: ", item);
+
 let item2 = item.toLowerCase();
 let item3 = item2.replace("-", " ").replace("_"," ").replace("error","");
 
@@ -181,10 +181,7 @@ let item3 = item2.replace("-", " ").replace("_"," ").replace("error","");
 
 
 removeLastElement(arr) {
-
-console.log(arr.length);
 let arr2 = arr.splice(arr.length -1, 1);
-console.log("removed: ", arr2);
     return arr;
 };
 
@@ -205,8 +202,6 @@ isAuthenticated() {
 redirect() {
   if(this.state.go_back) {
     if(this.state.prev_path !== '') {
-      console.log("this.props.location: ", this.props.location);
-      console.log("this.props.location.state.prev_path: ", this.props.location.state.prev_path);
       return (<Redirect to={{pathname: this.props.location.state.prev_path, state: {search_tags: this.state.search_tags, prev_path: this.props.location}}} />);
     }
   }

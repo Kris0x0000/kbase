@@ -34,29 +34,30 @@ class Home extends Component {
     axios.post(conf.api_url_base+'/api/isauthenticated',{tag: ''}, { withCredentials: true })
     .then(res=>{
       this.setState((state,props)=>{return {all_tags: res.data}});
-      console.log("res: ", res);
+
     })
     .catch((e)=>{
   if( e.response.status !== 200) {
-    this.setState({isauthenticated: false})
+    this.setState({isauthenticated: false});
   }
-      console.log('error: ', e.response.status)}
+
+}
   );
 
 
   axios.post(conf.api_url_base+'/api/user/isadmin', {}, { withCredentials: true })
     .then(res=>{
-      console.log("200");
+
       this.setState({is_admin: true});
     })
-    .catch(e=>{console.log(e.response)});
+    .catch(e=>{});
 
     axios.post(conf.api_url_base+'/api/user/getMyId', {}, { withCredentials: true })
       .then(res=>{
-        console.log(res.data);
+
         this.setState({my_id: res.data});
       })
-      .catch(e=>{console.log(e.response)});
+      .catch(e=>{});
 
 }
 
