@@ -13,7 +13,7 @@ import Snackbar from '@material-ui/core/Snackbar';
 import { SnackbarContent } from '@material-ui/core';
 import Tooltip from '@material-ui/core/Tooltip';
 import ArrowBackIcon from '@material-ui/icons/ArrowBack';
-import Footer from '../footer';
+
 
 
 

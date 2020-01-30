@@ -1,6 +1,5 @@
 import React, { Component, Fragment } from 'react';
 import '../global.css';
-import logo from '../res/zikom_logo.jpg';
 
 
 class Footer extends Component {

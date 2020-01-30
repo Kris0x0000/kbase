@@ -1,5 +1,4 @@
 import React, { Component, Fragment } from 'react';
-import { Button, TextField } from '@material-ui/core';
 import axios from 'axios';
 import { Redirect } from 'react-router-dom';
 import * as conf from '../../../src/conf.js';
@@ -7,9 +6,6 @@ import '../../global.css';
 import EditIcon from '@material-ui/icons/Edit';
 import { IconButton } from '@material-ui/core';
 import DeleteForeverIcon from '@material-ui/icons/DeleteForever';
-import VisibilityIcon from '@material-ui/icons/Visibility';
-import { CircularProgress } from '@material-ui/core';
-import { Chip } from '@material-ui/core';
 import Navi from '../../components/navi/navi';
 import Checkbox from '@material-ui/core/Checkbox';
 import AddCircleIcon from '@material-ui/icons/AddCircle';

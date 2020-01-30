@@ -5,10 +5,9 @@ import * as serviceWorker from './serviceWorker';
 import {BrowserRouter as Router} from 'react-router-dom';
 import { createMuiTheme } from '@material-ui/core/styles';
 import blue from '@material-ui/core/colors/blue';
-import green from '@material-ui/core/colors/green';
 import { ThemeProvider } from '@material-ui/styles';
 
-const defaultTheme = createMuiTheme();
+
 const theme = createMuiTheme({
   palette: {
     primary: blue,

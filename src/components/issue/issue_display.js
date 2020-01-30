@@ -9,7 +9,6 @@ import { Grid } from '@material-ui/core';
 import EditIcon from '@material-ui/icons/Edit';
 import ArrowBackIcon from '@material-ui/icons/ArrowBack';
 import { IconButton } from '@material-ui/core';
-import { Chip } from '@material-ui/core';
 import Navi from '../../components/navi/navi';
 import Tooltip from '@material-ui/core/Tooltip';
 import Header from '../header';

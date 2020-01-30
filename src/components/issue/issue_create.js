@@ -181,7 +181,7 @@ let item3 = item2.replace("-", " ").replace("_"," ").replace("error","");
 
 
 removeLastElement(arr) {
-let arr2 = arr.splice(arr.length -1, 1);
+//let arr2 = arr.splice(arr.length -1, 1);
     return arr;
 };
 

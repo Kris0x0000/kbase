@@ -9,7 +9,6 @@ import DoneIcon from '@material-ui/icons/Done';
 import Snackbar from '@material-ui/core/Snackbar';
 import ArrowBackIcon from '@material-ui/icons/ArrowBack';
 import Navi from '../../components/navi/navi';
-import { CircularProgress } from '@material-ui/core';
 import { SnackbarContent } from '@material-ui/core';
 import '../../global.css';
 import Switch from '@material-ui/core/Switch';

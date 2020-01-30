@@ -1,5 +1,5 @@
 import React, { Component, Fragment } from 'react';
-import { Button, TextField } from '@material-ui/core';
+import { TextField } from '@material-ui/core';
 import axios from 'axios';
 import { Redirect } from 'react-router-dom';
 import * as conf from '../../../src/conf.js';
@@ -66,7 +66,7 @@ class Login extends Component {
   }
 
   render() {
-    const { classes } = this.props;
+  //  const { classes } = this.props;
 
     return (
       <Fragment>
@@ -74,7 +74,7 @@ class Login extends Component {
       <div id="loginform">
       {this.redirect()}
 
-      <TextField  color="primary" autoFocus="true" id="Login" label="Login" type="text" variant="outlined" onChange={(r)=>this.handleLogin(r.target.value)} />
+      <TextField  color="primary" id="Login" label="Login" type="text" variant="outlined" onChange={(r)=>this.handleLogin(r.target.value)} />
 
       <br /><br />
       <TextField id="Login" color="primary"  label="Password" type="password" variant="outlined" onChange={(r)=>this.handlePassword(r.target.value)} />

@@ -1,6 +1,5 @@
 import React, { Component, Fragment } from 'react';
 import '../global.css';
-import logo from '../res/zikom_logo.jpg';
 import Navi from './navi/navi';
 import Header from './header';
 import Footer from './footer';
