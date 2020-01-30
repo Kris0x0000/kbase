@@ -1,7 +1,7 @@
 import React, { Component, Fragment } from 'react';
 import axios from 'axios';
 import { Redirect } from 'react-router-dom';
-import * as conf from '../../../src/conf.js';
+import * as getConf from '../../../src/conf.js';
 import '../../global.css';
 import EditIcon from '@material-ui/icons/Edit';
 import { IconButton } from '@material-ui/core';
@@ -44,7 +44,7 @@ class ShowIssues extends Component {
 this.setState({search_tags: this.props.search_tags, this_path: this.props.prev_path});
   //this.fetchData(this.props.search_tags);
 //
-axios.post(conf.api_url_base+'/api/issue/getAllTags',{tag: ''}, { withCredentials: true })
+axios.post(getConf('api_url_base')+'/api/issue/getAllTags',{tag: ''}, { withCredentials: true })
 .then(res=>{
   this.setState({is_authenticated: true})
   this.setState((state,props)=>{return {all_tags: res}});
@@ -69,7 +69,7 @@ if( e.response.status === 401) {
 
   deleteItem(item) {
 
-    axios.post(conf.api_url_base+'/api/issue/delete', {id: item}, { withCredentials: true })
+    axios.post(getConf('api_url_base')+'/api/issue/delete', {id: item}, { withCredentials: true })
     .then(res=>{
         this.fetchData(this.props.search_tags);
           this.setState({is_authenticated: true})
@@ -115,7 +115,7 @@ if( e.response.status === 401) {
 
     if(path === 'edit') {
 
-    axios.post(conf.api_url_base+'/api/issue/isOwner', {id: id}, { withCredentials: true })
+    axios.post(getConf('api_url_base')+'/api/issue/isOwner', {id: id}, { withCredentials: true })
       .then(res=>{
         if(res.status === 200) {
         this.setState({redirection_path: path, id: id});
@@ -198,7 +198,7 @@ isAuthenticated() {
 
 fetchData(tags) {
   this.setState({is_loading_set: true});
-  axios.post(conf.api_url_base+'/api/issue/getIssueByTag', {tags: tags}, { withCredentials: true })
+  axios.post(getConf('api_url_base')+'/api/issue/getIssueByTag', {tags: tags}, { withCredentials: true })
   .then(res=>{
     this.setState({object: res.data, is_loading_set: false});
     this.renderTableRows(res);

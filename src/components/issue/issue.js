@@ -2,7 +2,7 @@ import React, { Component, Fragment } from 'react';
 import {TextField } from '@material-ui/core';
 import axios from 'axios';
 import { Redirect } from 'react-router-dom';
-import * as conf from '../../../src/conf.js';
+import * as getConf from '../../../src/conf.js';
 import '../../global.css';
 import { Autocomplete } from '@material-ui/lab';
 import ShowIssues from './show_issues.js';
@@ -50,7 +50,7 @@ class Issue extends Component {
     }
 
       this.setState({is_loading_set: true});
-    axios.post(conf.api_url_base+'/api/issue/getalltags',{tag: ''}, { withCredentials: true })
+    axios.post(getConf('api_url_base')+'/api/issue/getalltags',{tag: ''}, { withCredentials: true })
     .then(res=>{
       this.setState({is_loading_set: false, all_tags: res.data, isauthenticated: true});
     })

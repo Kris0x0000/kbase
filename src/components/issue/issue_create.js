@@ -3,7 +3,7 @@ import axios from 'axios';
 import ReactQuill from 'react-quill';
 import 'react-quill/dist/quill.snow.css';
 import { Redirect } from 'react-router-dom';
-import * as conf from '../../../src/conf.js';
+import * as getConf from '../../../src/conf.js';
 // material ui
 import { TextField } from '@material-ui/core';
 import { Grid } from '@material-ui/core';
@@ -56,7 +56,7 @@ if(this.props.location.state) {
 }
     this.setState({is_loading_set: true});
     // fetching all tags for autocomplete field
-    axios.post(conf.api_url_base+'/api/issue/getalltags',{tag: ''}, { withCredentials: true })
+    axios.post(getConf('api_url_base')+'/api/issue/getalltags',{tag: ''}, { withCredentials: true })
     .then(res=>{
       this.setState((state,props)=>{return {all_tags: res.data}});
 
@@ -74,7 +74,7 @@ if(this.props.location.state) {
     this.setState((state,props)=>{return {editmode: true, id: this.props.match.params.id}});
 
     this.setState({is_loading_set: true});
-    axios.post(conf.api_url_base+'/api/issue/getIssueById', {id: this.props.match.params.id}, { withCredentials: true })
+    axios.post(getConf('api_url_base')+'/api/issue/getIssueById', {id: this.props.match.params.id}, { withCredentials: true })
     .then(res=>{
 
       this.setState({is_loading_set: false});
@@ -116,7 +116,7 @@ if(option === 'accept') {
   if(this.state.editmode) {
 
 this.setState({is_loading_set: true});
-  axios.post(conf.api_url_base+'/api/issue/edit', {title: this.state.title, body: this.state.body, tags: this.state.tags, id: this.state.id }, { withCredentials: true })
+  axios.post(getConf('api_url_base')+'/api/issue/edit', {title: this.state.title, body: this.state.body, tags: this.state.tags, id: this.state.id }, { withCredentials: true })
     .then(res=>{
       //this.setState({is_loading_set: false});
       this.setState({go_back: true});
@@ -130,7 +130,7 @@ this.setState({is_loading_set: true});
   } else {
 
 this.setState({is_loading_set: true});
-  axios.post(conf.api_url_base+'/api/issue/create', {title: this.state.title, body: this.state.body, tags: this.state.tags }, { withCredentials: true })
+  axios.post(getConf('api_url_base')+'/api/issue/create', {title: this.state.title, body: this.state.body, tags: this.state.tags }, { withCredentials: true })
   .then(res=>{
     this.setState({is_loading_set: false});
     if(res.status === 200) {

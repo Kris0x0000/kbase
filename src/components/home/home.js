@@ -1,7 +1,7 @@
 import React, { Component, Fragment } from 'react';
 import axios from 'axios';
 import { Redirect } from 'react-router-dom';
-import * as conf from '../../../src/conf.js';
+import * as getConf from '../../../src/conf.js';
 import { IconButton } from '@material-ui/core';
 import SearchIcon from '@material-ui/icons/Search';
 import AddCircleIcon from '@material-ui/icons/AddCircle';
@@ -31,7 +31,7 @@ class Home extends Component {
   }
 
   componentDidMount() {
-    axios.post(conf.api_url_base+'/api/isauthenticated',{tag: ''}, { withCredentials: true })
+    axios.post(getConf('api_url_base')+'/api/isauthenticated',{tag: ''}, { withCredentials: true })
     .then(res=>{
       this.setState((state,props)=>{return {all_tags: res.data}});
 
@@ -45,14 +45,14 @@ class Home extends Component {
   );
 
 
-  axios.post(conf.api_url_base+'/api/user/isadmin', {}, { withCredentials: true })
+  axios.post(getConf('api_url_base')+'/api/user/isadmin', {}, { withCredentials: true })
     .then(res=>{
 
       this.setState({is_admin: true});
     })
     .catch(e=>{});
 
-    axios.post(conf.api_url_base+'/api/user/getMyId', {}, { withCredentials: true })
+    axios.post(getConf('api_url_base')+'/api/user/getMyId', {}, { withCredentials: true })
       .then(res=>{
 
         this.setState({my_id: res.data});

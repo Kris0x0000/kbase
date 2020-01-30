@@ -2,7 +2,7 @@ import React, { Component, Fragment } from 'react';
 import axios from 'axios';
 import '../../global.css';
 import 'react-quill/dist/quill.snow.css';
-import * as conf from '../../../src/conf.js';
+import * as getConf from '../../../src/conf.js';
 import { Redirect } from 'react-router-dom';
 // material ui
 import { Grid } from '@material-ui/core';
@@ -37,7 +37,7 @@ class IssueDisplay extends Component {
 
 componentDidMount() {
 this.setState({search_tags: this.props.location.state.search_tags});
-  axios.post(conf.api_url_base+'/api/issue/getIssueById', {id: this.props.match.params.id}, { withCredentials: true })
+  axios.post(getConf('api_url_base')+'/api/issue/getIssueById', {id: this.props.match.params.id}, { withCredentials: true })
     .then(res=>{
 
       this.setState({

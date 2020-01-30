@@ -1,7 +1,7 @@
 import React, { Component, Fragment } from 'react';
 import axios from 'axios';
 import { Redirect } from 'react-router-dom';
-import * as conf from '../../../src/conf.js';
+import * as getConf from '../../../src/conf.js';
 import { IconButton } from '@material-ui/core';
 import HomeIcon from '@material-ui/icons/Home';
 import SettingsIcon from '@material-ui/icons/Settings';
@@ -21,7 +21,7 @@ class Navi extends Component {
   componentDidMount() {
     ///modyfikacja
 
-      axios.post(conf.api_url_base+'/api/user/isadmin', {}, { withCredentials: true })
+      axios.post(getConf('api_url_base')+'/api/user/isadmin', {}, { withCredentials: true })
         .then(res=>{
           this.setState({is_admin: true});
         })

@@ -1,7 +1,7 @@
 import React, { Component, Fragment } from 'react';
 import axios from 'axios';
 import { Redirect } from 'react-router-dom';
-import * as conf from '../../../src/conf.js';
+import * as getConf from '../../../src/conf.js';
 import '../../global.css';
 import EditIcon from '@material-ui/icons/Edit';
 import { IconButton } from '@material-ui/core';
@@ -31,7 +31,7 @@ class Management extends Component {
 
   componentDidMount() {
 
-    axios.post(conf.api_url_base+'/api/user/getAllUsers',{}, { withCredentials: true })
+    axios.post(getConf('api_url_base')+'/api/user/getAllUsers',{}, { withCredentials: true })
       .then(res=>{
         this.renderTableRows(res);
       })
@@ -41,7 +41,7 @@ class Management extends Component {
 
 
   fetchData() {
-    axios.post(conf.api_url_base+'/api/user/getAllUsers',{}, { withCredentials: true })
+    axios.post(getConf('api_url_base')+'/api/user/getAllUsers',{}, { withCredentials: true })
       .then(res=>{
         this.renderTableRows(res);
       })
@@ -81,7 +81,7 @@ class Management extends Component {
 
   deleteItem(item) {
 
-    axios.post(conf.api_url_base+'/api/user/delete', {id: item}, { withCredentials: true })
+    axios.post(getConf('api_url_base')+'/api/user/delete', {id: item}, { withCredentials: true })
     .then(res=>{
         this.fetchData();
           this.setState({is_authenticated: true})

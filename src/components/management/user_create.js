@@ -1,7 +1,7 @@
 import React, { Component, Fragment } from 'react';
 import axios from 'axios';
 import { Redirect } from 'react-router-dom';
-import * as conf from '../../../src/conf.js';
+import * as getConf from '../../../src/conf.js';
 import { TextField } from '@material-ui/core';
 import { Grid } from '@material-ui/core';
 import { IconButton } from '@material-ui/core';
@@ -62,7 +62,7 @@ componentDidMount() {
   this.setState((state,props)=>{return {editmode: true, id: this.props.match.params.id}});
 
   //this.setState({is_loading_set: true});
-  axios.post(conf.api_url_base+'/api/user/getUserById', {id: this.props.match.params.id}, { withCredentials: true })
+  axios.post(getConf('api_url_base')+'/api/user/getUserById', {id: this.props.match.params.id}, { withCredentials: true })
   .then(res=>{
 
   this.setState({is_loading_set: false});
@@ -83,7 +83,7 @@ this.setState({password2: this.state.password});
 
 
 
-  axios.post(conf.api_url_base+'/api/isauthenticated', {}, { withCredentials: true })
+  axios.post(getConf('api_url_base')+'/api/isauthenticated', {}, { withCredentials: true })
     .then(res=>{
       this.setState({is_authenticated: true});
     })
@@ -113,7 +113,7 @@ handletextfield(id, data) {
   if(id === 'uname') {
 
 if(!(data === '')) {
-      axios.post(conf.api_url_base+'/api/user/getUserByName', {username: data}, { withCredentials: true })
+      axios.post(getConf('api_url_base')+'/api/user/getUserByName', {username: data}, { withCredentials: true })
         .then(res=>{
           if((res.data !== "") && (res.data._id !== this.state.id)) {
             this.setState({uname_helper: 'Podana nazwa użytkownika istnieje już w systemie.', error_uname: true});
@@ -197,7 +197,7 @@ submit(option) {
 
 if(this.state.editmode && !this.state.usermode) {
 
-  axios.post(conf.api_url_base+'/api/user/edit', {username: this.state.uname, password: this.state.password, is_admin: this.state.is_admin, id: this.state.id }, { withCredentials: true })
+  axios.post(getConf('api_url_base')+'/api/user/edit', {username: this.state.uname, password: this.state.password, is_admin: this.state.is_admin, id: this.state.id }, { withCredentials: true })
     .then(res=>{
       this.setRedirection('/management/main/');
     })
@@ -207,7 +207,7 @@ if(this.state.editmode && !this.state.usermode) {
 
 } else if (this.state.usermode) {
 
-  axios.post(conf.api_url_base+'/api/user/editMyUser', {username: this.state.uname, password: this.state.password}, { withCredentials: true })
+  axios.post(getConf('api_url_base')+'/api/user/editMyUser', {username: this.state.uname, password: this.state.password}, { withCredentials: true })
     .then(res=>{
       this.setRedirection('/home');
     })
@@ -215,7 +215,7 @@ if(this.state.editmode && !this.state.usermode) {
     });
 
 } else {
-  axios.post(conf.api_url_base+'/api/user/create',{username: this.state.uname, password: this.state.password2, is_admin: this.state.is_admin}, { withCredentials: true })
+  axios.post(getConf('api_url_base')+'/api/user/create',{username: this.state.uname, password: this.state.password2, is_admin: this.state.is_admin}, { withCredentials: true })
     .then(res=>{
       this.setRedirection('/management/main/');
     })
