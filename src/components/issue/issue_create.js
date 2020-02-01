@@ -137,7 +137,10 @@ this.setState({is_loading_set: true});
     this.setState({go_back: true});
     }
 }
-  ).catch((e)=>{});
+  ).catch((e)=>{
+
+    
+  });
   } //else
 } else {
   this.setState({go_back: true});
