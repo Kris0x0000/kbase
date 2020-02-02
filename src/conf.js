@@ -4,7 +4,7 @@ module.exports = function (choice) {
   let api_url_base = 'http://localhost:1234';
 
   if(process.env.NODE_ENV === 'production') {
-    api_url_base = 'https://api.zikom.com.pl';
+    api_url_base = 'https://wiedza.zikom.com.pl';
   } else {
     api_url_base = 'http://localhost:1234';
   }

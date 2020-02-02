@@ -37,9 +37,10 @@ class Home extends Component {
 
     })
     .catch((e)=>{
-  if( e.response.status !== 200) {
+  //if( e.response.status !== 200) {
+
     this.setState({isauthenticated: false});
-  }
+//  }
 
 }
   );
