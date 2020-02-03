@@ -49,7 +49,6 @@ class IssueCreate extends Component {
     }
 
 componentDidMount() {
-
 // if redirected from other components
 if(this.props.location.state) {
   this.setState({prev_path: this.props.location.state.prev_path, search_tags: this.props.location.state.search_tags});
@@ -111,8 +110,18 @@ handleChange(value) {
 
 
 submit(option) {
-
+  console.log("this.state.length: ",this.state.tags.length);
+console.log("this.state.tags: ", this.state.tags);
 if(option === 'accept') {
+
+  if((this.state.title === '') || (this.state.body === '') || (this.state.tags.length === 0)) {
+
+      this.setState({show_warning: true, warning_body: "Uzupełnij wszystkie pola przed dodaniem wpisu."});
+      setTimeout(()=>{
+          this.setState({show_warning: false});
+      }, 2000);
+  } else {
+
   if(this.state.editmode) {
 
 this.setState({is_loading_set: true});
@@ -139,9 +148,13 @@ this.setState({is_loading_set: true});
 }
   ).catch((e)=>{
 
-    
+
   });
   } //else
+
+}
+
+
 } else {
   this.setState({go_back: true});
 }
@@ -226,8 +239,9 @@ normalizeTag(tag) {
 
     <Snackbar variant="warning"
     open={this.state.show_warning}
+
     anchorOrigin={{ vertical: 'top', horizontal: 'center' }} >
-      <SnackbarContent message={this.state.warning_body}/>
+      <SnackbarContent message={this.state.warning_body} style={{backgroundColor:'#cc0000'}}/>
     </Snackbar>
 
     {this.redirect()}

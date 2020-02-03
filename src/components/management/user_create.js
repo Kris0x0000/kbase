@@ -78,7 +78,11 @@ componentDidMount() {
 this.setState({password2: this.state.password});
 
 })
-  .catch((e)=>{console.log(e)});
+  .catch((e)=>{console.log(e);
+    if( e.response.status === 401) {
+      this.setState({is_authenticated: false});
+    }
+  });
   }
 
 
@@ -125,6 +129,9 @@ if(!(data === '')) {
         })
         .catch(e=>{
           console.log(e.response);
+          if( e.response.status === 401) {
+            this.setState({is_authenticated: false});
+          }
         });
       } else {
         this.setState({error_uname: true});
@@ -201,7 +208,10 @@ if(this.state.editmode && !this.state.usermode) {
     .then(res=>{
       this.setRedirection('/management/main/');
     })
-    .catch(e=>{console.log(e)
+    .catch(e=>{console.log(e);
+      if( e.response.status === 401) {
+        this.setState({is_authenticated: false});
+      }
     });
 
 
@@ -211,7 +221,11 @@ if(this.state.editmode && !this.state.usermode) {
     .then(res=>{
       this.setRedirection('/home');
     })
-    .catch(e=>{console.log(e)
+    .catch(e=>{console.log(e);
+      if( e.response.status === 401) {
+        this.setState({is_authenticated: false});
+      }
+
     });
 
 } else {

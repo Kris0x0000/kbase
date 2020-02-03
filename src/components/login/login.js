@@ -42,14 +42,7 @@ class Login extends Component {
     }
   }
 
-  onKeyPress = (e) => {
-           if (e.key === 'Enter') {
-             this.submit();
-           }
-   }
-
-
-  submit() {
+  suubmit = () => {
 
     axios.post(getConf('api_url_base')+'/login', {username: this.state.login, password: this.state.password}, { withCredentials: true })
     .then(res=>{
@@ -63,7 +56,15 @@ class Login extends Component {
       }
       })
     .catch((e)=>{console.log(e)});
+  };
+
+
+   handleKeyPress = (target) => {
+  if(target.charCode==13){
+    this.suubmit();
   }
+};
+
 
   render() {
   //  const { classes } = this.props;
@@ -77,12 +78,12 @@ class Login extends Component {
       <TextField  color="primary" id="Login" label="Login" type="text" variant="outlined" onChange={(r)=>this.handleLogin(r.target.value)} />
 
       <br /><br />
-      <TextField id="Login" color="primary"  label="Password" type="password" variant="outlined" onChange={(r)=>this.handlePassword(r.target.value)} />
+      <TextField id="Login" color="primary"  label="Password" type="password" variant="outlined" onKeyPress={this.handleKeyPress} onChange={(r)=>this.handlePassword(r.target.value)} />
       <br /><br />
 
 <Grid container alignItems="center" justify="center" direction="row">
 
-      <IconButton color="primary" onKeyPress={()=>{this.onKeyPress()}} onClick={()=>{this.submit()}}>
+      <IconButton color="primary" onClick={()=>{this.suubmit()}}>
          <DoneIcon/>
       </IconButton>
 

@@ -25,6 +25,7 @@ class Management extends Component {
         table: [],
         users: [],
         redirection_path:'',
+        is_authenticated:true,
      };
   }
 
@@ -35,7 +36,11 @@ class Management extends Component {
       .then(res=>{
         this.renderTableRows(res);
       })
-      .catch(e=>{console.log(e)});
+      .catch(e=>{console.log(e);
+        if( e.response.status === 401) {
+          this.setState({is_authenticated: false});
+        }
+      });
 
   }
 
@@ -45,7 +50,11 @@ class Management extends Component {
       .then(res=>{
         this.renderTableRows(res);
       })
-      .catch(e=>{console.log(e)});
+      .catch(e=>{console.log(e);
+        if( e.response.status === 401) {
+          this.setState({is_authenticated: false});
+        }
+      });
   }
 
 
@@ -87,6 +96,9 @@ class Management extends Component {
           this.setState({is_authenticated: true})
     })
     .catch((e)=>{console.log('error: ', e);
+    if( e.response.status === 401) {
+      this.setState({is_authenticated: false});
+    }
 
   });
 
@@ -127,6 +139,13 @@ class Management extends Component {
   }
 
 
+  isAuthenticated() {
+    if(!this.state.is_authenticated) {
+      return <Redirect to={{ pathname: "/login"}} />;
+    }
+  }
+
+
 
   render() {
 
@@ -155,6 +174,7 @@ class Management extends Component {
       <Navi /><Header/>
       </Grid><br/><br /><br />
       <br/><br/>
+      {this.isAuthenticated()}
       {this.redirect()}
       <div id="container">
 {this.state.table.length>0? table : null}

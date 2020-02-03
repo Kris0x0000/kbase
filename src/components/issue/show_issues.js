@@ -44,8 +44,10 @@ class ShowIssues extends Component {
 this.setState({search_tags: this.props.search_tags, this_path: this.props.prev_path});
   //this.fetchData(this.props.search_tags);
 //
+this.setState({is_loading_set: true});
 axios.post(getConf('api_url_base')+'/api/issue/getAllTags',{tag: ''}, { withCredentials: true })
 .then(res=>{
+  this.setState({is_loading_set: false});
   this.setState({is_authenticated: true})
   this.setState((state,props)=>{return {all_tags: res}});
 })
@@ -149,13 +151,13 @@ limitString(txt) {
     return(txt.substr(0,60)+"...");
   } else {
   return txt;
-}
+  }
 }
 
 
 
 renderTableRows(res) {
-
+  this.setState({is_loading_set: true});
   if(res) {
 
   let tab = res.data.map((item)=>
@@ -188,6 +190,7 @@ renderTableRows(res) {
 
 this.setState((state,props)=>{return {table: tab}});
   }
+  this.setState({is_loading_set: false});
 }
 
 isAuthenticated() {
