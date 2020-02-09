@@ -20,7 +20,6 @@ class Navi extends Component {
 
   componentDidMount() {
     ///modyfikacja
-
       axios.post(getConf('api_url_base')+'/api/user/isadmin', {}, { withCredentials: true })
         .then(res=>{
           this.setState({is_admin: true});
@@ -60,13 +59,13 @@ class Navi extends Component {
       <Fragment>
 
       {this.redirect()}
-
+<div className="navi">
       <IconButton color="primary" onClick={()=>this.setRedirection("home")}>
          <HomeIcon/>
       </IconButton>
 
         {this.settings()}
-
+</div>
       </Fragment>
     );
   }

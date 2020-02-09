@@ -257,8 +257,9 @@ if(this.state.editmode && !this.state.usermode) {
       <Fragment>
       {this.isAuthenticated()}
       {this.redirect()}
+      <Header/>
       <Grid container alignItems="flex-start" justify="flex-start" direction="row">
-      <Navi /><Header/>
+      <Navi />
       </Grid><br/><br /><br />
       <Snackbar variant="warning"
       open={this.state.show_warning}

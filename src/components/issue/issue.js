@@ -103,8 +103,9 @@ class Issue extends Component {
     render() {
 
     return (<Fragment>
+      <Header/>
       <Grid container alignItems="flex-start" justify="flex-start" direction="row">
-      <Navi /><Header/>
+      <Navi />
       </Grid>
 
       <br/><br/><br/>

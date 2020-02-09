@@ -46,9 +46,10 @@ class Help extends Component {
     return(
 
       <Fragment>
+      <Header/>
       {this.redirect()}
       <Grid container alignItems="flex-start" justify="flex-start" direction="row">
-      <Navi /><Header/>
+      <Navi />
       </Grid><br/><br /><br />
       <div className="help">
       <h3>1.	Wyszukiwanie.</h3><br/>

@@ -52,9 +52,12 @@ axios.post(getConf('api_url_base')+'/api/issue/getAllTags',{tag: ''}, { withCred
   this.setState((state,props)=>{return {all_tags: res}});
 })
 .catch((e)=>{
-if( e.response.status === 401) {
-      this.setState({is_authenticated: false})
+if(e.response) {
+if(e.response.status === 401) {
+      this.setState({is_authenticated: false});
   }
+}
+
 });
 
   }

@@ -16,7 +16,7 @@ class Header extends Component {
     return(
       <Fragment>
       <div id="header">
-        <img src={logo} alt="Logo" width="20%" height="20%" />   &nbsp; Baza Wiedzy
+        <img src={logo} alt="Logo" width="60px" height="60px" />   
         </div>
         <br/><br/>
       </Fragment>

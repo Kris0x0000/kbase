@@ -170,8 +170,9 @@ class Management extends Component {
 
     return (
       <Fragment>
+      <Header/>
       <Grid container alignItems="flex-start" justify="flex-start" direction="row">
-      <Navi /><Header/>
+      <Navi />
       </Grid><br/><br /><br />
       <br/><br/>
       {this.isAuthenticated()}

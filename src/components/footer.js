@@ -19,7 +19,7 @@ class Footer extends Component {
 
         <hr className="hr-text"/>
 
-        Baza Wiedzy by Krzysztof Kosowski, 2020-2021. Wszelkie prawa zastrzeżone.
+        Baza Wiedzy, Krzysztof Kosowski, 2020-2021. Wszelkie prawa zastrzeżone.
         </div>
       </Fragment>
     );

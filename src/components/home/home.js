@@ -126,7 +126,7 @@ render() {
     {this.redirect()}
 
     <div className="home_icons">
-    <Grid container alignItems="flex-start" justify="flex-start" direction="row">
+    <Grid container alignItems="flex-start" justify="center" direction="row">
   <Tooltip title="Szukaj">
     <IconButton color="primary" onClick={()=>this.setRedirection("/issue/find/")}>
        <SearchIcon style={{fontSize: '128px'}}/>

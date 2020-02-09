@@ -1,6 +1,6 @@
 import React, { Component, Fragment } from 'react';
 import axios from 'axios';
-import ReactQuill from 'react-quill';
+import ReactQuill, { Quill } from 'react-quill';
 import 'react-quill/dist/quill.snow.css';
 import { Redirect } from 'react-router-dom';
 import * as getConf from '../../../src/conf.js';
@@ -27,6 +27,8 @@ class IssueCreate extends Component {
 
     constructor(props) {
       super(props);
+      this.myRef = React.createRef();
+
       this.state = {
         //editfiled / Quill
         title: '',
@@ -42,13 +44,28 @@ class IssueCreate extends Component {
         show_warning: false,
         accepted: false,
         is_loading_set: false,
-        warning_body:''
+        warning_body:'',
+        images:[],
+
       };
       this.handleChange = this.handleChange.bind(this);
+
+      this.modules = {
+          toolbar: {
+            container: [['bold', 'italic', 'underline', 'blockquote','strike'],
+            [{ 'list': 'ordered' }, { 'list': 'bullet' }],
+            ['image'],
+            ],
+            handlers: {
+              'image': this.selectLocalImage
+            }
+          }
+        }
 
     }
 
 componentDidMount() {
+
 // if redirected from other components
 if(this.props.location.state) {
   this.setState({prev_path: this.props.location.state.prev_path, search_tags: this.props.location.state.search_tags});
@@ -75,23 +92,26 @@ if(this.props.location.state) {
     this.setState({is_loading_set: true});
     axios.post(getConf('api_url_base')+'/api/issue/getIssueById', {id: this.props.match.params.id}, { withCredentials: true })
     .then(res=>{
-
       this.setState({is_loading_set: false});
-
-
   this.setState({
     title: res.data[0].title,
     body: res.data[0].body,
-    tags: res.data[0].tags});
-
+    tags: res.data[0].tags,
+    images: this.state.images.concat(res.data[0].images)});
+console.log(res.data[0].images);
     })
-    .catch((e)=>{});
+    .catch((e)=>{
+
+      if( e.response.status === 401) {
+        this.setState({isauthenticated: false});
+      }
+    });
       }
 
 }
 
 componentDidUpdate() {
-
+//console.log(this.state.images[0]);
 }
 
 
@@ -108,14 +128,24 @@ handleChange(value) {
 
 }
 
+addImagesToArray(body) {
+  var b=[];
+  let first = body.match(/https?\:\/\/\w+\:?\w*.?\w*\/uploads\/\w*.\w{3,4}/g);
+  if(first) {
+  first.forEach((i)=>{
+    let a = (i.split("/uploads/", 2));
+    b.push(a[1]);
+  });
+}
+  return b;
+}
+
 
 submit(option) {
-  console.log("this.state.length: ",this.state.tags.length);
-console.log("this.state.tags: ", this.state.tags);
+
 if(option === 'accept') {
 
   if((this.state.title === '') || (this.state.body === '') || (this.state.tags.length === 0)) {
-
       this.setState({show_warning: true, warning_body: "Uzupełnij wszystkie pola przed dodaniem wpisu."});
       setTimeout(()=>{
           this.setState({show_warning: false});
@@ -123,23 +153,25 @@ if(option === 'accept') {
   } else {
 
   if(this.state.editmode) {
-
+//console.log(this.state.images);
 this.setState({is_loading_set: true});
-  axios.post(getConf('api_url_base')+'/api/issue/edit', {title: this.state.title, body: this.state.body, tags: this.state.tags, id: this.state.id }, { withCredentials: true })
+
+
+  axios.post(getConf('api_url_base')+'/api/issue/edit', {title: this.state.title, body: this.state.body, tags: this.state.tags, id: this.state.id, images: this.addImagesToArray(this.state.body) }, { withCredentials: true })
     .then(res=>{
       //this.setState({is_loading_set: false});
       this.setState({go_back: true});
     })
     .catch(e=>{
-      if(e.response.status === 405) {
-        this.setState({show_warning: true, warning_body: "Nie możesz edytować wpisu którego nie jesteś właścicielem"});
+      if(e.response.status === 401) {
+        this.setState({is_authenticated: false});
       }
     });
 
   } else {
 
 this.setState({is_loading_set: true});
-  axios.post(getConf('api_url_base')+'/api/issue/create', {title: this.state.title, body: this.state.body, tags: this.state.tags }, { withCredentials: true })
+  axios.post(getConf('api_url_base')+'/api/issue/create', {title: this.state.title, body: this.state.body, tags: this.state.tags, images: this.addImagesToArray(this.state.body) }, { withCredentials: true })
   .then(res=>{
     this.setState({is_loading_set: false});
     if(res.status === 200) {
@@ -147,7 +179,9 @@ this.setState({is_loading_set: true});
     }
 }
   ).catch((e)=>{
-
+    if(e.response.status === 401) {
+      this.setState({is_authenticated: false});
+    }
 
   });
   } //else
@@ -178,12 +212,10 @@ handleAutocompleteChange(event, value) {
     this.setState({tags: data});
   });
 
-  //// !!!!
 }
 
 
 ProcessArray = async (docs) => {
-
   return Promise.all(docs.map((item)=>this.ProcessItem(item)));
 }
 
@@ -227,19 +259,73 @@ normalizeTag(tag) {
   return tag.toLowerCase();
 }
 
+selectLocalImage = ()=> {
+      const input = document.createElement('input');
+      input.setAttribute('type', 'file');
+      input.click();
+
+      // Listen upload local image and save to server
+      input.onchange = () => {
+        const file = input.files[0];
+
+        // file type is only image.
+        if (/^image\//.test(file.type)) {
+          this.saveToServer(file);
+        } else {
+          console.warn('You could only upload images.');
+        }
+      };
+    };
+
+
+  saveToServer = (file)=> {
+      const fd = new FormData();
+      fd.append('image', file);
+      axios.post(getConf('api_url_base')+'/api/upload/', fd,{
+    headers: {
+      'Content-Type': 'multipart/form-data',
+    }, withCredentials: true
+
+})
+      .then(res=>{
+let img = res.data.path+res.data.filename;
+
+this.insertToEditor(img);
+      })
+      .catch((e)=>{
+        console.log(e);
+        if(e.response) {
+    if( e.response.status === 401) {
+      this.setState({isauthenticated: false});
+          }}
+        });
+    };
+    // Step3. insert image url to rich editor.
+
+
+  insertToEditor(url) {
+      // push image url to rich editor.
+      const range = this.myRef.current.getEditor().getSelection();
+      this.myRef.current.getEditor().insertEmbed(range.index, 'image', url);
+    }
+
 
   render() {
 
   return (
     <Fragment>
+    <Header />
+
     <Grid container alignItems="flex-start" justify="flex-start" direction="row">
-    <Navi /><Header/>
-    </Grid><br/><br /><br />
+
+    <Navi />
+
+
+    </Grid><br /><br />
     {this.showLoading()}
 
     <Snackbar variant="warning"
     open={this.state.show_warning}
-
     anchorOrigin={{ vertical: 'top', horizontal: 'center' }} >
       <SnackbarContent message={this.state.warning_body} style={{backgroundColor:'#cc0000'}}/>
     </Snackbar>
@@ -250,7 +336,21 @@ normalizeTag(tag) {
     <div id="container">
         <TextField fullWidth={true} autoComplete="off" id="title" label="Tytuł" type="text" variant="outlined" value={this.state.title} onChange={(r)=>this.handletitle(r.target.value)} />
         <br /><br /><br />
-        <ReactQuill value={this.state.body} onChange={this.handleChange} color="primary" />
+        <ReactQuill
+        ref={this.myRef}
+        value={this.state.body}
+        onChange={this.handleChange}
+         color="primary"
+modules={this.modules}
+
+formats={[
+  'header', 'font', 'size',
+  'bold', 'italic', 'underline', 'strike', 'blockquote',
+  'list', 'bullet', 'indent',
+  'link', 'image', 'video'
+]}
+
+          />
         <br /><br />
 
         <Autocomplete
@@ -281,8 +381,10 @@ normalizeTag(tag) {
                )}
              />
         <br />
-
 </div>
+
+
+
 <div class="bottom_navi">
 <Grid container alignItems="flex-start" justify="flex-start" direction="row">
 <Tooltip title="Wróć">
