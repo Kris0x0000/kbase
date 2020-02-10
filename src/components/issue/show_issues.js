@@ -150,8 +150,8 @@ showLoading() {
 }
 
 limitString(txt) {
-  if(txt.length >= 60) {
-    return(txt.substr(0,60)+"...");
+  if(txt.length >= 90) {
+    return(txt.substr(0,90)+"...");
   } else {
   return txt;
   }
@@ -222,8 +222,8 @@ render() {
 
   let table = <table id="issuelist">
   <colgroup>
+    <col style={{ width: '20%'}}/>
     <col style={{ width: '30%'}}/>
-    <col style={{ width: '25%'}}/>
     <col style={{ width: '10%'}}/>
     <col style={{ width: '10%'}}/>
     <col style={{ width: '10%'}}/>

@@ -289,6 +289,7 @@ selectLocalImage = ()=> {
 })
       .then(res=>{
 let img = res.data.path+res.data.filename;
+console.log("img", img);
 
 this.insertToEditor(img);
       })
