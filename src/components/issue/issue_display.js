@@ -58,7 +58,7 @@ this.setState({search_tags: this.props.location.state.search_tags});
 }
 
 componentDidUpdate() {
-
+console.log("update");
 }
 
 isAuthenticated() {
@@ -72,7 +72,7 @@ createHTML(code) {
 }
 
 displayHTML(code) {
-  return <p dangerouslySetInnerHTML={this.createHTML(code)} />;
+  return <div dangerouslySetInnerHTML={this.createHTML(code)} />;
 }
 
 redirect() {
@@ -106,7 +106,7 @@ getTime(millis) {
     <Fragment>
     <Header/>
     <Grid container alignItems="flex-start" justify="flex-start" direction="row">
-    <Navi />
+    <Navi location={this.props.location.pathname}/>
     </Grid><br/>
     <div id="container">
     {this.isAuthenticated()}
@@ -125,17 +125,19 @@ getTime(millis) {
       <tr>
       <td valign="top">
         {this.displayHTML(this.state.body)}
+
         </td>
       </tr>
     </tbody>
     </table>
   <br />
+
     {this.redirect()}
 
     <div className="user_info">
-     Utworzony przez <b>{this.state.creator}</b>, w dniu <b>{this.getTime(this.state.create_timestamp)}</b>.
-     <br/>
-     {(this.state.editor !== '') ? <p>Zmodyfikowany przez <b>{(this.state.editor !== '') ? this.state.editor :''}</b>, w dniu <b>{this.getTime(this.state.edit_timestamp)}.</b></p> :''}
+    Utworzony przez <b>{this.state.creator}</b>, w dniu <b>{this.getTime(this.state.create_timestamp)}</b>.
+    <br/>
+    {(this.state.editor !== '') ? <p>Zmodyfikowany przez <b>{(this.state.editor !== '') ? this.state.editor :''}</b>, w dniu <b>{this.getTime(this.state.edit_timestamp)}.</b></p> :''}
     </div>
 
 </div>
@@ -154,9 +156,12 @@ getTime(millis) {
   </Grid>
 
 </div>
+
 <br /><br /><br /><br />
 <Footer />
+
         </Fragment>
+
       );
   }
 

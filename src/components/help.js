@@ -49,7 +49,7 @@ class Help extends Component {
       <Header/>
       {this.redirect()}
       <Grid container alignItems="flex-start" justify="flex-start" direction="row">
-      <Navi />
+      <Navi location={this.props.location.pathname}/>
       </Grid><br/><br /><br />
       <div className="help">
       <h3>1.	Wyszukiwanie.</h3><br/>

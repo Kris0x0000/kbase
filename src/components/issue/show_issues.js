@@ -13,6 +13,9 @@ import Snackbar from '@material-ui/core/Snackbar';
 import { SnackbarContent } from '@material-ui/core';
 import Tooltip from '@material-ui/core/Tooltip';
 import ArrowBackIcon from '@material-ui/icons/ArrowBack';
+import CountUp from 'react-countup';
+import Grid from '@material-ui/core/Grid';
+import Paper from '@material-ui/core/Paper';
 
 
 
@@ -26,14 +29,17 @@ class ShowIssues extends Component {
       id: '',
       object: '',
       table: [],
-      search_tags: '',
+      search_tags: [],
       all_tags: '',
       is_loading_set: false,
       is_authenticated: true,
       once: false,
       show_warning: false,
       warning_body: '',
-      this_path:''
+      this_path:'',
+      stats:{},
+      tag_count:'',
+      issue_count:''
     };
   }
 
@@ -50,7 +56,11 @@ axios.post(getConf('api_url_base')+'/api/issue/getAllTags',{tag: ''}, { withCred
   this.setState({is_loading_set: false});
   this.setState({is_authenticated: true})
   this.setState((state,props)=>{return {all_tags: res}});
+  this.setState({tags_count: res.data.length});
+
+  console.log("res:",res);
 })
+
 .catch((e)=>{
 if(e.response) {
 if(e.response.status === 401) {
@@ -59,6 +69,21 @@ if(e.response.status === 401) {
 }
 
 });
+
+
+axios.post(getConf('api_url_base')+'/api/issue/getStats', {}, { withCredentials: true })
+.then(res=>{
+  this.setState({stats: res.data});
+  this.setState({tag_count: res.data.tag_count, issue_count: res.data.issue_count});
+console.log("stats: ", res.data);
+})
+.catch((e)=>{console.log(e)
+  if( e.response.status === 401) {
+   this.setState({is_authenticated: false});
+  }
+});
+
+
 
   }
 
@@ -108,6 +133,10 @@ if(e.response.status === 401) {
 
       if(this.state.redirection_path === 'back') {
         return <Redirect to={{ pathname: "/home/", state: { prev_path: this.state.this_path}}} />;
+      }
+
+      if(this.state.redirection_path === 'add') {
+        return <Redirect to={{ pathname: "/issue/create/", state: { prev_path: this.state.this_path}}} />;
       }
 
   }
@@ -165,9 +194,9 @@ renderTableRows(res) {
 
   let tab = res.data.map((item)=>
 
-  <tr key={item._id}>
+  <tr key={item._id} onClick={()=>this.setRedirection(item._id, 'display')}>
     <td>{this.limitString(item.title)}</td>
-    <td>{item.tags.map((element)=><Fragment><Chip variant="outlined" label={element}/> </Fragment>)}</td>
+    <td>{item.tags.map((element)=><Fragment><Chip variant="outlined" size="small" label={element}/> </Fragment>)}</td>
     <td>{item.creator}</td>
     <td>{getTime(item.create_timestamp)}</td>
     <td>
@@ -218,34 +247,75 @@ fetchData(tags) {
 
 }
 
+tableHeader() {
+  return(
+     <table id="issuelist">
+    <colgroup>
+      <col style={{ width: '20%'}}/>
+      <col style={{ width: '30%'}}/>
+      <col style={{ width: '10%'}}/>
+      <col style={{ width: '10%'}}/>
+      <col style={{ width: '10%'}}/>
+
+    </colgroup>
+    <thead>
+          <tr>
+              <th>Tytuł</th>
+              <th>Tagi</th>
+              <th>Dodane przez</th>
+              <th>W dniu</th>
+              <th>Opcje</th>
+          </tr>
+      </thead>
+    <tbody>
+    {this.state.table}
+    </tbody>
+    </table>
+  );
+}
+
+
+chooseComp() {
+  if(this.state.search_tags) {
+    if(this.state.search_tags.length > 0 ) {
+  return (
+    <div>{this.tableHeader()}</div>
+  );
+
+}    else {
+return this.showStats();
+  }
+} else {
+  return this.showStats();
+  }
+}
+
+
+showStats() {
+  return (
+<div>
+<Grid container className="stats">
+<Grid item xs justify="center">
+
+    <p>Liczba tagów: <CountUp redraw={true} duration={4} start={0} end={this.state.tag_count} delay={0}></CountUp></p>
+
+
+    <p>Liczba wpisów: <CountUp redraw={true} duration={4} start={0} end={this.state.issue_count} delay={0}></CountUp></p>
+
+    </Grid>
+</Grid>
+</div>
+  );
+}
+
+
+
+
 render() {
-
-  let table = <table id="issuelist">
-  <colgroup>
-    <col style={{ width: '20%'}}/>
-    <col style={{ width: '30%'}}/>
-    <col style={{ width: '10%'}}/>
-    <col style={{ width: '10%'}}/>
-    <col style={{ width: '10%'}}/>
-
-  </colgroup>
-  <thead>
-        <tr>
-            <th>Tytuł</th>
-            <th>Tagi</th>
-            <th>Dodane przez</th>
-            <th>W dniu</th>
-            <th>Opcje</th>
-        </tr>
-    </thead>
-  <tbody>
-  {this.state.table}
-  </tbody>
-  </table>;
 
     return(
       <Fragment>
-
+{this.chooseComp()}
       <Snackbar variant="warning"
       open={this.state.show_warning}
       anchorOrigin={{ vertical: 'top', horizontal: 'center' }}
@@ -256,7 +326,7 @@ render() {
       <div id="container">
 
       {this.redirect()}
-{this.state.table.length>0? table : null}
+
 {this.isAuthenticated()}
 
 </div>
@@ -266,6 +336,7 @@ render() {
    <ArrowBackIcon/>
 </IconButton>
 </Tooltip>
+
 </div>
 </Fragment>
     );

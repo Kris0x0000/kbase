@@ -100,12 +100,13 @@ class Issue extends Component {
     }
   }
 
+
     render() {
 
     return (<Fragment>
       <Header/>
       <Grid container alignItems="flex-start" justify="flex-start" direction="row">
-      <Navi />
+      <Navi location='/issue/find' search_tags={this.state.search_tags}/>
       </Grid>
 
       <br/><br/><br/>

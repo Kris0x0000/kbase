@@ -172,7 +172,7 @@ class Management extends Component {
       <Fragment>
       <Header/>
       <Grid container alignItems="flex-start" justify="flex-start" direction="row">
-      <Navi />
+      <Navi location={this.props.location.pathname}/>
       </Grid><br/><br /><br />
       <br/><br/>
       {this.isAuthenticated()}

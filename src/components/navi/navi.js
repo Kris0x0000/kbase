@@ -6,6 +6,8 @@ import { IconButton } from '@material-ui/core';
 import HomeIcon from '@material-ui/icons/Home';
 import SettingsIcon from '@material-ui/icons/Settings';
 import '../../global.css';
+import Tooltip from '@material-ui/core/Tooltip';
+import AddCircleIcon from '@material-ui/icons/AddCircle';
 
 
 
@@ -30,10 +32,26 @@ class Navi extends Component {
   settings() {
     if(this.state.is_admin) {
       return (
-        <IconButton color="primary" onClick={()=>this.setRedirection("settings")}>
+              <Tooltip title="Opcje">
+        <IconButton color="primary" onClick={()=>this.setRedirection("admin_settings")}>
         <SettingsIcon/>
         </IconButton>
+        </Tooltip>
       );
+    }
+  }
+
+
+  addArt() {
+console.log(this.props.location);
+    if(this.props.location !== '/issue/create/') {
+    return(
+      <Tooltip title="Dodaj nowy wpis">
+      <IconButton color="primary" onClick={()=>{this.setRedirection("add")}}>
+         <AddCircleIcon/>
+      </IconButton>
+      </Tooltip>
+    );
     }
   }
 
@@ -43,8 +61,13 @@ class Navi extends Component {
       if(this.state.redirection_path === 'home') {
         return <Redirect to={{ pathname: "/home" }} />;
       }
-      if(this.state.redirection_path === 'settings') {
+      if(this.state.redirection_path === 'admin_settings') {
         return <Redirect to={{ pathname: "/management/main" }} />;
+      }
+      if(this.state.redirection_path === 'add') {
+
+        return <Redirect to={{ pathname: "/issue/create/", state: { prev_path: this.props.location, search_tags: this.props.search_tags } }} />;
+
       }
     }
   }
@@ -60,11 +83,15 @@ class Navi extends Component {
 
       {this.redirect()}
 <div className="navi">
+      <Tooltip title="Strona główna">
       <IconButton color="primary" onClick={()=>this.setRedirection("home")}>
          <HomeIcon/>
       </IconButton>
+      </Tooltip>
+
 
         {this.settings()}
+          {this.addArt()}
 </div>
       </Fragment>
     );

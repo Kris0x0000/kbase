@@ -52,14 +52,18 @@ class IssueCreate extends Component {
 
       this.modules = {
           toolbar: {
-            container: [['bold', 'italic', 'underline', 'blockquote','strike'],
+            container: [['bold', 'italic', 'underline', 'blockquote','strike','code-block'],
+            [{ 'header': '1'}, {'header': '2'}, { 'font': [] }],
             [{ 'list': 'ordered' }, { 'list': 'bullet' }],
             ['image'],
             ],
             handlers: {
               'image': this.selectLocalImage
             }
-          }
+          },
+          clipboard: {
+  matchVisual: true,
+}
         }
 
     }
@@ -75,7 +79,6 @@ if(this.props.location.state) {
     axios.post(getConf('api_url_base')+'/api/issue/getalltags',{tag: ''}, { withCredentials: true })
     .then(res=>{
       this.setState((state,props)=>{return {all_tags: res.data}});
-
       this.setState({is_loading_set: false});
     })
     .catch((e)=>{
@@ -198,6 +201,8 @@ this.setState({is_loading_set: true});
 
 handleAutocompleteChange(event, value) {
 
+
+
   if(value.length > 8) {
     value = this.removeLastElement(value);
     this.setState({to_many_tags: true, show_warning: true, warning_body: "Nie możesz ustawić więcej niż 6 tagów"});
@@ -311,6 +316,7 @@ this.insertToEditor(img);
     }
 
 
+
   render() {
 
   return (
@@ -319,7 +325,7 @@ this.insertToEditor(img);
 
     <Grid container alignItems="flex-start" justify="flex-start" direction="row">
 
-    <Navi />
+    <Navi location={this.props.location.pathname}/>
 
 
     </Grid><br /><br />
@@ -335,10 +341,36 @@ this.insertToEditor(img);
 {this.isAuthenticated()}
 
     <div id="container">
+    <Autocomplete
+           multiple
+           freeSolo
+           value={this.state.tags}
+           onChange={(event, value) => this.handleAutocompleteChange(event, value)}
+           options={this.state.all_tags}
+           getOptionLabel={option => option}
+           renderTags={(value, getTagProps) =>
+
+             value.map((option, index) => (
+               <Chip  variant="outlined" label={option} color="primary" {...getTagProps({ index })} />
+             ))
+           }
+
+
+           renderInput={params => (
+             <TextField
+               {...params}
+               variant="outlined"
+               label="Wybierz tagi..."
+
+               fullWidth
+             />
+           )}
+         /><br /><br />
+
         <TextField fullWidth={true} autoComplete="off" id="title" label="Tytuł" type="text" variant="outlined" value={this.state.title} onChange={(r)=>this.handletitle(r.target.value)} />
         <br /><br /><br />
         <ReactQuill
-        ref={this.myRef}
+
         value={this.state.body}
         onChange={this.handleChange}
          color="primary"
@@ -346,41 +378,15 @@ modules={this.modules}
 
 formats={[
   'header', 'font', 'size',
-  'bold', 'italic', 'underline', 'strike', 'blockquote',
+  'bold', 'italic', 'underline', 'strike', 'blockquote', 'code-block',
   'list', 'bullet', 'indent',
   'link', 'image', 'video'
 ]}
 
           />
-        <br /><br />
-
-        <Autocomplete
-               multiple
-               freeSolo
-
-               value={this.state.tags}
-               onChange={(event, value) => this.handleAutocompleteChange(event, value)}
-               id="tags-standard"
-               options={this.state.all_tags}
-               getOptionLabel={option => option}
-               renderTags={(value, getTagProps) =>
-
-                 value.map((option, index) => (
-                   <Chip  variant="outlined" label={option} color="primary" {...getTagProps({ index })} />
-                 ))
-               }
+        <br />
 
 
-               renderInput={params => (
-                 <TextField
-                   {...params}
-                   variant="outlined"
-                   label="Wybierz tagi..."
-
-                   fullWidth
-                 />
-               )}
-             />
         <br />
 </div>
 
