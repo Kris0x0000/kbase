@@ -36,7 +36,10 @@ class IssueDisplay extends Component {
     }
 
 componentDidMount() {
+
+  if(this.props.location.search_tags) {
 this.setState({search_tags: this.props.location.state.search_tags});
+}
   axios.post(getConf('api_url_base')+'/api/issue/getIssueById', {id: this.props.match.params.id}, { withCredentials: true })
     .then(res=>{
 
