@@ -110,15 +110,6 @@ tr:nth-child(odd) {
 
   }
 
-#issuedisplaytab  table {
-
-    border-collapse: collapse;
-    text-align:left;
-    border-bottom: 1px solid #2196f3;
-    table-layout: fixed;
-    width: 95%;
-
-  }
 
   p {
 
@@ -128,15 +119,19 @@ margin: auto;
 
 #issuedisplaytab td {
 
+margin-top: 100px;
   min-width:200px;
   border-top: 1px solid #2196f3;
   text-align: left;
   padding-left: 10px;
   }
 
-#issuedisplaytab  th  {
-        text-align: left;
-    }
+  #issuedisplaytab th {
+    margin-bottom: 50px;
+    padding: 0 2px 50px;
+  }
+
+
 
   hr {
     border-top: 1px solid #2196f3;
@@ -168,6 +163,7 @@ width: 99%;
   position: absolute;
 
 }
+
 
 
 

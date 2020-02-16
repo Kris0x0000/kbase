@@ -43,7 +43,7 @@ class Navi extends Component {
 
 
   addArt() {
-console.log(this.props.location);
+//console.log(this.props.location);
     if(this.props.location !== '/issue/create/') {
     return(
       <Tooltip title="Dodaj nowy wpis">

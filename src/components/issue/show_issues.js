@@ -24,6 +24,7 @@ class ShowIssues extends Component {
 
   constructor(props) {
     super(props);
+
     this.state = {
       redirection_path: '' ,
       id: '',

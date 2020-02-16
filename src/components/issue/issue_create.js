@@ -1,7 +1,6 @@
 import React, { Component, Fragment } from 'react';
 import axios from 'axios';
-import ReactQuill, { Quill } from 'react-quill';
-import 'react-quill/dist/quill.snow.css';
+
 import { Redirect } from 'react-router-dom';
 import * as getConf from '../../../src/conf.js';
 // material ui
@@ -17,9 +16,10 @@ import Navi from '../../components/navi/navi';
 import { CircularProgress } from '@material-ui/core';
 import { Chip } from '@material-ui/core';
 import { SnackbarContent } from '@material-ui/core';
-import Header from '../header';
+import Headerr from '../header';
 import Tooltip from '@material-ui/core/Tooltip';
 import Footer from '../footer';
+import MyQuill from '../myquill';
 
 
 
@@ -27,12 +27,12 @@ class IssueCreate extends Component {
 
     constructor(props) {
       super(props);
-      this.myRef = React.createRef();
 
       this.state = {
         //editfiled / Quill
         title: '',
         body:'',
+        body_edited:'',
         text:'',
         id:'',
         editmode: false,
@@ -46,40 +46,25 @@ class IssueCreate extends Component {
         is_loading_set: false,
         warning_body:'',
         images:[],
+        submit_clicked: false,
 
       };
       this.handleChange = this.handleChange.bind(this);
-
-      this.modules = {
-          toolbar: {
-            container: [['bold', 'italic', 'underline', 'blockquote','strike','code-block'],
-            [{ 'header': '1'}, {'header': '2'}, { 'font': [] }],
-            [{ 'list': 'ordered' }, { 'list': 'bullet' }],
-            ['image'],
-            ],
-            handlers: {
-              'image': this.selectLocalImage
-            }
-          },
-          clipboard: {
-  matchVisual: true,
-}
-        }
 
     }
 
 componentDidMount() {
 
+
 // if redirected from other components
 if(this.props.location.state) {
   this.setState({prev_path: this.props.location.state.prev_path, search_tags: this.props.location.state.search_tags});
 }
-    this.setState({is_loading_set: true});
+  //  this.setState({is_loading_set: true});
     // fetching all tags for autocomplete field
     axios.post(getConf('api_url_base')+'/api/issue/getalltags',{tag: ''}, { withCredentials: true })
     .then(res=>{
-      this.setState((state,props)=>{return {all_tags: res.data}});
-      this.setState({is_loading_set: false});
+  //    this.setState({is_loading_set: false, all_tags: res.data});
     })
     .catch((e)=>{
   if( e.response.status === 401) {
@@ -92,16 +77,16 @@ if(this.props.location.state) {
     if(this.props.match.params.id) {
     this.setState((state,props)=>{return {editmode: true, id: this.props.match.params.id}});
 
-    this.setState({is_loading_set: true});
+//    this.setState({is_loading_set: true});
     axios.post(getConf('api_url_base')+'/api/issue/getIssueById', {id: this.props.match.params.id}, { withCredentials: true })
     .then(res=>{
-      this.setState({is_loading_set: false});
+  //    this.setState({is_loading_set: false});
   this.setState({
     title: res.data[0].title,
     body: res.data[0].body,
     tags: res.data[0].tags,
     images: this.state.images.concat(res.data[0].images)});
-console.log(res.data[0].images);
+//console.log(res.data[0].images);
     })
     .catch((e)=>{
 
@@ -114,7 +99,7 @@ console.log(res.data[0].images);
 }
 
 componentDidUpdate() {
-//console.log(this.state.images[0]);
+//console.log("issue create -> did update");
 }
 
 
@@ -122,9 +107,7 @@ handletitle(data) {
   this.setState((state,props)=>{return {title: data}});
 }
 
-handlebody(data) {
-  this.setState((state,props)=>{return {body: data}});
-}
+
 
 handleChange(value) {
   this.setState({ body: value })
@@ -132,6 +115,7 @@ handleChange(value) {
 }
 
 addImagesToArray(body) {
+  console.log(body);
   var b=[];
   let first = body.match(/https?\:\/\/\w+\:?\w*.?\w*\/uploads\/\w*.\w{3,4}/g);
   if(first) {
@@ -146,9 +130,11 @@ addImagesToArray(body) {
 
 submit(option) {
 
+  this.setState({submit_clicked: true});
+console.log(this.state.body_edited);
 if(option === 'accept') {
 
-  if((this.state.title === '') || (this.state.body === '') || (this.state.tags.length === 0)) {
+  if((this.state.title === '') || (this.state.body_edited === '') || (this.state.tags.length === 0)) {
       this.setState({show_warning: true, warning_body: "Uzupełnij wszystkie pola przed dodaniem wpisu."});
       setTimeout(()=>{
           this.setState({show_warning: false});
@@ -160,7 +146,7 @@ if(option === 'accept') {
 this.setState({is_loading_set: true});
 
 
-  axios.post(getConf('api_url_base')+'/api/issue/edit', {title: this.state.title, body: this.state.body, tags: this.state.tags, id: this.state.id, images: this.addImagesToArray(this.state.body) }, { withCredentials: true })
+  axios.post(getConf('api_url_base')+'/api/issue/edit', {title: this.state.title, body: this.state.body_edited, tags: this.state.tags, id: this.state.id, images: this.addImagesToArray(this.state.body_edited) }, { withCredentials: true })
     .then(res=>{
       //this.setState({is_loading_set: false});
       this.setState({go_back: true});
@@ -174,7 +160,7 @@ this.setState({is_loading_set: true});
   } else {
 
 this.setState({is_loading_set: true});
-  axios.post(getConf('api_url_base')+'/api/issue/create', {title: this.state.title, body: this.state.body, tags: this.state.tags, images: this.addImagesToArray(this.state.body) }, { withCredentials: true })
+  axios.post(getConf('api_url_base')+'/api/issue/create', {title: this.state.title, body: this.state.body_edited, tags: this.state.tags, images: this.addImagesToArray(this.state.body_edited) }, { withCredentials: true })
   .then(res=>{
     this.setState({is_loading_set: false});
     if(res.status === 200) {
@@ -264,56 +250,12 @@ normalizeTag(tag) {
   return tag.toLowerCase();
 }
 
-selectLocalImage = ()=> {
-      const input = document.createElement('input');
-      input.setAttribute('type', 'file');
-      input.click();
+handleMyQuillChange = (content) => {
+//  console.log(content);
 
-      // Listen upload local image and save to server
-      input.onchange = () => {
-        const file = input.files[0];
+  this.setState({body_edited: content, submit_clicked: false});
 
-        // file type is only image.
-        if (/^image\//.test(file.type)) {
-          this.saveToServer(file);
-        } else {
-          console.warn('You could only upload images.');
-        }
-      };
-    };
-
-
-  saveToServer = (file)=> {
-      const fd = new FormData();
-      fd.append('image', file);
-      axios.post(getConf('api_url_base')+'/api/upload/', fd,{
-    headers: {
-      'Content-Type': 'multipart/form-data',
-    }, withCredentials: true
-
-})
-      .then(res=>{
-let img = res.data.path+res.data.filename;
-console.log("img", img);
-
-this.insertToEditor(img);
-      })
-      .catch((e)=>{
-        console.log(e);
-        if(e.response) {
-    if( e.response.status === 401) {
-      this.setState({isauthenticated: false});
-          }}
-        });
-    };
-    // Step3. insert image url to rich editor.
-
-
-  insertToEditor(url) {
-      // push image url to rich editor.
-      const range = this.myRef.current.getEditor().getSelection();
-      this.myRef.current.getEditor().insertEmbed(range.index, 'image', url);
-    }
+};
 
 
 
@@ -321,7 +263,7 @@ this.insertToEditor(img);
 
   return (
     <Fragment>
-    <Header />
+    <Headerr />
 
     <Grid container alignItems="flex-start" justify="flex-start" direction="row">
 
@@ -365,32 +307,12 @@ this.insertToEditor(img);
                fullWidth
              />
            )}
-         /><br /><br />
+         /><br/><br/>
 
         <TextField fullWidth={true} autoComplete="off" id="title" label="Tytuł" type="text" variant="outlined" value={this.state.title} onChange={(r)=>this.handletitle(r.target.value)} />
         <br /><br /><br />
-        <ReactQuill
-
-        value={this.state.body}
-        onChange={this.handleChange}
-         color="primary"
-modules={this.modules}
-
-formats={[
-  'header', 'font', 'size',
-  'bold', 'italic', 'underline', 'strike', 'blockquote', 'code-block',
-  'list', 'bullet', 'indent',
-  'link', 'image', 'video'
-]}
-
-          />
-        <br />
-
-
-        <br />
+<MyQuill content={this.state.body} onContentChange={this.handleMyQuillChange}/>
 </div>
-
-
 
 <div class="bottom_navi">
 <Grid container alignItems="flex-start" justify="flex-start" direction="row">
