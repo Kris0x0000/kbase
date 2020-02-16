@@ -21,9 +21,9 @@ class MyQuill extends Component {
       'themes/snow.js': Snow,
     });
 
-    let image = Quill.import('formats/image.js');
-  let underline = Quill.import('formats/underline.js');
-    let blockquote = Quill.import('formats/blockquote.js');
+    //let image = Quill.import('formats/image.js');
+//  let underline = Quill.import('formats/underline.js');
+  //  let blockquote = Quill.import('formats/blockquote.js');
   }
 
 
