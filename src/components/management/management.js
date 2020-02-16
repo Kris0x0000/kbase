@@ -141,7 +141,7 @@ class Management extends Component {
 
   isAuthenticated() {
     if(!this.state.is_authenticated) {
-      return <Redirect to={{ pathname: "/login"}} />;
+      return (<Redirect to={{ pathname: "/login", state: { prev_path: this.props.location.pathname } }} />);
     }
   }
 

@@ -54,9 +54,7 @@ this.setState({search_tags: this.props.location.state.search_tags});
           });
     })
     .catch(e=>{
-
       this.setState({isauthenticated: false});
-
     });
 }
 
@@ -66,7 +64,8 @@ console.log("update");
 
 isAuthenticated() {
   if(!this.state.isauthenticated) {
-    return (<Redirect to={{ pathname: "/login" }} />);
+    //console.log(this.props.location.pathname);
+    return (<Redirect to={{ pathname: "/login", state: { prev_path: this.props.location.pathname } }} />);
   }
 }
 

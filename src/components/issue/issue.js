@@ -90,7 +90,7 @@ class Issue extends Component {
 
   isAuthenticated() {
     if(!this.state.isauthenticated) {
-      return (<Redirect to={{ pathname: "/login" }} />);
+      return (<Redirect to={{ pathname: "/login", state: { prev_path: this.props.location.pathname } }} />);
     }
   }
 

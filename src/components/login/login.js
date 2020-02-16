@@ -18,10 +18,21 @@ class Login extends Component {
     this.state = {
       login: '',
       password: '',
-      isredirected: false
+      isredirected: false,
+      prev_path:'',
     };
 
   }
+
+
+  componentDidMount() {
+    if(this.props.location.state) {
+      if(this.props.location.state.prev_path) {
+        this.setState({prev_path: this.props.location.state.prev_path});
+      }
+    }
+  }
+
 
   handleLogin(data) {
     this.setState((state, props)=>{
@@ -38,7 +49,11 @@ class Login extends Component {
 
   redirect() {
     if(this.state.isredirected) {
+      if(this.state.prev_path !== '') {
+        return <Redirect to={{ pathname: this.state.prev_path }} />;
+      } else {
       return <Redirect to={{ pathname: `/home` }} />;
+     }
     }
   }
 
