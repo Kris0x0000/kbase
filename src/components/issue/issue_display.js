@@ -37,7 +37,8 @@ class IssueDisplay extends Component {
 
 componentDidMount() {
 
-  if(this.props.location.search_tags) {
+  if(this.props.location.state) {
+    //console.log(this.props.location.state.search_tags);
 this.setState({search_tags: this.props.location.state.search_tags});
 }
   axios.post(getConf('api_url_base')+'/api/issue/getIssueById', {id: this.props.match.params.id}, { withCredentials: true })
@@ -59,7 +60,7 @@ this.setState({search_tags: this.props.location.state.search_tags});
 }
 
 componentDidUpdate() {
-console.log("update");
+//console.log("update");
 }
 
 isAuthenticated() {
@@ -84,6 +85,7 @@ redirect() {
       return <Redirect to={{ pathname: "/issue/edit/"+this.state.id , state: {prev_path: this.props.location.pathname}}} />;
     }
     if(this.state.redirection_path === 'back_to_search') {
+    //  console.log(this.state.search_tags);
       return <Redirect to={{
         pathname: '/issue/find',
       state: { search_tags: this.state.search_tags, prev_path: this.props.location.pathname }

@@ -115,7 +115,7 @@ handleChange(value) {
 }
 
 addImagesToArray(body) {
-  console.log(body);
+  //console.log(body);
   var b=[];
   let first = body.match(/https?\:\/\/\w+\:?\w*.?\w*\/uploads\/\w*.\w{3,4}/g);
   if(first) {
@@ -131,7 +131,7 @@ addImagesToArray(body) {
 submit(option) {
 
   this.setState({submit_clicked: true});
-console.log(this.state.body_edited);
+//console.log(this.state.body_edited);
 if(option === 'accept') {
 
   if((this.state.title === '') || (this.state.body_edited === '') || (this.state.tags.length === 0)) {

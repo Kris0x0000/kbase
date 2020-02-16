@@ -54,12 +54,8 @@ this.setState({search_tags: this.props.search_tags, this_path: this.props.prev_p
 this.setState({is_loading_set: true});
 axios.post(getConf('api_url_base')+'/api/issue/getAllTags',{tag: ''}, { withCredentials: true })
 .then(res=>{
-  this.setState({is_loading_set: false});
-  this.setState({is_authenticated: true})
-  this.setState((state,props)=>{return {all_tags: res}});
-  this.setState({tags_count: res.data.length});
+  this.setState({is_loading_set: false, is_authenticated: true, all_tags: res, tags_count: res.data.length});
 
-  console.log("res:",res);
 })
 
 .catch((e)=>{
@@ -76,7 +72,7 @@ axios.post(getConf('api_url_base')+'/api/issue/getStats', {}, { withCredentials:
 .then(res=>{
   this.setState({stats: res.data});
   this.setState({tag_count: res.data.tag_count, issue_count: res.data.issue_count});
-console.log("stats: ", res.data);
+//console.log("stats: ", res.data);
 })
 .catch((e)=>{console.log(e)
   if( e.response.status === 401) {
@@ -91,7 +87,6 @@ console.log("stats: ", res.data);
   componentDidUpdate(prevProps, prevState) {
 
       if(prevState.search_tags !== this.props.search_tags ) {
-
         this.fetchData(this.props.search_tags);
           this.setState({search_tags: this.props.search_tags, this_path: this.props.prev_path});
       }
@@ -115,11 +110,8 @@ console.log("stats: ", res.data);
          this.setState({show_warning: false});
      }, 2000);
     }
-
   });
-
   }
-
 
 
   redirect() {
@@ -278,7 +270,7 @@ tableHeader() {
 
 chooseComp() {
   if(this.state.search_tags) {
-    if(this.state.search_tags.length > 0 ) {
+    if(this.state.search_tags.length > 0) {
   return (
     <div>{this.tableHeader()}</div>
   );

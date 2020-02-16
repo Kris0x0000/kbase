@@ -16,7 +16,7 @@ class Navi extends Component {
     super(props);
 
     this.state = {
-
+redirection_path: ''
     };
   }
 
@@ -65,9 +65,10 @@ class Navi extends Component {
         return <Redirect to={{ pathname: "/management/main" }} />;
       }
       if(this.state.redirection_path === 'add') {
-
         return <Redirect to={{ pathname: "/issue/create/", state: { prev_path: this.props.location, search_tags: this.props.search_tags } }} />;
-
+      }
+      if(this.state.redirection_path === 'admin_settings') {
+        return <Redirect to={{ pathname: "/management/main" }} />;
       }
     }
   }
