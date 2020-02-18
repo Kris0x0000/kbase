@@ -60,11 +60,11 @@ componentDidMount() {
 if(this.props.location.state) {
   this.setState({prev_path: this.props.location.state.prev_path, search_tags: this.props.location.state.search_tags});
 }
-  //  this.setState({is_loading_set: true});
+   this.setState({is_loading_set: true});
     // fetching all tags for autocomplete field
     axios.post(getConf('api_url_base')+'/api/issue/getalltags',{tag: ''}, { withCredentials: true })
     .then(res=>{
-  //    this.setState({is_loading_set: false, all_tags: res.data});
+      this.setState({is_loading_set: false, all_tags: res.data});
     })
     .catch((e)=>{
   if( e.response.status === 401) {
@@ -77,10 +77,10 @@ if(this.props.location.state) {
     if(this.props.match.params.id) {
     this.setState((state,props)=>{return {editmode: true, id: this.props.match.params.id}});
 
-//    this.setState({is_loading_set: true});
+   this.setState({is_loading_set: true});
     axios.post(getConf('api_url_base')+'/api/issue/getIssueById', {id: this.props.match.params.id}, { withCredentials: true })
     .then(res=>{
-  //    this.setState({is_loading_set: false});
+      this.setState({is_loading_set: false});
   this.setState({
     title: res.data[0].title,
     body: res.data[0].body,
@@ -115,11 +115,12 @@ handleChange(value) {
 }
 
 addImagesToArray(body) {
-  //console.log(body);
+//console.log("body", body);
   var b=[];
-  let first = body.match(/https?\:\/\/\w+\:?\w*.?\w*\/uploads\/\w*.\w{3,4}/g);
+  let first = body.match(/https?\:\/\/\w+(\.\w+)*\:?\w*.?\w*\/uploads\/\w*.\w{3,4}/g);
   if(first) {
   first.forEach((i)=>{
+    console.log("image", i);
     let a = (i.split("/uploads/", 2));
     b.push(a[1]);
   });
@@ -130,7 +131,7 @@ addImagesToArray(body) {
 
 submit(option) {
 
-  this.setState({submit_clicked: true});
+  //this.setState({submit_clicked: true});
 //console.log(this.state.body_edited);
 if(option === 'accept') {
 

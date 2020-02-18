@@ -46,12 +46,10 @@ class Home extends Component {
   );
 
 
-  axios.post(getConf('api_url_base')+'/api/user/isadmin', {}, { withCredentials: true })
-    .then(res=>{
-
-      this.setState({is_admin: true});
-    })
-    .catch(e=>{});
+  let is_admin = localStorage.getItem('is_admin');
+  if(is_admin) {
+        this.setState({is_admin: true});
+      }
 
     axios.post(getConf('api_url_base')+'/api/user/getMyId', {}, { withCredentials: true })
       .then(res=>{

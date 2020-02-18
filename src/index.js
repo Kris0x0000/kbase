@@ -28,6 +28,22 @@ const theme = createMuiTheme({
 
           }
         },
+
+
+        MuiDialogTitle: {
+          root: {
+            background: "#ffb700"
+          }
+        },
+
+        MuiTypography: {
+          colorTextSecondary:{
+            color: "#000000"
+          }
+
+
+
+        }
 }});
 
 

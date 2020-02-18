@@ -22,11 +22,10 @@ redirection_path: ''
 
   componentDidMount() {
     ///modyfikacja
-      axios.post(getConf('api_url_base')+'/api/user/isadmin', {}, { withCredentials: true })
-        .then(res=>{
+    let is_admin = localStorage.getItem('is_admin');
+    if(is_admin) {
           this.setState({is_admin: true});
-        })
-        .catch(e=>{console.log(e.response)});
+        }
   }
 
   settings() {

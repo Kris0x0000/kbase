@@ -16,6 +16,12 @@ import ArrowBackIcon from '@material-ui/icons/ArrowBack';
 import CountUp from 'react-countup';
 import Grid from '@material-ui/core/Grid';
 import Paper from '@material-ui/core/Paper';
+import Dialog from '@material-ui/core/Dialog';
+import DialogActions from '@material-ui/core/DialogActions';
+import DialogContent from '@material-ui/core/DialogContent';
+import DialogContentText from '@material-ui/core/DialogContentText';
+import DialogTitle from '@material-ui/core/DialogTitle';
+import Button from '@material-ui/core/Button';
 
 
 
@@ -40,24 +46,26 @@ class ShowIssues extends Component {
       this_path:'',
       stats:{},
       tag_count:'',
-      issue_count:''
+      issue_count:'',
+      open_warning_delete: false,
+      item_to_delete: '',
+      is_admin: false
     };
   }
 
 
   componentDidMount(prevProps) {
 
+    let is_admin = localStorage.getItem('is_admin');
+    if(is_admin) {
+          this.setState({is_admin: true});
+        }
 
-this.setState({search_tags: this.props.search_tags, this_path: this.props.prev_path});
-  //this.fetchData(this.props.search_tags);
-//
-this.setState({is_loading_set: true});
+this.setState({search_tags: this.props.search_tags, this_path: this.props.prev_path, is_loading_set: true});
 axios.post(getConf('api_url_base')+'/api/issue/getAllTags',{tag: ''}, { withCredentials: true })
 .then(res=>{
   this.setState({is_loading_set: false, is_authenticated: true, all_tags: res, tags_count: res.data.length});
-
 })
-
 .catch((e)=>{
 if(e.response) {
 if(e.response.status === 401) {
@@ -67,12 +75,11 @@ if(e.response.status === 401) {
 
 });
 
-
 axios.post(getConf('api_url_base')+'/api/issue/getStats', {}, { withCredentials: true })
 .then(res=>{
   this.setState({stats: res.data});
   this.setState({tag_count: res.data.tag_count, issue_count: res.data.issue_count});
-//console.log("stats: ", res.data);
+console.log("stats: ", res.data);
 })
 .catch((e)=>{console.log(e)
   if( e.response.status === 401) {
@@ -180,41 +187,103 @@ limitString(txt) {
 }
 
 
+showDeleteButton(itemowner, itemid) {
+  let current_username = localStorage.getItem('username');
+if((itemowner === current_username) || this.state.is_admin) {
+  return (
+    <Tooltip title="Usuń">
+        <IconButton color="secondary" onClick={()=>this.handleDeleteClick(itemid)}>
+           <DeleteForeverIcon/>
+        </IconButton>
+        </Tooltip>
+  );
+} else {
+  return (
+    <Tooltip title="Usuń">
+        <IconButton disabled="true" color="secondary" onClick={()=>this.handleDeleteClick(itemid)}>
+           <DeleteForeverIcon />
+        </IconButton>
+        </Tooltip>
+
+  );
+}
+
+}
+
 
 renderTableRows(res) {
   this.setState({is_loading_set: true});
   if(res) {
+    if(window.innerHeight < window.innerWidth) {
+      let tab = res.data.map((item)=>
 
-  let tab = res.data.map((item)=>
+      <tr key={item._id} >
+        <td onClick={()=>this.setRedirection(item._id, 'display')}>{this.limitString(item.title)}</td>
+        <td onClick={()=>this.setRedirection(item._id, 'display')}>{item.tags.map((element)=><Fragment><Chip variant="outlined" size="small" label={element}/> </Fragment>)}</td>
+        <td onClick={()=>this.setRedirection(item._id, 'display')}>{item.creator}</td>
+        <td onClick={()=>this.setRedirection(item._id, 'display')}>{getTime(item.create_timestamp)}</td>
+        <td>
 
-  <tr key={item._id} onClick={()=>this.setRedirection(item._id, 'display')}>
-    <td>{this.limitString(item.title)}</td>
-    <td>{item.tags.map((element)=><Fragment><Chip variant="outlined" size="small" label={element}/> </Fragment>)}</td>
-    <td>{item.creator}</td>
-    <td>{getTime(item.create_timestamp)}</td>
-    <td>
-<Tooltip title="Usuń">
-    <IconButton color="secondary" onClick={()=>this.deleteItem(item._id)}>
-       <DeleteForeverIcon/>
-    </IconButton>
 
-    </Tooltip>
-    <Tooltip title="Edytuj">
-    <IconButton color="primary" onClick={()=>this.setRedirection(item._id, 'edit')}>
-    <EditIcon/>
-    </IconButton>
-    </Tooltip>
 
-<Tooltip title="Pokaż">
-    <IconButton color="primary" onClick={()=>this.setRedirection(item._id, 'display')}>
-    <VisibilityIcon/>
-    </IconButton>
-</Tooltip>
-    </td>
-  </tr>);
+        <Tooltip title="Pokaż">
+            <IconButton color="primary" onClick={()=>this.setRedirection(item._id, 'display')}>
+            <VisibilityIcon/>
+            </IconButton>
+        </Tooltip>
 
-this.setState((state,props)=>{return {table: tab}});
+
+        <Tooltip title="Edytuj">
+        <IconButton color="primary" onClick={()=>this.setRedirection(item._id, 'edit')}>
+        <EditIcon/>
+        </IconButton>
+        </Tooltip>
+
+
+    {this.showDeleteButton(item.creator, item._id)}
+
+        </td>
+      </tr>);
+      this.setState((state,props)=>{return {table: tab}});
+
+    } else {
+      let tab = res.data.map((item)=>
+
+      <tr key={item._id} >
+        <td onClick={()=>this.setRedirection(item._id, 'display')}>{this.limitString(item.title)}</td>
+        <td onClick={()=>this.setRedirection(item._id, 'display')}>{item.tags.map((element)=><Fragment><Chip variant="outlined" size="small" label={element}/> </Fragment>)}</td>
+
+        <td>
+
+
+
+        <Tooltip title="Pokaż">
+            <IconButton color="primary" onClick={()=>this.setRedirection(item._id, 'display')}>
+            <VisibilityIcon/>
+            </IconButton>
+        </Tooltip>
+
+
+        <Tooltip title="Edytuj">
+        <IconButton color="primary" onClick={()=>this.setRedirection(item._id, 'edit')}>
+        <EditIcon/>
+        </IconButton>
+        </Tooltip>
+
+
+    {this.showDeleteButton(item.creator, item._id)}
+
+        </td>
+      </tr>);
+      this.setState((state,props)=>{return {table: tab}});
+    }
+
+
+
+
   }
+
+
   this.setState({is_loading_set: false});
 }
 
@@ -241,6 +310,7 @@ fetchData(tags) {
 }
 
 tableHeader() {
+  if(window.innerHeight < window.innerWidth) {
   return(
      <table id="issuelist">
     <colgroup>
@@ -265,6 +335,29 @@ tableHeader() {
     </tbody>
     </table>
   );
+  } else {
+
+    return(
+       <table id="issuelist">
+      <colgroup>
+        <col style={{ width: '40%'}}/>
+        <col style={{ width: '40%'}}/>
+        <col style={{ width: '20%'}}/>
+
+      </colgroup>
+      <thead>
+            <tr>
+                <th>Tytuł</th>
+                <th>Tagi</th>
+                <th>Opcje</th>
+            </tr>
+        </thead>
+      <tbody>
+      {this.state.table}
+      </tbody>
+      </table>
+    );
+  }
 }
 
 
@@ -284,8 +377,32 @@ return this.showStats();
 }
 
 
+
+handleDeleteClick(item) {
+
+this.setState({open_warning_delete: true, item_to_delete: item});
+}
+
+handleDeleteWarningClick(acc) {
+  console.log("acc", acc);
+  if(acc) {
+
+  this.deleteItem(this.state.item_to_delete);
+  this.setState({open_warning_delete: false});
+  } else {
+    this.setState({open_warning_delete: false});
+  }
+}
+
+
+
+
 showStats() {
   return (
+
+
+
+
 <div>
 <Grid container className="stats">
 <Grid item xs justify="center">
@@ -298,9 +415,9 @@ showStats() {
     </Grid>
 </Grid>
 </div>
+
   );
 }
-
 
 
 
@@ -308,6 +425,9 @@ render() {
 
     return(
       <Fragment>
+
+
+
 {this.chooseComp()}
       <Snackbar variant="warning"
       open={this.state.show_warning}
@@ -331,6 +451,32 @@ render() {
 </Tooltip>
 
 </div>
+
+
+<Dialog
+      open={this.state.open_warning_delete}
+      onClose={()=>this.handleDeleteWarningClick(false)}
+      aria-labelledby="alert-dialog-title"
+      aria-describedby="alert-dialog-description"
+    >
+      <DialogTitle id="alert-dialog-title">{"Czy napewno chcesz usunąć ten wpis?"}</DialogTitle>
+      <DialogContent>
+        <DialogContentText id="alert-dialog-description">
+          Dobrze się zastanów, ta operacja jest nieodwracalna.
+        </DialogContentText>
+      </DialogContent>
+      <DialogActions>
+        <Button onClick={()=>this.handleDeleteWarningClick(false)} color="primary">
+          Nie
+        </Button>
+        <Button onClick={()=>this.handleDeleteWarningClick(true)} color="primary">
+          Tak
+        </Button>
+      </DialogActions>
+    </Dialog>
+
+
+
 </Fragment>
     );
   }

@@ -46,7 +46,7 @@ class Issue extends Component {
   componentDidMount() {
     if(this.props.location.state) {
       this.setState({search_tags: this.props.location.state.search_tags})
-      //console.log(this.props.location.state.search_tags);
+      console.log(this.props.location.state.search_tags);
     }
 
       this.setState({is_loading_set: true});

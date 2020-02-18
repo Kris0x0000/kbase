@@ -62,6 +62,16 @@ class Login extends Component {
     axios.post(getConf('api_url_base')+'/login', {username: this.state.login, password: this.state.password}, { withCredentials: true })
     .then(res=>{
       if(res.status === 200) {
+        localStorage.setItem('username', this.state.login);
+
+        axios.post(getConf('api_url_base')+'/api/user/isadmin', {}, { withCredentials: true })
+          .then(res=>{
+            localStorage.setItem('is_admin', true);
+          })
+          .catch(e=>{
+            localStorage.setItem('is_admin', false);
+            console.log(e.response)});
+
         //this.props.history.push('/issues');
         this.setState((state, props)=>{
           return {isredirected: true};
