@@ -8,6 +8,7 @@ import SettingsIcon from '@material-ui/icons/Settings';
 import '../../global.css';
 import Tooltip from '@material-ui/core/Tooltip';
 import AddCircleIcon from '@material-ui/icons/AddCircle';
+import MeetingRoomIcon from '@material-ui/icons/MeetingRoom';
 
 
 
@@ -16,14 +17,16 @@ class Navi extends Component {
     super(props);
 
     this.state = {
-redirection_path: ''
+      redirection_path: '',
+      username: '',
     };
   }
 
   componentDidMount() {
     ///modyfikacja
     let is_admin = localStorage.getItem('is_admin');
-    if(is_admin) {
+    this.setState({username: localStorage.getItem('username')});
+    if(is_admin === true) {
           this.setState({is_admin: true});
         }
   }
@@ -37,13 +40,21 @@ redirection_path: ''
         </IconButton>
         </Tooltip>
       );
+    } else {
+
     }
   }
 
 
+beginsWith(a) {
+  let b = a.match(/\/issue\/edit\/\w+/g);
+  return b;
+}
+
+
   addArt() {
 //console.log(this.props.location);
-    if(this.props.location !== '/issue/create/') {
+    if(this.props.location !== '/issue/create/' && !this.beginsWith(this.props.location)) {
     return(
       <Tooltip title="Dodaj nowy wpis">
       <IconButton color="primary" onClick={()=>{this.setRedirection("add")}}>
@@ -57,6 +68,9 @@ redirection_path: ''
 
   redirect() {
     if(this.state.redirection_path !== '') {
+      if(this.state.redirection_path === 'login') {
+        return <Redirect to={{ pathname: "/login" }} />;
+      }
       if(this.state.redirection_path === 'home') {
         return <Redirect to={{ pathname: "/home" }} />;
       }
@@ -75,6 +89,21 @@ redirection_path: ''
   setRedirection(path) {
 
     this.setState({redirection_path: path});
+
+    }
+
+    logOut() {
+      axios.post(getConf('api_url_base')+'/logout', {}, { withCredentials: true })
+      .then(res=>{
+        console.log("ff");
+this.setRedirection('login');
+      })
+      .catch((e)=>{console.log('error: ', e);
+      if( e.response.status === 401) {
+        this.setRedirection('/login');
+        this.setState({is_authenticated: false});
+      }
+        });
     }
 
   render() {
@@ -83,11 +112,18 @@ redirection_path: ''
 
       {this.redirect()}
 <div className="navi">
+
       <Tooltip title="Strona główna">
       <IconButton color="primary" onClick={()=>this.setRedirection("home")}>
          <HomeIcon/>
       </IconButton>
       </Tooltip>
+
+      <Tooltip title={"Wyloguj: "+this.state.username}>
+<IconButton color="primary" onClick={()=>this.logOut()}>
+<MeetingRoomIcon/>
+</IconButton>
+</Tooltip>
 
 
         {this.settings()}

@@ -267,7 +267,6 @@ handleMyQuillChange = (content) => {
     <Headerr />
 
     <Grid container alignItems="flex-start" justify="flex-start" direction="row">
-
     <Navi location={this.props.location.pathname}/>
 
 

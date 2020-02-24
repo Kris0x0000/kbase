@@ -22,6 +22,10 @@ import DialogContent from '@material-ui/core/DialogContent';
 import DialogContentText from '@material-ui/core/DialogContentText';
 import DialogTitle from '@material-ui/core/DialogTitle';
 import Button from '@material-ui/core/Button';
+import Card from '@material-ui/core/Card';
+import CardActions from '@material-ui/core/CardActions';
+import CardContent from '@material-ui/core/CardContent';
+import Typography from '@material-ui/core/Typography';
 
 
 
@@ -40,16 +44,16 @@ class ShowIssues extends Component {
       all_tags: '',
       is_loading_set: false,
       is_authenticated: true,
-      once: false,
       show_warning: false,
-      warning_body: '',
+      warning_body: 'f',
       this_path:'',
       stats:{},
       tag_count:'',
       issue_count:'',
-      open_warning_delete: false,
+      top_tags:[],
       item_to_delete: '',
-      is_admin: false
+      is_admin: false,
+      warning_title: '',
     };
   }
 
@@ -57,8 +61,11 @@ class ShowIssues extends Component {
   componentDidMount(prevProps) {
 
     let is_admin = localStorage.getItem('is_admin');
-    if(is_admin) {
+
+    if(is_admin === 'true') {
           this.setState({is_admin: true});
+        } else {
+          this.setState({is_admin: false});
         }
 
 this.setState({search_tags: this.props.search_tags, this_path: this.props.prev_path, is_loading_set: true});
@@ -77,14 +84,13 @@ if(e.response.status === 401) {
 
 axios.post(getConf('api_url_base')+'/api/issue/getStats', {}, { withCredentials: true })
 .then(res=>{
-  this.setState({stats: res.data});
-  this.setState({tag_count: res.data.tag_count, issue_count: res.data.issue_count});
+  this.setState({stats: res.data, tag_count: res.data.tag_count, issue_count: res.data.issue_count, top_tags: res.data.top_tags});
 console.log("stats: ", res.data);
 })
 .catch((e)=>{console.log(e)
   if( e.response.status === 401) {
    this.setState({is_authenticated: false});
-  }
+ }
 });
 
 
@@ -112,10 +118,8 @@ console.log("stats: ", res.data);
      this.setState({is_authenticated: false});
     }
     if( e.response.status === 405) {
-     this.setState({show_warning: true, warning_body: "Nie możesz usunąć tego wpisu ponieważ nie jesteś jego właścicielem."});
-     setTimeout(()=>{
-         this.setState({show_warning: false});
-     }, 2000);
+     this.setState({warning_title: 'User error', show_warning: true, warning_body: 'Nie możesz usunąć tego wpisu ponieważ nie jesteś jego właścicielem.'});
+
     }
   });
   }
@@ -157,10 +161,8 @@ console.log("stats: ", res.data);
       })
       .catch(e=>{
         if(e.response.status === 405) {
-          this.setState({show_warning: true, warning_body: "Nie możesz edytować tego wpisu ponieważ nie jesteś jego właścicielem", redirection_path:''});
-          setTimeout(()=>{
-              this.setState({show_warning: false});
-          }, 2000);
+          this.setState({warning_title: 'Błąd', show_warning: true, warning_body: "Nie możesz edytować tego wpisu ponieważ nie jesteś jego właścicielem", redirection_path:''});
+
         }
       });
 
@@ -187,10 +189,36 @@ limitString(txt) {
 }
 
 
-showDeleteButton(itemowner, itemid) {
+showEditButtor(itemowner, itemid) {
+
   let current_username = localStorage.getItem('username');
-if((itemowner === current_username) || this.state.is_admin) {
+  if((itemowner === current_username) || (this.state.is_admin)) {
+    return (
+      <Tooltip title="Edytuj">
+      <IconButton color="primary" onClick={()=>this.setRedirection(itemid, 'edit')}>
+      <EditIcon/>
+      </IconButton>
+      </Tooltip>
+    );
+  } else {
+    return (
+      <Tooltip title="Edytuj">
+      <IconButton color="primary" disabled={true} onClick={()=>this.setRedirection(itemid, 'edit')}>
+      <EditIcon/>
+      </IconButton>
+      </Tooltip>
+    );
+  }
+}
+
+
+showDeleteButton(itemowner, itemid) {
+
+  let current_username = localStorage.getItem('username');
+
+if((itemowner === current_username) || (this.state.is_admin)) {
   return (
+
     <Tooltip title="Usuń">
         <IconButton color="secondary" onClick={()=>this.handleDeleteClick(itemid)}>
            <DeleteForeverIcon/>
@@ -200,11 +228,10 @@ if((itemowner === current_username) || this.state.is_admin) {
 } else {
   return (
     <Tooltip title="Usuń">
-        <IconButton disabled="true" color="secondary" onClick={()=>this.handleDeleteClick(itemid)}>
+        <IconButton disabled={true} color="secondary" onClick={()=>this.handleDeleteClick(itemid)}>
            <DeleteForeverIcon />
         </IconButton>
         </Tooltip>
-
   );
 }
 
@@ -233,11 +260,7 @@ renderTableRows(res) {
         </Tooltip>
 
 
-        <Tooltip title="Edytuj">
-        <IconButton color="primary" onClick={()=>this.setRedirection(item._id, 'edit')}>
-        <EditIcon/>
-        </IconButton>
-        </Tooltip>
+    {this.showEditButtor(item.creator, item._id)}
 
 
     {this.showDeleteButton(item.creator, item._id)}
@@ -277,10 +300,6 @@ renderTableRows(res) {
       </tr>);
       this.setState((state,props)=>{return {table: tab}});
     }
-
-
-
-
   }
 
 
@@ -312,6 +331,7 @@ fetchData(tags) {
 tableHeader() {
   if(window.innerHeight < window.innerWidth) {
   return(
+
      <table id="issuelist">
     <colgroup>
       <col style={{ width: '20%'}}/>
@@ -380,7 +400,7 @@ return this.showStats();
 
 handleDeleteClick(item) {
 
-this.setState({open_warning_delete: true, item_to_delete: item});
+this.setState({show_warning: true, item_to_delete: item, warning_body: 'Dobrze się zastanów, ta operacja jest nieodwracalna.', warning_title: "Czy napewno chcesz usunąć ten wpis?"});
 }
 
 handleDeleteWarningClick(acc) {
@@ -388,31 +408,58 @@ handleDeleteWarningClick(acc) {
   if(acc) {
 
   this.deleteItem(this.state.item_to_delete);
-  this.setState({open_warning_delete: false});
+  this.setState({show_warning: false});
   } else {
-    this.setState({open_warning_delete: false});
+    this.setState({show_warning: false});
   }
 }
 
+
+iterateOverElements(arr) {
+
+  let it =arr.map(i=>
+<Chip variant="outlined" label={i.name +" ("+ i.occurrences+")"}/>
+  );
+  return it;
+}
 
 
 
 showStats() {
   return (
 
+<div className="stats">
+
+<Grid
+ container
+ spacing={0}
+ direction="column"
+ alignItems="center"
+ justify="center"
+
+>
+  <Grid item xs={6}>
+
+<Card style={{border: '#2196f3'}} className="stats_card" variant="outlined">
+     <CardContent>
+       <Typography color="textSecondary" gutterBottom>
+         <p>Liczba tagów: <CountUp redraw={true} duration={4} start={0} end={this.state.tag_count} delay={0}></CountUp></p>
+       </Typography>
+       <Typography variant="h5" component="h2">
+         <p>Liczba wpisów: <CountUp redraw={true} duration={4} start={0} end={this.state.issue_count} delay={0}></CountUp></p>
+       </Typography>
+       <Typography color="textSecondary">
+       <br/>
+       Najpopularniejsze tagi: <br/>
+           {this.iterateOverElements(this.state.top_tags)}
+       </Typography><br/>
+
+         <span style={{color:'#2196f3',fontSize: '12px'}}>* Statystyki są aktualizowane co godzinę.</span>
 
 
-
-<div>
-<Grid container className="stats">
-<Grid item xs justify="center">
-
-    <p>Liczba tagów: <CountUp redraw={true} duration={4} start={0} end={this.state.tag_count} delay={0}></CountUp></p>
-
-
-    <p>Liczba wpisów: <CountUp redraw={true} duration={4} start={0} end={this.state.issue_count} delay={0}></CountUp></p>
-
-    </Grid>
+     </CardContent>
+   </Card>
+</Grid>
 </Grid>
 </div>
 
@@ -426,15 +473,7 @@ render() {
     return(
       <Fragment>
 
-
-
 {this.chooseComp()}
-      <Snackbar variant="warning"
-      open={this.state.show_warning}
-      anchorOrigin={{ vertical: 'top', horizontal: 'center' }}
-      >
-      <SnackbarContent message={this.state.warning_body} style={{backgroundColor:'#cc0000'}}/>
-      </Snackbar>
       <div id="loading">{this.showLoading()}</div>
       <div id="container">
 
@@ -443,7 +482,7 @@ render() {
 {this.isAuthenticated()}
 
 </div>
-<div class="bottom_navi">
+<div className="bottom_navi">
 <Tooltip title="Wróć">
 <IconButton color="secondary" onClick={()=>{this.setRedirection('','back')}}>
    <ArrowBackIcon/>
@@ -454,15 +493,15 @@ render() {
 
 
 <Dialog
-      open={this.state.open_warning_delete}
+      open={this.state.show_warning}
       onClose={()=>this.handleDeleteWarningClick(false)}
       aria-labelledby="alert-dialog-title"
       aria-describedby="alert-dialog-description"
     >
-      <DialogTitle id="alert-dialog-title">{"Czy napewno chcesz usunąć ten wpis?"}</DialogTitle>
+      <DialogTitle id="alert-dialog-title">{this.state.warning_title}</DialogTitle>
       <DialogContent>
         <DialogContentText id="alert-dialog-description">
-          Dobrze się zastanów, ta operacja jest nieodwracalna.
+          {this.state.warning_body}
         </DialogContentText>
       </DialogContent>
       <DialogActions>

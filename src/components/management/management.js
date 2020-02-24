@@ -14,6 +14,12 @@ import ArrowBackIcon from '@material-ui/icons/ArrowBack';
 import Tooltip from '@material-ui/core/Tooltip';
 import Header from '../../components/header';
 import Footer from '../../components/footer';
+import Dialog from '@material-ui/core/Dialog';
+import DialogActions from '@material-ui/core/DialogActions';
+import DialogContent from '@material-ui/core/DialogContent';
+import DialogContentText from '@material-ui/core/DialogContentText';
+import DialogTitle from '@material-ui/core/DialogTitle';
+import Button from '@material-ui/core/Button';
 
 
 
@@ -26,6 +32,12 @@ class Management extends Component {
         users: [],
         redirection_path:'',
         is_authenticated:true,
+        logged_uname: '',
+        show_warning:false,
+        warning_title:'',
+        warning_body:'',
+        itemid:'',
+        username:'',
      };
   }
 
@@ -42,6 +54,10 @@ class Management extends Component {
         }
       });
 
+      let logged_uname = localStorage.getItem('username');
+      this.setState({logged_uname: logged_uname});
+
+
   }
 
 
@@ -57,6 +73,36 @@ class Management extends Component {
       });
   }
 
+  handleDelete = (itemid, username)=> {
+    this.setState({itemid: itemid, username: username, show_warning: true, warning_title:'Czy napewno chcesz usunąć tego użytkownika?',warning_body:'Ta operacja jest nieodwracalna.'});
+  };
+
+  handleWarningClick = (accept) => {
+    console.log('accept: ',accept);
+    console.log('this.state.itemid: ',this.state.itemid);
+    console.log('this.state.username: ',this.state.username);
+    if(accept) {
+        this.deleteItem(this.state.itemid, this.state.username);
+        this.setState({show_warning: false});
+    } else {
+      this.setState({show_warning: false});
+    }
+  };
+
+renderDeleteButton(item) {
+  let uname = this.state.logged_uname;
+  if(item.username !== uname || !(item.is_admin)) {
+    return (
+      <IconButton color="secondary" onClick={()=>this.handleDelete(item._id, item.username)}>
+      <DeleteForeverIcon/>
+      </IconButton> );
+    } else {
+        return (
+      <IconButton disabled={true} color="secondary" onClick={()=>this.handleDelete(item._id, item.username)}>
+      <DeleteForeverIcon/>
+      </IconButton> );
+    }
+  }
 
   renderTableRows(res) {
 
@@ -78,9 +124,7 @@ class Management extends Component {
   <IconButton color="primary" onClick={()=>this.setRedirection(item._id, 'edit')}>
   <EditIcon/>
   </IconButton>
-        <IconButton color="secondary" onClick={()=>this.deleteItem(item._id)}>
-         <DeleteForeverIcon/>
-      </IconButton>
+    {this.renderDeleteButton(item)}
 
       </td>
     </tr>);
@@ -88,9 +132,10 @@ class Management extends Component {
     }
   }
 
-  deleteItem(item) {
-
-    axios.post(getConf('api_url_base')+'/api/user/delete', {id: item}, { withCredentials: true })
+  deleteItem(id, username) {
+    let uname = this.state.logged_uname;
+if(username !== uname) {
+    axios.post(getConf('api_url_base')+'/api/user/delete', {id: id}, { withCredentials: true })
     .then(res=>{
         this.fetchData();
           this.setState({is_authenticated: true})
@@ -99,9 +144,8 @@ class Management extends Component {
     if( e.response.status === 401) {
       this.setState({is_authenticated: false});
     }
-
-  });
-
+      });
+    }
   }
 
 
@@ -135,7 +179,6 @@ class Management extends Component {
       if(this.state.redirection_path === 'back') {
         return <Redirect to={{ pathname: this.state.prev_path}} />;
       }
-
   }
 
 
@@ -170,6 +213,30 @@ class Management extends Component {
 
     return (
       <Fragment>
+
+      <Dialog
+            open={this.state.show_warning}
+
+            aria-labelledby="alert-dialog-title"
+            aria-describedby="alert-dialog-description"
+          >
+            <DialogTitle id="alert-dialog-title">{this.state.warning_title}</DialogTitle>
+            <DialogContent>
+              <DialogContentText id="alert-dialog-description">
+                {this.state.warning_body}
+              </DialogContentText>
+            </DialogContent>
+            <DialogActions>
+              <Button onClick={()=>this.handleWarningClick(false)} color="primary">
+                Nie
+              </Button>
+              <Button onClick={()=>this.handleWarningClick(true)} color="primary">
+                Tak
+              </Button>
+            </DialogActions>
+          </Dialog>
+
+
       <Header/>
       <Grid container alignItems="flex-start" justify="flex-start" direction="row">
       <Navi location={this.props.location.pathname}/>
@@ -180,8 +247,6 @@ class Management extends Component {
       <div id="container">
 {this.state.table.length>0? table : null}
 <br/>
-
-
 
 </div>
 <div class="bottom_navi">

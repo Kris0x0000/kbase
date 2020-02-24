@@ -26,6 +26,9 @@ class Login extends Component {
 
 
   componentDidMount() {
+
+    localStorage.clear();
+
     if(this.props.location.state) {
       if(this.props.location.state.prev_path) {
         this.setState({prev_path: this.props.location.state.prev_path});
@@ -57,6 +60,10 @@ class Login extends Component {
     }
   }
 
+  asyncSetItem = async (name, value) => {
+    await localStorage.setItem(name, value);
+  };
+
   suubmit = () => {
 
     axios.post(getConf('api_url_base')+'/login', {username: this.state.login, password: this.state.password}, { withCredentials: true })
@@ -66,16 +73,19 @@ class Login extends Component {
 
         axios.post(getConf('api_url_base')+'/api/user/isadmin', {}, { withCredentials: true })
           .then(res=>{
-            localStorage.setItem('is_admin', true);
+            this.asyncSetItem('is_admin','true');
           })
           .catch(e=>{
-            localStorage.setItem('is_admin', false);
+            this.asyncSetItem('is_admin','false');
             console.log(e.response)});
 
         //this.props.history.push('/issues');
-        this.setState((state, props)=>{
-          return {isredirected: true};
-        });
+        setTimeout(()=> {
+          this.setState((state, props)=>{
+            return {isredirected: true};
+          });
+}, 100);
+
 
 
       }

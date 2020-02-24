@@ -142,7 +142,7 @@ class Issue extends Component {
                          )}
                        />
 
-          <br /><br /><br /><br />
+          <br />
             </div>
           <ShowIssues search_tags={this.state.search_tags} prev_path={this.props.location.pathname} />
           <br /><br /><br /><br />

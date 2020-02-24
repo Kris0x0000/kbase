@@ -12,6 +12,8 @@ import SettingsIcon from '@material-ui/icons/Settings';
 import Footer from '../footer';
 import { Grid } from '@material-ui/core';
 import HelpOutlineIcon from '@material-ui/icons/HelpOutline';
+import MeetingRoomIcon from '@material-ui/icons/MeetingRoom';
+import { spacing } from '@material-ui/system';
 
 
 
@@ -27,29 +29,31 @@ class Home extends Component {
       my_id:'',
       usermode: true,
       this_path: '/home',
+      username:'',
     };
   }
 
   componentDidMount() {
+    this.setState({username: localStorage.getItem('username')});
+
     axios.post(getConf('api_url_base')+'/api/isauthenticated',{tag: ''}, { withCredentials: true })
     .then(res=>{
       this.setState((state,props)=>{return {all_tags: res.data}});
 
     })
     .catch((e)=>{
-  //if( e.response.status !== 200) {
-
     this.setState({isauthenticated: false});
-//  }
 
 }
   );
 
-
   let is_admin = localStorage.getItem('is_admin');
-  if(is_admin) {
-        this.setState({is_admin: true});
-      }
+
+    if(is_admin === 'true') {
+    this.setState({is_admin: true});
+  } else {
+    this.setState({is_admin: false});
+  }
 
     axios.post(getConf('api_url_base')+'/api/user/getMyId', {}, { withCredentials: true })
       .then(res=>{
@@ -57,7 +61,6 @@ class Home extends Component {
         this.setState({my_id: res.data});
       })
       .catch(e=>{});
-
 }
 
 
@@ -73,7 +76,7 @@ setRedirection(path) {
 }
 
 settings() {
-  if(this.state.is_admin) {
+  if(this.state.is_admin === true) {
     return (
       <Tooltip title="Opcje">
       <IconButton color="primary" onClick={()=>this.setRedirection("/management/main")}>
@@ -115,6 +118,22 @@ isAuthenticated() {
   }
 }
 
+logOut() {
+  axios.post(getConf('api_url_base')+'/logout', {}, { withCredentials: true })
+  .then(res=>{
+//this.setRedirection('login');
+//this.setState({is_redirected: true});
+localStorage.clear();
+this.setState({isauthenticated: false});
+  })
+  .catch((e)=>{console.log('error: ', e);
+  if( e.response.status === 401) {
+
+
+  }
+    });
+}
+
 
 render() {
   return(
@@ -123,26 +142,41 @@ render() {
     {this.isAuthenticated()}
     {this.redirect()}
 
-    <div className="home_icons">
-    <Grid container alignItems="flex-start" justify="center" direction="row">
+<div className="home_icons">
+    <Grid container style={{ marginTop: '50px' }} alignItems="flex-start" justify="center" direction="row">
+    <Grid item align="center" xs={12} sm={6} md={3}>
   <Tooltip title="Szukaj">
     <IconButton color="primary" onClick={()=>this.setRedirection("/issue/find/")}>
        <SearchIcon style={{fontSize: '128px'}}/>
     </IconButton>
     </Tooltip>
+    </Grid>
+    <Grid item align="center" xs={12} sm={6} md={3}>
       <Tooltip title="Dodaj">
     <IconButton color="primary" onClick={()=>this.setRedirection("/issue/create/")}>
        <AddCircleIcon style={{fontSize: '128px'}}/>
     </IconButton>
     </Tooltip>
+    </Grid>
+    <Grid item align="center" xs={12} sm={6} md={3}>
+    {this.settings()}
+    </Grid>
+    <Grid item align="center" xs={12} sm={6} md={3}>
     <Tooltip title="Pomoc">
   <IconButton color="primary" onClick={()=>this.setRedirection("/help/")}>
      <HelpOutlineIcon style={{fontSize: '128px'}}/>
   </IconButton>
   </Tooltip>
-    {this.settings()}
+</Grid>
+<Grid item align="center" xs={12} sm={6} md={3}>
+  <Tooltip title={"Wyloguj: "+this.state.username}>
+<IconButton color="primary" onClick={()=>this.logOut()}>
+<MeetingRoomIcon style={{fontSize: '128px'}} />
+</IconButton>
+</Tooltip>
+</Grid>
     </Grid>
-    </div>
+</div>
     <br /><br /><br /><br />
     <Footer/>
     </Fragment>

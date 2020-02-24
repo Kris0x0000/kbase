@@ -5,21 +5,18 @@ body {
   font-family: Arial, Helvetica, sans-serif;
 }
 
+div.root {
+  text-align: center;
+  align-items: center;
+}
+
 div.stats {
-  font-size: 20px;
-  color:  #404040;
-  text-align:center;
-margin-top: 8%;
+margin-top: 5%;
 }
 
 
 
-div.home_icons {
-  position: relative;
-  left: calc(50% - (35%/2));
-  top: 80px;
-  width: 35%;
-}
+
 
 div.navi {
   position: absolute;
@@ -29,6 +26,8 @@ div.navi {
 
 }
 
+
+
 #autocomplete {
   width: 50%;
   margin: auto;
@@ -37,7 +36,7 @@ div.navi {
 .MuiAutocomplete-listbox {
   background-color: white;
 
-height: 200px;
+height: 150px;
     overflow-y: visible;
 }
 
@@ -58,10 +57,6 @@ margin: auto;
   left: calc(50% - 64px/2);
   top: calc(50% - 64px/2);
 }
-
-
-
-
 
 
 table {
@@ -172,7 +167,7 @@ text-align:left;
 
      #editor {
        min-height:500px;
-    
+
        }
 
 div.ql-container.ql-snow {
