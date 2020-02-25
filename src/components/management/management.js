@@ -256,7 +256,7 @@ if(username !== uname) {
    <ArrowBackIcon/>
 </IconButton>
 </Tooltip>
-<Tooltip title="Dodaj">
+<Tooltip title="Dodaj użytkownika">
 <IconButton color="primary" onClick={()=>this.setRedirection('','create')}>
  <AddCircleIcon/>
 </IconButton>

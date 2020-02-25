@@ -35,12 +35,12 @@ class MyQuill extends Component {
 
     quill = new Quill('#editor', {
       theme: 'snow',
-      formats: ['bold', 'italic', 'color', 'image','underline','blockquote','strike','list','code','header'],
+      formats: ['bold', 'italic', 'color', 'image','underline','blockquote','strike','list','code','header','link'],
       modules: {
         toolbar: {
            container: [['bold', 'italic', 'underline', 'blockquote','strike','code',{header: 1},{header: 2}],
            [{ 'list': 'ordered' }, { 'list': 'bullet' }],
-           ['image'],
+           ['image','link'],
            ],
            handlers: {
              'image': this.selectLocalImage

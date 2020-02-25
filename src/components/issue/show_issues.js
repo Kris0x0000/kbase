@@ -85,7 +85,7 @@ if(e.response.status === 401) {
 axios.post(getConf('api_url_base')+'/api/issue/getStats', {}, { withCredentials: true })
 .then(res=>{
   this.setState({stats: res.data, tag_count: res.data.tag_count, issue_count: res.data.issue_count, top_tags: res.data.top_tags});
-console.log("stats: ", res.data);
+//console.log("stats: ", res.data);
 })
 .catch((e)=>{console.log(e)
   if( e.response.status === 401) {

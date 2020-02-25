@@ -188,8 +188,6 @@ this.setState({is_loading_set: true});
 
 handleAutocompleteChange(event, value) {
 
-
-
   if(value.length > 8) {
     value = this.removeLastElement(value);
     this.setState({to_many_tags: true, show_warning: true, warning_body: "Nie możesz ustawić więcej niż 6 tagów"});

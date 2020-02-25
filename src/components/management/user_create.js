@@ -46,6 +46,8 @@ class UserCreate extends Component {
 
 componentDidMount() {
 
+  this.setState({is_admin: localStorage.getItem('is_admin')});
+
   if(this.props.location.state) {
     if(this.props.location.state.prev_path) {
       this.setState({prev_path: this.props.location.state.prev_path});
