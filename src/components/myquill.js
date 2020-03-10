@@ -4,6 +4,7 @@ import Snow from 'quill/themes/snow.js';
 import React, { Component, Fragment } from 'react';
 import axios from 'axios';
 import * as getConf from '../../src/conf.js';
+import { ImageResize } from 'quill-image-resize';
 
 
 let quill;
@@ -17,9 +18,11 @@ class MyQuill extends Component {
       content: '',
     };
 
+Quill.register('imageResize', ImageResize);
     Quill.register({
       'themes/snow.js': Snow,
     });
+
 
     //let image = Quill.import('formats/image.js');
 //  let underline = Quill.import('formats/underline.js');
@@ -37,9 +40,32 @@ class MyQuill extends Component {
       theme: 'snow',
       formats: ['bold', 'italic', 'color', 'image','underline','blockquote','strike','list','code','header','link'],
       modules: {
+
+        ImageResize: {
+             // ...
+             modules: [ 'Resize', 'DisplaySize', 'Toolbar' ],
+             handleStyles: {
+                 backgroundColor: 'black',
+                 border: 'none',
+                 color: 'white'
+                 // other camelCase styles for size display
+             },
+             displayStyles: {
+           backgroundColor: 'black',
+           border: 'none',
+           color: 'white'
+           // other camelCase styles for size display
+       },
+       toolbarStyles: {
+       backgroundColor: 'black',
+       border: 'none',
+       color: 'white'
+       // other camelCase styles for size display
+   }
+  },
         toolbar: {
            container: [['bold', 'italic', 'underline', 'blockquote','strike','code',{header: 1},{header: 2}],
-           [{ 'list': 'ordered' }, { 'list': 'bullet' }],
+           [{ 'list': 'ordered' }, { 'list': 'bullet' }, { 'color': ['#000000', '#e60000', '#ff9900', '#ffff00', '#008a00', '#0066cc', '#9933ff', '#ffffff', '#facccc', '#ffebcc', '#ffffcc', '#cce8cc', '#cce0f5', '#ebd6ff', '#bbbbbb', '#f06666', '#ffc266', '#ffff66', '#66b966', '#66a3e0', '#c285ff', '#888888', '#a10000', '#b26b00', '#b2b200', '#006100', '#0047b2', '#6b24b2', '#444444', '#5c0000', '#663d00', '#666600', '#003700', '#002966', '#3d1466', 'custom-color'] }],
            ['image','link'],
            ],
            handlers: {

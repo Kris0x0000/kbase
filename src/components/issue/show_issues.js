@@ -27,7 +27,7 @@ import CardActions from '@material-ui/core/CardActions';
 import CardContent from '@material-ui/core/CardContent';
 import Typography from '@material-ui/core/Typography';
 
-
+let timeoutHandle;
 
 
 class ShowIssues extends Component {
@@ -58,7 +58,15 @@ class ShowIssues extends Component {
   }
 
 
+  setSessionTimeout = ()=>{
+    timeoutHandle = setTimeout(()=>{
+        this.setState({isauthenticated: false});
+    }, getConf('session_timeout'));
+  };
+
+
   componentDidMount(prevProps) {
+this.setSessionTimeout();
 
     let is_admin = localStorage.getItem('is_admin');
 
@@ -98,6 +106,7 @@ axios.post(getConf('api_url_base')+'/api/issue/getStats', {}, { withCredentials:
   }
 
   componentDidUpdate(prevProps, prevState) {
+    this.setSessionTimeout();
 
       if(prevState.search_tags !== this.props.search_tags ) {
         this.fetchData(this.props.search_tags);
@@ -242,11 +251,12 @@ renderTableRows(res) {
   this.setState({is_loading_set: true});
   if(res) {
     if(window.innerHeight < window.innerWidth) {
-      let tab = res.data.map((item)=>
+
+      let tab = res.data.sort((a, b) => parseFloat(b.create_timestamp) - parseFloat(a.create_timestamp)).map((item)=>
 
       <tr key={item._id} >
         <td onClick={()=>this.setRedirection(item._id, 'display')}>{this.limitString(item.title)}</td>
-        <td onClick={()=>this.setRedirection(item._id, 'display')}>{item.tags.map((element)=><Fragment><Chip variant="outlined" size="small" label={element}/> </Fragment>)}</td>
+        <td onClick={()=>this.setRedirection(item._id, 'display')}>{item.tags.sort().map((element)=><Fragment><Chip variant="outlined" size="small" label={element}/> </Fragment>)}</td>
         <td onClick={()=>this.setRedirection(item._id, 'display')}>{item.creator}</td>
         <td onClick={()=>this.setRedirection(item._id, 'display')}>{getTime(item.create_timestamp)}</td>
         <td>
@@ -270,7 +280,7 @@ renderTableRows(res) {
       this.setState((state,props)=>{return {table: tab}});
 
     } else {
-      let tab = res.data.map((item)=>
+      let tab = res.data.sort((a, b) => parseFloat(b.create_timestamp) - parseFloat(a.create_timestamp)).map((item)=>
 
       <tr key={item._id} >
         <td onClick={()=>this.setRedirection(item._id, 'display')}>{this.limitString(item.title)}</td>

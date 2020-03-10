@@ -16,7 +16,7 @@ import Tooltip from '@material-ui/core/Tooltip';
 import Header from '../../components/header';
 import Footer from '../../components/footer';
 
-
+let timeoutHandle;
 
 class UserCreate extends Component {
   constructor(props) {
@@ -38,13 +38,22 @@ class UserCreate extends Component {
       is_redirected: false,
       editmode: false,
       is_admin: false,
+      switch_is_admin: false,
       id:'',
       usermode: false,
 
     };
   }
 
+
+  setSessionTimeout = ()=>{
+    timeoutHandle = setTimeout(()=>{
+        this.setState({isauthenticated: false});
+    }, getConf('session_timeout'));
+  };
+
 componentDidMount() {
+  this.setSessionTimeout();
 
   this.setState({is_admin: localStorage.getItem('is_admin')});
 
@@ -99,7 +108,7 @@ this.setState({password2: this.state.password});
 }
 
 componentDidUpdate(prevState) {
-
+    this.setSessionTimeout();
 }
 
 isAuthenticated() {
@@ -110,7 +119,7 @@ isAuthenticated() {
 
 handleswitch(id, value) {
   if(id === 'is_admin') {
-    this.setState({is_admin: value});
+    this.setState({switch_is_admin: value});
   }
 }
 
@@ -185,8 +194,8 @@ adminSwitch() {
   return(<div><p>Administrator</p>
     <Switch
     id="is_admin"
- onChange={(r)=>this.handleswitch(r.target.id, !this.state.is_admin)}
- checked={this.state.is_admin}
+ onChange={(r)=>this.handleswitch(r.target.id, !this.state.switch_is_admin)}
+ checked={this.state.switch_is_admin}
  color="primary"
  inputProps={{ 'aria-label': 'primary checkbox' }} /></div>);
 

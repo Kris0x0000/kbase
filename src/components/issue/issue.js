@@ -14,7 +14,7 @@ import Header from '../header';
 import { Grid } from '@material-ui/core';
 import Footer from '../footer';
 
-
+let timeoutHandle;
 const filterOptions = (options, { inputValue }) =>
   matchSorter(options, inputValue, {threshold: matchSorter.rankings.STRING_CASE_ACRONYM});
 
@@ -24,7 +24,8 @@ class Issue extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      search_tags:'',
+      search_tags:[],
+      taa:['ff'],
       body:'',
       title:'',
       username:'',
@@ -41,11 +42,25 @@ class Issue extends Component {
     };
   }
 
+  setSessionTimeout = ()=>{
+    timeoutHandle = setTimeout(()=>{
+        this.setState({isauthenticated: false});
+    }, getConf('session_timeout'));
+  };
 
+componentDidUpdate() {
+  this.setSessionTimeout();
+}
 
   componentDidMount() {
+    this.setSessionTimeout();
+
     if(this.props.location.state) {
-      this.setState({search_tags: this.props.location.state.search_tags})
+      if(this.props.location.state.search_tags) {
+      this.setState({search_tags: this.props.location.state.search_tags});
+    } else {
+      //this.setState({search_tags: });
+    }
     //  console.log(this.props.location.state.search_tags);
     }
 
@@ -122,6 +137,7 @@ class Issue extends Component {
                          onChange={(event, value) => this.handleAutocompleteChange(event, value)}
                          id="tags-standard"
                          loadingText="Ładowanie..."
+                         value={this.state.search_tags}
                          options={this.state.all_tags}
                          getOptionLabel={option => option}
                          renderTags={(value, getTagProps) =>

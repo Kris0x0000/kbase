@@ -75,26 +75,25 @@ class Login extends Component {
           .then(res=>{
             //this.asyncSetItem('is_admin','true');
             localStorage.setItem('is_admin','true');
+            this.sa();
           })
           .catch(e=>{
             localStorage.setItem('is_admin','false');
-            //this.asyncSetItem('is_admin','false');
-            console.log(e.response)});
-
-        //this.props.history.push('/issues');
-        
-        setTimeout(()=> {
-          this.setState((state, props)=>{
-            return {isredirected: true};
+            this.sa();
           });
-}, 50);
-
-
-
       }
       })
     .catch((e)=>{console.log(e)});
   };
+
+
+  sa = () => {
+    setTimeout(()=> {
+      this.setState((state, props)=>{
+        return {isredirected: true};
+      });
+}, 50);
+};
 
 
    handleKeyPress = (target) => {
@@ -116,7 +115,7 @@ class Login extends Component {
       <TextField  color="primary" id="Login" label="Login" type="text" variant="outlined" onChange={(r)=>this.handleLogin(r.target.value)} />
 
       <br /><br />
-      <TextField id="Login" color="primary"  label="Password" type="password" variant="outlined" onKeyPress={this.handleKeyPress} onChange={(r)=>this.handlePassword(r.target.value)} />
+      <TextField id="Password" color="primary"  label="Password" type="password" variant="outlined" onKeyPress={this.handleKeyPress} onChange={(r)=>this.handlePassword(r.target.value)} />
       <br /><br />
 
 <Grid container alignItems="center" justify="center" direction="row">

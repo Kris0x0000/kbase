@@ -21,7 +21,7 @@ import Tooltip from '@material-ui/core/Tooltip';
 import Footer from '../footer';
 import MyQuill from '../myquill';
 
-
+let timeoutHandle;
 
 class IssueCreate extends Component {
 
@@ -50,11 +50,18 @@ class IssueCreate extends Component {
 
       };
       this.handleChange = this.handleChange.bind(this);
-
     }
+
+setSessionTimeout = ()=>{
+  timeoutHandle = setTimeout(()=>{
+      this.setState({isauthenticated: false});
+  }, getConf('session_timeout'));
+};
 
 componentDidMount() {
 
+
+  this.setSessionTimeout();
 
 // if redirected from other components
 if(this.props.location.state) {
@@ -99,8 +106,13 @@ if(this.props.location.state) {
 }
 
 componentDidUpdate() {
-//console.log("issue create -> did update");
+
+  clearTimeout(timeoutHandle);
+  this.setSessionTimeout();
 }
+
+
+
 
 
 handletitle(data) {
@@ -144,8 +156,7 @@ if(option === 'accept') {
 
   if(this.state.editmode) {
 //console.log(this.state.images);
-this.setState({is_loading_set: true});
-
+//this.setState({is_loading_set: true});
 
   axios.post(getConf('api_url_base')+'/api/issue/edit', {title: this.state.title, body: this.state.body_edited, tags: this.state.tags, id: this.state.id, images: this.addImagesToArray(this.state.body_edited) }, { withCredentials: true })
     .then(res=>{
@@ -160,13 +171,10 @@ this.setState({is_loading_set: true});
 
   } else {
 
-this.setState({is_loading_set: true});
+//this.setState({is_loading_set: true});
   axios.post(getConf('api_url_base')+'/api/issue/create', {title: this.state.title, body: this.state.body_edited, tags: this.state.tags, images: this.addImagesToArray(this.state.body_edited) }, { withCredentials: true })
   .then(res=>{
-    this.setState({is_loading_set: false});
-    if(res.status === 200) {
-    this.setState({go_back: true});
-    }
+      this.setState({go_back: true});
 }
   ).catch((e)=>{
     if(e.response.status === 401) {

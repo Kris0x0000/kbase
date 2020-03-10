@@ -27,14 +27,25 @@ class Home extends Component {
       isauthenticated: true,
       is_admin: false,
       my_id:'',
-      usermode: true,
       this_path: '/home',
       username:'',
     };
   }
 
   componentDidMount() {
-    this.setState({username: localStorage.getItem('username')});
+    let is_admin = localStorage.getItem('is_admin');
+    let username = localStorage.getItem('username');
+
+setTimeout(()=>{
+  if(is_admin === 'true') {
+  this.setState({is_admin: true, username: username});
+
+} else {
+  this.setState({is_admin: false, username: username});
+}
+},50);
+
+
 
     axios.post(getConf('api_url_base')+'/api/isauthenticated',{tag: ''}, { withCredentials: true })
     .then(res=>{
@@ -47,13 +58,6 @@ class Home extends Component {
 }
   );
 
-  let is_admin = localStorage.getItem('is_admin');
-
-    if(is_admin === 'true') {
-    this.setState({is_admin: true});
-  } else {
-    this.setState({is_admin: false});
-  }
 
     axios.post(getConf('api_url_base')+'/api/user/getMyId', {}, { withCredentials: true })
       .then(res=>{
@@ -67,7 +71,7 @@ class Home extends Component {
 
 redirect() {
   if(this.state.is_redirected) {
-    return <Redirect to={{ pathname: this.state.path, state: {prev_path: this.state.this_path, usermode: this.state.usermode} }} />;
+    return <Redirect to={{ pathname: this.state.path, state: {prev_path: this.state.this_path} }} />;
   }
 }
 
@@ -85,10 +89,11 @@ settings() {
       </Tooltip>
     );
   } else {
+    //this.setState({usermode: true});
     return (
       <Tooltip title="Opcje">
       <IconButton color="primary" onClick={()=>{
-        this.setState({usermode: true});
+
         this.setRedirection("/management/user/edit/"+this.state.my_id);
     }}>
       <SettingsIcon style={{fontSize: '128px'}}/>
@@ -101,17 +106,6 @@ settings() {
 
 
 
-setRedirection_old(option) {
-  if (option === "goSearch") {
-    this.setState({gosearch: true});
-  } else if (option === "goCreate") {
-    this.setState({gocreate: true});
-  }
-  else if (option === "settings") {
-    this.setState({gocreate: true});
-  }
-}
-
 isAuthenticated() {
   if(!this.state.isauthenticated) {
     return (<Redirect to={{ pathname: "/login" }} />);
@@ -121,8 +115,6 @@ isAuthenticated() {
 logOut() {
   axios.post(getConf('api_url_base')+'/logout', {}, { withCredentials: true })
   .then(res=>{
-//this.setRedirection('login');
-//this.setState({is_redirected: true});
 localStorage.clear();
 this.setState({isauthenticated: false});
   })
@@ -144,31 +136,33 @@ render() {
 
 <div className="home_icons">
     <Grid container style={{ marginTop: '50px' }} alignItems="flex-start" justify="center" direction="row">
-    <Grid item align="center" xs={12} sm={6} md={3}>
+    <Grid item align="center" xs>
   <Tooltip title="Szukaj">
     <IconButton color="primary" onClick={()=>this.setRedirection("/issue/find/")}>
        <SearchIcon style={{fontSize: '128px'}}/>
     </IconButton>
     </Tooltip>
     </Grid>
-    <Grid item align="center" xs={12} sm={6} md={3}>
+    <Grid item align="center" xs>
       <Tooltip title="Dodaj">
     <IconButton color="primary" onClick={()=>this.setRedirection("/issue/create/")}>
        <AddCircleIcon style={{fontSize: '128px'}}/>
     </IconButton>
     </Tooltip>
     </Grid>
-    <Grid item align="center" xs={12} sm={6} md={3}>
+    <Grid item align="center" xs>
+
+
     {this.settings()}
     </Grid>
-    <Grid item align="center" xs={12} sm={6} md={3}>
+    <Grid item align="center" xs>
     <Tooltip title="Pomoc">
   <IconButton color="primary" onClick={()=>this.setRedirection("/help/")}>
      <HelpOutlineIcon style={{fontSize: '128px'}}/>
   </IconButton>
   </Tooltip>
 </Grid>
-<Grid item align="center" xs={12} sm={6} md={3}>
+<Grid item align="center" xs>
   <Tooltip title={"Wyloguj: "+this.state.username}>
 <IconButton color="primary" onClick={()=>this.logOut()}>
 <MeetingRoomIcon style={{fontSize: '128px'}} />

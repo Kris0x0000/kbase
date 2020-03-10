@@ -21,7 +21,7 @@ import DialogContentText from '@material-ui/core/DialogContentText';
 import DialogTitle from '@material-ui/core/DialogTitle';
 import Button from '@material-ui/core/Button';
 
-
+let timeoutHandle;
 
 class Management extends Component {
 
@@ -41,8 +41,19 @@ class Management extends Component {
      };
   }
 
+  setSessionTimeout = ()=>{
+    timeoutHandle = setTimeout(()=>{
+        this.setState({isauthenticated: false});
+    }, getConf('session_timeout'));
+  };
+
+
+componentDidUpdate() {
+  this.setSessionTimeout();
+}
 
   componentDidMount() {
+    this.setSessionTimeout();
 
     axios.post(getConf('api_url_base')+'/api/user/getAllUsers',{}, { withCredentials: true })
       .then(res=>{
@@ -93,14 +104,18 @@ renderDeleteButton(item) {
   let uname = this.state.logged_uname;
   if(item.username !== uname || !(item.is_admin)) {
     return (
+      <Tooltip title="Usuń">
       <IconButton color="secondary" onClick={()=>this.handleDelete(item._id, item.username)}>
       <DeleteForeverIcon/>
-      </IconButton> );
+      </IconButton>
+      </Tooltip>);
     } else {
         return (
+          <Tooltip title="Usuń">
       <IconButton disabled={true} color="secondary" onClick={()=>this.handleDelete(item._id, item.username)}>
       <DeleteForeverIcon/>
-      </IconButton> );
+      </IconButton>
+    </Tooltip> );
     }
   }
 
@@ -120,10 +135,11 @@ renderDeleteButton(item) {
   />
       </td>
       <td>
-
+<Tooltip title="Edytuj">
   <IconButton color="primary" onClick={()=>this.setRedirection(item._id, 'edit')}>
   <EditIcon/>
   </IconButton>
+  </Tooltip>
     {this.renderDeleteButton(item)}
 
       </td>

@@ -1,7 +1,6 @@
 import React, { Component, Fragment } from 'react';
 import axios from 'axios';
 import '../../global.css';
-import 'react-quill/dist/quill.snow.css';
 import * as getConf from '../../../src/conf.js';
 import { Redirect } from 'react-router-dom';
 // material ui
@@ -13,8 +12,9 @@ import Navi from '../../components/navi/navi';
 import Tooltip from '@material-ui/core/Tooltip';
 import Header from '../header';
 import Footer from '../footer';
+import { Chip } from '@material-ui/core';
 
-
+let timeoutHandle;
 
 class IssueDisplay extends Component {
 
@@ -35,7 +35,16 @@ class IssueDisplay extends Component {
       };
     }
 
+
+    setSessionTimeout = ()=>{
+      timeoutHandle = setTimeout(()=>{
+          this.setState({isauthenticated: false});
+      }, getConf('session_timeout'));
+    };
+
 componentDidMount() {
+
+this.setSessionTimeout();
 
   if(this.props.location.state) {
     //console.log(this.props.location.state.search_tags);
@@ -51,7 +60,8 @@ this.setState({search_tags: this.props.location.state.search_tags});
            create_timestamp: res.data[0].create_timestamp,
             creator: res.data[0].creator,
             edit_timestamp: res.data[0].edit_timestamp,
-            editor: res.data[0].editor
+            editor: res.data[0].editor,
+            tags: res.data[0].tags
           });
     })
     .catch(e=>{
@@ -60,6 +70,8 @@ this.setState({search_tags: this.props.location.state.search_tags});
 }
 
 componentDidUpdate() {
+
+  this.setSessionTimeout();
 //console.log("update");
 }
 
@@ -76,6 +88,14 @@ createHTML(code) {
 
 displayHTML(code) {
   return <div dangerouslySetInnerHTML={this.createHTML(code)} />;
+}
+
+iterateOverElements(arr) {
+
+  let it = arr.map(i=>
+<Chip variant="outlined" label={i}/>
+  );
+  return it;
 }
 
 redirect() {
@@ -120,6 +140,9 @@ getTime(millis) {
       <tr>
       <th>
       {this.displayHTML(this.state.title)}
+            <br />
+      {this.iterateOverElements(this.state.tags)}
+
       </th>
 </tr>
 </thead>
