@@ -53,6 +53,8 @@ class UserCreate extends Component {
   };
 
 componentDidMount() {
+  let is_admin = localStorage.getItem('is_admin');
+  console.log(is_admin);
   this.setSessionTimeout();
 
   this.setState({is_admin: localStorage.getItem('is_admin')});
@@ -62,9 +64,11 @@ componentDidMount() {
       this.setState({prev_path: this.props.location.state.prev_path});
     }
 
-    if(this.props.location.state.usermode) {
-      this.setState({usermode: true});
-    }
+
+      this.setState({usermode: is_admin});
+      console.log(this.state.usermode);
+
+
   }
 
 
@@ -185,7 +189,7 @@ setRedirection(path) {
 
 redirect() {
   if(this.state.is_redirected) {
-      return (<Redirect to={{pathname: this.state.prev_path}} />);
+      return (<Redirect push to={{pathname: this.state.prev_path}} />);
   }
 }
 
@@ -215,7 +219,7 @@ submit(option) {
 
 if(this.state.editmode && !this.state.usermode) {
 
-  axios.post(getConf('api_url_base')+'/api/user/edit', {username: this.state.uname, password: this.state.password, is_admin: this.state.is_admin, id: this.state.id }, { withCredentials: true })
+  axios.post(getConf('api_url_base')+'/api/user/edit', {username: this.state.uname, password: this.state.password, is_admin: this.state.switch_is_admin, id: this.state.id }, { withCredentials: true })
     .then(res=>{
       this.setRedirection('/management/main/');
     })
@@ -240,7 +244,7 @@ if(this.state.editmode && !this.state.usermode) {
     });
 
 } else {
-  axios.post(getConf('api_url_base')+'/api/user/create',{username: this.state.uname, password: this.state.password2, is_admin: this.state.is_admin}, { withCredentials: true })
+  axios.post(getConf('api_url_base')+'/api/user/create',{username: this.state.uname, password: this.state.password2, is_admin: this.state.switch_is_admin}, { withCredentials: true })
     .then(res=>{
       this.setRedirection('/management/main/');
     })

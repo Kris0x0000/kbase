@@ -102,11 +102,11 @@ redirect() {
   if(this.state.redirection_path !== '') {
     if(this.state.redirection_path === 'edit') {
 
-      return <Redirect to={{ pathname: "/issue/edit/"+this.state.id , state: {prev_path: this.props.location.pathname}}} />;
+      return <Redirect push to={{ pathname: "/issue/edit/"+this.state.id , state: {prev_path: this.props.location.pathname}}} />;
     }
     if(this.state.redirection_path === 'back_to_search') {
     //  console.log(this.state.search_tags);
-      return <Redirect to={{
+      return <Redirect push to={{
         pathname: '/issue/find',
       state: { search_tags: this.state.search_tags, prev_path: this.props.location.pathname }
       }} />;

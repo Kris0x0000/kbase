@@ -79,7 +79,7 @@ componentDidUpdate() {
 
   redirect() {
     if(this.state.is_redirected) {
-      return <Redirect to={{ pathname: this.props.location.state.prev_path, state: {prev_path: this.props.location.pathname} }} />;
+      return <Redirect push to={{ pathname: this.props.location.state.prev_path, state: {prev_path: this.props.location.pathname} }} />;
     }
   }
 

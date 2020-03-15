@@ -185,15 +185,15 @@ if(username !== uname) {
   redirect() {
 
       if(this.state.redirection_path === 'edit') {
-               return (<Redirect to={{ pathname: "/management/user/edit/"+this.state.id, state: {prev_path: this.state.prev_path} }} />);
+               return (<Redirect push to={{ pathname: "/management/user/edit/"+this.state.id, state: {prev_path: this.state.prev_path} }} />);
             }
 
       if(this.state.redirection_path === 'create') {
-        return <Redirect to={{ pathname: "/management/user/create"}} />;
+        return <Redirect push to={{ pathname: "/management/user/create"}} />;
       }
 
       if(this.state.redirection_path === 'back') {
-        return <Redirect to={{ pathname: this.state.prev_path}} />;
+        return <Redirect push to={{ pathname: this.state.prev_path}} />;
       }
   }
 

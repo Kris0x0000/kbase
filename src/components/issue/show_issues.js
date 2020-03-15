@@ -137,19 +137,19 @@ axios.post(getConf('api_url_base')+'/api/issue/getStats', {}, { withCredentials:
   redirect() {
 
       if(this.state.redirection_path === 'edit') {
-               return (<Redirect to={{ pathname: "/issue/edit/"+this.state.id, state: {prev_path: this.state.this_path, search_tags: this.props.search_tags} }} />);
+               return (<Redirect push to={{ pathname: "/issue/edit/"+this.state.id, state: {prev_path: this.state.this_path, search_tags: this.props.search_tags} }} />);
             }
 
       if(this.state.redirection_path === 'display') {
-        return <Redirect to={{ pathname: "/issue/display/"+this.state.id, state: { prev_path: this.state.this_path, search_tags: this.state.search_tags } }} />;
+        return <Redirect push to={{ pathname: "/issue/display/"+this.state.id, state: { prev_path: this.state.this_path, search_tags: this.state.search_tags } }} />;
       }
 
       if(this.state.redirection_path === 'back') {
-        return <Redirect to={{ pathname: "/home/", state: { prev_path: this.state.this_path}}} />;
+        return <Redirect push to={{ pathname: "/home/", state: { prev_path: this.state.this_path}}} />;
       }
 
       if(this.state.redirection_path === 'add') {
-        return <Redirect to={{ pathname: "/issue/create/", state: { prev_path: this.state.this_path}}} />;
+        return <Redirect push to={{ pathname: "/issue/create/", state: { prev_path: this.state.this_path}}} />;
       }
 
   }

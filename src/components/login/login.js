@@ -1,7 +1,7 @@
 import React, { Component, Fragment } from 'react';
 import { TextField } from '@material-ui/core';
 import axios from 'axios';
-import { Redirect } from 'react-router-dom';
+import { Redirect, Link } from 'react-router-dom';
 import * as getConf from '../../../src/conf.js';
 import '../../global.css';
 import { Grid } from '@material-ui/core';
@@ -53,9 +53,9 @@ class Login extends Component {
   redirect() {
     if(this.state.isredirected) {
       if(this.state.prev_path !== '') {
-        return <Redirect to={{ pathname: this.state.prev_path }} />;
+        return <Redirect push to={{ pathname: this.state.prev_path }} />;
       } else {
-      return <Redirect to={{ pathname: `/home` }} />;
+      return <Redirect push to={{ pathname: `/home` }} />;
      }
     }
   }

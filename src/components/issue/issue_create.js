@@ -248,7 +248,7 @@ isAuthenticated() {
 redirect() {
   if(this.state.go_back) {
     if(this.state.prev_path !== '') {
-      return (<Redirect to={{pathname: this.props.location.state.prev_path, state: {search_tags: this.state.search_tags, prev_path: this.props.location}}} />);
+      return (<Redirect push to={{pathname: this.props.location.state.prev_path, state: {search_tags: this.state.search_tags, prev_path: this.props.location}}} />);
     }
   }
 }

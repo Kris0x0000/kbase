@@ -1,6 +1,6 @@
 import React, { Component, Fragment } from 'react';
 import axios from 'axios';
-import { Redirect } from 'react-router-dom';
+import { Redirect, Link } from 'react-router-dom';
 import * as getConf from '../../../src/conf.js';
 import { IconButton } from '@material-ui/core';
 import SearchIcon from '@material-ui/icons/Search';
@@ -71,7 +71,7 @@ setTimeout(()=>{
 
 redirect() {
   if(this.state.is_redirected) {
-    return <Redirect to={{ pathname: this.state.path, state: {prev_path: this.state.this_path} }} />;
+    return <Redirect push to={{ pathname:this.state.path, state: {prev_path: this.state.this_path} }} />;
   }
 }
 
@@ -108,7 +108,7 @@ settings() {
 
 isAuthenticated() {
   if(!this.state.isauthenticated) {
-    return (<Redirect to={{ pathname: "/login" }} />);
+    return (<Redirect push to={{ pathname: '/login' }} />);
   }
 }
 
