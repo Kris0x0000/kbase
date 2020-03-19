@@ -484,7 +484,7 @@ showStats() {
 </Typography>
 {this.iterateOverTags(this.state.last_tags)}
 <br/><br/>
- <span style={{color:'#2196f3',fontSize: '12px'}}>* Maksymalnie 20 tagów, uszeregowanych według kolejności alfabetycznej.</span>
+ <span style={{color:'#2196f3',fontSize: '12px'}}>* Maksymalnie 10 tagów, uszeregowanych według kolejności alfabetycznej.</span>
 </CardContent>
 </Card>
 </Grid>

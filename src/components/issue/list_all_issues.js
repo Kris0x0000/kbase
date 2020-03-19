@@ -396,12 +396,7 @@ render() {
 <Header />
 <Navi location={this.props.location.pathname}/>
 <br/>
-<Grid container style={{ marginTop: '40px' }} alignItems="flex-start" justify="center" direction="row">
-<Pagination
-count={Math.ceil(this.state.object.length/this.state.issues_per_page)}
-onChange={(event: object, page: number) => this.paginate(page)}
- /> <br/>
-</Grid>
+
 
       <Grid container style={{ marginTop: '30px' }} alignItems="flex-start" justify="center" direction="row">
 
@@ -448,8 +443,9 @@ onChange={(event: object, page: number) => this.paginate(page)}
       </DialogActions>
     </Dialog>
 
-<Grid container style={{ marginTop: '30px' }} alignItems="flex-start" justify="center" direction="row">
+<Grid container style={{ marginTop: '30px', marginBottom: '40px' }} alignItems="flex-start" justify="center" direction="row">
     <Pagination
+    color="primary"
     count={Math.ceil(this.state.object.length/this.state.issues_per_page)}
     onChange={(event: object, page: number) => this.paginate(page)}
      /> <br/>
