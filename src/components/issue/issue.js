@@ -99,8 +99,28 @@ componentDidUpdate() {
     }, 1000);
   }
 
+
+  addLastSearchedTags(value) {
+
+    axios.post(getConf('api_url_base')+'/api/user/addLastTags',{last_searched_tags: value}, { withCredentials: true })
+    .then(res=>{
+      this.setState({isauthenticated: true});
+      console.log(res);
+    })
+    .catch((e)=>{
+  if( e.response.status === 401) {
+  //  this.setState({isauthenticated: false})
+  }
+      }
+    );
+
+  }
+
   handleAutocompleteChange(event, value) {
+    this.addLastSearchedTags(value);
       this.setState({search_tags: value});
+
+
   }
 
   isAuthenticated() {

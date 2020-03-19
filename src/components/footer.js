@@ -15,7 +15,7 @@ class Footer extends Component {
     return(
       <Fragment>
       <div className="footer">
-      <br/>
+  
 
         <hr className="hr-text"/>
 

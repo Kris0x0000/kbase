@@ -43,7 +43,7 @@ class IssueDisplay extends Component {
     };
 
 componentDidMount() {
-
+console.log('this.props.location.state', this.props.location.state.prev_path);
 this.setSessionTimeout();
 
   if(this.props.location.state) {
@@ -104,12 +104,14 @@ redirect() {
 
       return <Redirect push to={{ pathname: "/issue/edit/"+this.state.id , state: {prev_path: this.props.location.pathname}}} />;
     }
-    if(this.state.redirection_path === 'back_to_search') {
+    if(this.state.redirection_path === 'back') {
     //  console.log(this.state.search_tags);
       return <Redirect push to={{
-        pathname: '/issue/find',
+        pathname: this.props.location.state.prev_path,
       state: { search_tags: this.state.search_tags, prev_path: this.props.location.pathname }
       }} />;
+    } else {
+      //return <Redirect push to={{pathname: this.props.location.state.prev_path, state: {prev_path: this.props.location}}} />;
     }
   }
 }
@@ -171,7 +173,7 @@ getTime(millis) {
 <div class="bottom_navi">
 <Grid container alignItems="flex-start" justify="flex-end" direction="row">
 <Tooltip title="Wróć">
-<IconButton color="secondary" onClick={()=>{this.setRedirection("back", 'back_to_search')}}>
+<IconButton color="secondary" onClick={()=>{this.setRedirection("back", 'back')}}>
    <ArrowBackIcon/>
 </IconButton>
 </Tooltip>

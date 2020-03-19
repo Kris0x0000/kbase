@@ -14,6 +14,7 @@ import { Grid } from '@material-ui/core';
 import HelpOutlineIcon from '@material-ui/icons/HelpOutline';
 import MeetingRoomIcon from '@material-ui/icons/MeetingRoom';
 import { spacing } from '@material-ui/system';
+import ListIcon from '@material-ui/icons/List';
 
 
 
@@ -162,6 +163,15 @@ render() {
   </IconButton>
   </Tooltip>
 </Grid>
+
+<Grid item align="center" xs>
+  <Tooltip title={"Lista wszystkich wpisów"}>
+<IconButton color="primary" onClick={()=>this.setRedirection("/issue/all")}>
+<ListIcon style={{fontSize: '128px'}} />
+</IconButton>
+</Tooltip>
+</Grid>
+
 <Grid item align="center" xs>
   <Tooltip title={"Wyloguj: "+this.state.username}>
 <IconButton color="primary" onClick={()=>this.logOut()}>
@@ -169,6 +179,8 @@ render() {
 </IconButton>
 </Tooltip>
 </Grid>
+
+
     </Grid>
 </div>
     <br /><br /><br /><br />

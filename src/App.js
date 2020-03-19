@@ -9,6 +9,7 @@ import Home from './components/home/home'
 import Management from './components/management/management'
 import UserCreate from './components/management/user_create'
 import Help from './components/help'
+import AllIssues from './components/issue/list_all_issues'
 
 
 class App extends React.Component {
@@ -28,6 +29,7 @@ render() {
           <Route exact path='/management/user/create' component={UserCreate}/>
           <Route exact path='/management/user/edit/:id' component={UserCreate}/>
           <Route exact path='/help' component={Help}/>
+          <Route exact path='/issue/all' component={AllIssues}/>
         </Switch>
     </Router>
   );

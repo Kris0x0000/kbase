@@ -13,7 +13,6 @@ import Snackbar from '@material-ui/core/Snackbar';
 import { SnackbarContent } from '@material-ui/core';
 import Tooltip from '@material-ui/core/Tooltip';
 import ArrowBackIcon from '@material-ui/icons/ArrowBack';
-import CountUp from 'react-countup';
 import Grid from '@material-ui/core/Grid';
 import Paper from '@material-ui/core/Paper';
 import Dialog from '@material-ui/core/Dialog';
@@ -22,15 +21,15 @@ import DialogContent from '@material-ui/core/DialogContent';
 import DialogContentText from '@material-ui/core/DialogContentText';
 import DialogTitle from '@material-ui/core/DialogTitle';
 import Button from '@material-ui/core/Button';
-import Card from '@material-ui/core/Card';
-import CardActions from '@material-ui/core/CardActions';
-import CardContent from '@material-ui/core/CardContent';
-import Typography from '@material-ui/core/Typography';
+import { Pagination } from '@material-ui/lab';
+import Navi from '../../components/navi/navi';
+import Header from '../header';
+import Footer from '../footer';
 
 let timeoutHandle;
 
 
-class ShowIssues extends Component {
+class AllIssues extends Component {
 
   constructor(props) {
     super(props);
@@ -40,21 +39,17 @@ class ShowIssues extends Component {
       id: '',
       object: '',
       table: [],
-      search_tags: [],
-      all_tags: '',
       is_loading_set: false,
       is_authenticated: true,
       show_warning: false,
       warning_body: 'f',
       this_path:'',
       stats:{},
-      tag_count:'',
-      issue_count:'',
-      top_tags:[],
       item_to_delete: '',
       is_admin: false,
       warning_title: '',
-      last_tags:[],
+      current_page: 1,
+      issues_per_page: 20,
     };
   }
 
@@ -69,6 +64,7 @@ class ShowIssues extends Component {
   componentDidMount(prevProps) {
 this.setSessionTimeout();
 
+
     let is_admin = localStorage.getItem('is_admin');
 
     if(is_admin === 'true') {
@@ -77,10 +73,13 @@ this.setSessionTimeout();
           this.setState({is_admin: false});
         }
 
-this.setState({search_tags: this.props.search_tags, this_path: this.props.prev_path, is_loading_set: true});
-axios.post(getConf('api_url_base')+'/api/issue/getAllTags',{tag: ''}, { withCredentials: true })
+this.setState({this_path: this.props.prev_path, is_loading_set: true});
+axios.post(getConf('api_url_base')+'/api/issue/getAllIssues',{}, { withCredentials: true })
 .then(res=>{
-  this.setState({is_loading_set: false, is_authenticated: true, all_tags: res, tags_count: res.data.length});
+
+  this.setState({object: res.data, is_loading_set: false});
+//  this.renderTableRows(res);
+this.paginate(1);
 })
 .catch((e)=>{
 if(e.response) {
@@ -90,54 +89,13 @@ if(e.response.status === 401) {
 }
 
 });
-
-axios.post(getConf('api_url_base')+'/api/issue/getStats', {}, { withCredentials: true })
-.then(res=>{
-  this.setState({stats: res.data, tag_count: res.data.tag_count, issue_count: res.data.issue_count, top_tags: res.data.top_tags});
-//console.log("stats: ", res.data);
-})
-.catch((e)=>{console.log(e)
-  if( e.response.status === 401) {
-   this.setState({is_authenticated: false});
- }
-});
-
-
-axios.post(getConf('api_url_base')+'/api/user/getLastTags', {}, { withCredentials: true })
-.then(res=>{
-  this.setState({last_tags: res.data});
-console.log("last tags: ", res.data);
-})
-.catch((e)=>{console.log(e)
-  if( e.response.status === 401) {
-   this.setState({is_authenticated: false});
- }
-});
-
-
-
   }
 
   componentDidUpdate(prevProps, prevState) {
     this.setSessionTimeout();
-
-      if(prevState.search_tags !== this.props.search_tags ) {
-        this.fetchData(this.props.search_tags);
-          this.setState({search_tags: this.props.search_tags, this_path: this.props.prev_path});
-
-
-          axios.post(getConf('api_url_base')+'/api/user/getLastTags', {}, { withCredentials: true })
-          .then(res=>{
-            this.setState({last_tags: res.data});
-          console.log("last tags: ", res.data);
-          })
-          .catch((e)=>{console.log(e)
-            if( e.response.status === 401) {
-             this.setState({is_authenticated: false});
-           }
-          });
-      }
-
+    if(prevState.current_page !== this.state.current_page ) {
+    this.paginate(this.state.current_page);
+  }
 
   }
 
@@ -164,19 +122,20 @@ console.log("last tags: ", res.data);
   redirect() {
 
       if(this.state.redirection_path === 'edit') {
-               return (<Redirect push to={{ pathname: "/issue/edit/"+this.state.id, state: {prev_path: this.state.this_path, search_tags: this.props.search_tags} }} />);
+               return (<Redirect push to={{ pathname: "/issue/edit/"+this.state.id, state: {prev_path: this.props.location.pathname, search_tags: this.props.search_tags} }} />);
             }
 
       if(this.state.redirection_path === 'display') {
-        return <Redirect push to={{ pathname: "/issue/display/"+this.state.id, state: { prev_path: this.state.this_path, search_tags: this.state.search_tags } }} />;
+        return <Redirect push to={{ pathname: "/issue/display/"+this.state.id, state: { prev_path: this.props.location.pathname, search_tags: this.state.search_tags } }} />;
       }
 
       if(this.state.redirection_path === 'back') {
-        return <Redirect push to={{ pathname: "/home/", state: { prev_path: this.state.this_path}}} />;
+      //  return <Redirect push to={{ pathname: this.props.location.state.prev_path, state: { prev_path: this.props.location.pathname}}} />;
+      return window.history.back();
       }
 
       if(this.state.redirection_path === 'add') {
-        return <Redirect push to={{ pathname: "/issue/create/", state: { prev_path: this.state.this_path}}} />;
+        return <Redirect push to={{ pathname: "/issue/create/", state: { prev_path: this.props.location.pathname}}} />;
       }
 
   }
@@ -277,9 +236,10 @@ if((itemowner === current_username) || (this.state.is_admin)) {
 renderTableRows(res) {
   this.setState({is_loading_set: true});
   if(res) {
+
     if(window.innerHeight < window.innerWidth) {
 
-      let tab = res.data.sort((a, b) => parseFloat(b.create_timestamp) - parseFloat(a.create_timestamp)).map((item)=>
+      let tab = res.sort((a, b) => parseFloat(b.create_timestamp) - parseFloat(a.create_timestamp)).map((item)=>
 
       <tr key={item._id} >
         <td onClick={()=>this.setRedirection(item._id, 'display')}>{this.limitString(item.title)}</td>
@@ -288,17 +248,12 @@ renderTableRows(res) {
         <td onClick={()=>this.setRedirection(item._id, 'display')}>{getTime(item.create_timestamp)}</td>
         <td>
 
-
-
         <Tooltip title="Pokaż">
             <IconButton color="primary" onClick={()=>this.setRedirection(item._id, 'display')}>
             <VisibilityIcon/>
             </IconButton>
         </Tooltip>
-
-
     {this.showEditButtor(item.creator, item._id)}
-
 
     {this.showDeleteButton(item.creator, item._id)}
 
@@ -314,9 +269,6 @@ renderTableRows(res) {
         <td onClick={()=>this.setRedirection(item._id, 'display')}>{item.tags.map((element)=><Fragment><Chip variant="outlined" size="small" label={element}/> </Fragment>)}</td>
 
         <td>
-
-
-
         <Tooltip title="Pokaż">
             <IconButton color="primary" onClick={()=>this.setRedirection(item._id, 'display')}>
             <VisibilityIcon/>
@@ -349,21 +301,6 @@ isAuthenticated() {
   }
 }
 
-fetchData(tags) {
-  this.setState({is_loading_set: true});
-  axios.post(getConf('api_url_base')+'/api/issue/getIssueByTag', {tags: tags}, { withCredentials: true })
-  .then(res=>{
-    this.setState({object: res.data, is_loading_set: false});
-    this.renderTableRows(res);
-
-  })
-  .catch((e)=>{console.log(e)
-    if( e.response.status === 401) {
-     this.setState({is_authenticated: false});
-    }
-  });
-
-}
 
 tableHeader() {
   if(window.innerHeight < window.innerWidth) {
@@ -418,23 +355,6 @@ tableHeader() {
 }
 
 
-chooseComp() {
-  if(this.state.search_tags) {
-    if(this.state.search_tags.length > 0) {
-  return (
-    <div>{this.tableHeader()}</div>
-  );
-
-}    else {
-return this.showStats();
-  }
-} else {
-  return this.showStats();
-  }
-}
-
-
-
 handleDeleteClick(item) {
 
 this.setState({show_warning: true, item_to_delete: item, warning_body: 'Dobrze się zastanów, ta operacja jest nieodwracalna.', warning_title: "Czy napewno chcesz usunąć ten wpis?"});
@@ -460,79 +380,42 @@ iterateOverElements(arr) {
   return it;
 }
 
-iterateOverTags(arr) {
-  let it = arr.map(i=>
-<Chip variant="outlined" label={i}/>
-  );
-  return it;
+paginate(page) {
+
+  let indexOfLastElement = this.state.current_page * this.state.issues_per_page;
+  let indexOfFirstElement = indexOfLastElement - this.state.issues_per_page;
+  let currentIssues = this.state.object.slice(indexOfFirstElement, indexOfLastElement);
+  this.renderTableRows(currentIssues);
+  this.setState({current_page: page});
+
 }
-
-showStats() {
-  return (
-
-<div className="stats">
-
-<Grid
- container
- spacing={2}
- direction="column"
- alignItems="center"
- justify="center"
-
->
-<Grid item xs={8}>
-<Card style={{border: '#2196f3'}} className="stats_card" variant="outlined">
-<CardContent>
-<Typography color="textSecondary" gutterBottom>
-  <p>Ostatnio wyszukiwane przez ciebie unikalne tagi:</p>
-</Typography>
-{this.iterateOverTags(this.state.last_tags)}
-<br/><br/>
- <span style={{color:'#2196f3',fontSize: '12px'}}>* Maksymalnie 20 tagów, uszeregowanych według kolejności alfabetycznej.</span>
-</CardContent>
-</Card>
-</Grid>
-  <Grid item xs={6}>
-
-<Card style={{border: '#2196f3'}} className="stats_card" variant="outlined">
-     <CardContent>
-       <Typography color="textSecondary" gutterBottom>
-         <p>Liczba tagów: <CountUp redraw={true} duration={4} start={0} end={this.state.tag_count} delay={0}></CountUp></p>
-       </Typography>
-       <Typography variant="h5" component="h2">
-         <p>Liczba wpisów: <CountUp redraw={true} duration={4} start={0} end={this.state.issue_count} delay={0}></CountUp></p>
-       </Typography>
-       <Typography color="textSecondary">
-       <br/>
-       Najpopularniejsze tagi: <br/>
-           {this.iterateOverElements(this.state.top_tags)}
-       </Typography><br/>
-
-         <span style={{color:'#2196f3',fontSize: '12px'}}>* Statystyki są aktualizowane co godzinę.</span>
-
-
-     </CardContent>
-   </Card>
-</Grid>
-</Grid>
-</div>
-
-  );
-}
-
 
 
 render() {
 
     return(
-      <Fragment>
 
-{this.chooseComp()}
+      <Fragment>
+<Header />
+<Navi location={this.props.location.pathname}/>
+<br/>
+<Grid container style={{ marginTop: '40px' }} alignItems="flex-start" justify="center" direction="row">
+<Pagination
+count={Math.ceil(this.state.object.length/this.state.issues_per_page)}
+onChange={(event: object, page: number) => this.paginate(page)}
+ /> <br/>
+</Grid>
+
+      <Grid container style={{ marginTop: '30px' }} alignItems="flex-start" justify="center" direction="row">
+
+      <Grid item align="center" xs>
+    <div>{this.tableHeader()}</div>
+    </Grid>
+</Grid>
       <div id="loading">{this.showLoading()}</div>
       <div id="container">
 
       {this.redirect()}
-
 {this.isAuthenticated()}
 
 </div>
@@ -568,9 +451,15 @@ render() {
       </DialogActions>
     </Dialog>
 
-
-
+<Grid container style={{ marginTop: '30px' }} alignItems="flex-start" justify="center" direction="row">
+    <Pagination
+    count={Math.ceil(this.state.object.length/this.state.issues_per_page)}
+    onChange={(event: object, page: number) => this.paginate(page)}
+     /> <br/>
+     </Grid>
+ <Footer />
 </Fragment>
+
     );
   }
 }
@@ -582,4 +471,4 @@ function getTime(millis) {
 }
 
 
-export default ShowIssues;
+export default AllIssues;
