@@ -170,7 +170,7 @@ getTime(millis) {
     </div>
 
 </div>
-<div class="bottom_navi">
+<div className="bottom_navi">
 <Grid container alignItems="flex-start" justify="flex-end" direction="row">
 <Tooltip title="Wróć">
 <IconButton color="secondary" onClick={()=>{this.setRedirection("back", 'back')}}>

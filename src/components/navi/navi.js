@@ -69,19 +69,19 @@ beginsWith(a) {
   redirect() {
     if(this.state.redirection_path !== '') {
       if(this.state.redirection_path === 'login') {
-        return <Redirect to={{ pathname: "/login" }} />;
+        return <Redirect push to={{ pathname: "/login" }} />;
       }
       if(this.state.redirection_path === 'home') {
-        return <Redirect to={{ pathname: "/home" }} />;
+        return <Redirect push to={{ pathname: "/home" }} />;
       }
       if(this.state.redirection_path === 'admin_settings') {
-        return <Redirect to={{ pathname: "/management/main" }} />;
+        return <Redirect push to={{ pathname: "/management/main" }} />;
       }
       if(this.state.redirection_path === 'add') {
-        return <Redirect to={{ pathname: "/issue/create/", state: { prev_path: this.props.location, search_tags: this.props.search_tags } }} />;
+        return <Redirect push to={{ pathname: "/issue/create/", state: { prev_path: this.props.location, search_tags: this.props.search_tags } }} />;
       }
       if(this.state.redirection_path === 'admin_settings') {
-        return <Redirect to={{ pathname: "/management/main" }} />;
+        return <Redirect push to={{ pathname: "/management/main" }} />;
       }
     }
   }

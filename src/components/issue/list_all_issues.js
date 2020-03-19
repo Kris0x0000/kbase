@@ -9,12 +9,9 @@ import DeleteForeverIcon from '@material-ui/icons/DeleteForever';
 import VisibilityIcon from '@material-ui/icons/Visibility';
 import { CircularProgress } from '@material-ui/core';
 import { Chip } from '@material-ui/core';
-import Snackbar from '@material-ui/core/Snackbar';
-import { SnackbarContent } from '@material-ui/core';
 import Tooltip from '@material-ui/core/Tooltip';
 import ArrowBackIcon from '@material-ui/icons/ArrowBack';
 import Grid from '@material-ui/core/Grid';
-import Paper from '@material-ui/core/Paper';
 import Dialog from '@material-ui/core/Dialog';
 import DialogActions from '@material-ui/core/DialogActions';
 import DialogContent from '@material-ui/core/DialogContent';
@@ -243,7 +240,7 @@ renderTableRows(res) {
 
       <tr key={item._id} >
         <td onClick={()=>this.setRedirection(item._id, 'display')}>{this.limitString(item.title)}</td>
-        <td onClick={()=>this.setRedirection(item._id, 'display')}>{item.tags.sort().map((element)=><Fragment><Chip variant="outlined" size="small" label={element}/> </Fragment>)}</td>
+        <td key={item.index} onClick={()=>this.setRedirection(item._id, 'display')}>{item.tags.sort().map((element)=><Fragment><Chip key={element.index} variant="outlined" size="small" label={element}/> </Fragment>)}</td>
         <td onClick={()=>this.setRedirection(item._id, 'display')}>{item.creator}</td>
         <td onClick={()=>this.setRedirection(item._id, 'display')}>{getTime(item.create_timestamp)}</td>
         <td>

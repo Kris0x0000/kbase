@@ -156,18 +156,20 @@ render() {
 
     {this.settings()}
     </Grid>
-    <Grid item align="center" xs>
-    <Tooltip title="Pomoc">
-  <IconButton color="primary" onClick={()=>this.setRedirection("/help/")}>
-     <HelpOutlineIcon style={{fontSize: '128px'}}/>
-  </IconButton>
-  </Tooltip>
-</Grid>
+
 
 <Grid item align="center" xs>
   <Tooltip title={"Lista wszystkich wpisów"}>
 <IconButton color="primary" onClick={()=>this.setRedirection("/issue/all")}>
 <ListIcon style={{fontSize: '128px'}} />
+</IconButton>
+</Tooltip>
+</Grid>
+
+<Grid item align="center" xs>
+<Tooltip title="Pomoc">
+<IconButton color="primary" onClick={()=>this.setRedirection("/help/")}>
+ <HelpOutlineIcon style={{fontSize: '128px'}}/>
 </IconButton>
 </Tooltip>
 </Grid>
