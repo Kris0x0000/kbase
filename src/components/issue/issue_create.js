@@ -151,7 +151,7 @@ if(option === 'accept') {
       this.setState({show_warning: true, warning_body: "Uzupełnij wszystkie pola przed dodaniem wpisu."});
       setTimeout(()=>{
           this.setState({show_warning: false});
-      }, 2000);
+      }, 3000);
   } else {
 
   if(this.state.editmode) {
@@ -198,7 +198,7 @@ handleAutocompleteChange(event, value) {
     this.setState({to_many_tags: true, show_warning: true, warning_body: "Nie możesz ustawić więcej niż 6 tagów"});
     setTimeout(()=>{
         this.setState({show_warning: false});
-    }, 2000);
+    }, 3000);
   } else {
     this.setState({to_many_tags: false});
   }
@@ -262,6 +262,13 @@ handleMyQuillChange = (content) => {
 
 };
 
+handleMyQuillWarning = (show, title, body) => {
+  this.setState({show_warning: show, warning_title: title, warning_body: body});
+  setTimeout(()=>{
+      this.setState({show_warning: false});
+  }, 3000);
+};
+
 
 
   render() {
@@ -315,7 +322,7 @@ handleMyQuillChange = (content) => {
 
         <TextField fullWidth={true} autoComplete="off" id="title" label="Tytuł" type="text" variant="outlined" value={this.state.title} onChange={(r)=>this.handletitle(r.target.value)} />
         <br /><br /><br />
-<MyQuill content={this.state.body} onContentChange={this.handleMyQuillChange}/>
+<MyQuill content={this.state.body} onContentChange={this.handleMyQuillChange} onWarningChange={this.handleMyQuillWarning}/>
 </div>
 
 <div class="bottom_navi">

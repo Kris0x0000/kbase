@@ -259,7 +259,7 @@ renderTableRows(res) {
       this.setState((state,props)=>{return {table: tab}});
 
     } else {
-      let tab = res.data.sort((a, b) => parseFloat(b.create_timestamp) - parseFloat(a.create_timestamp)).map((item)=>
+      let tab = res.sort((a, b) => parseFloat(b.create_timestamp) - parseFloat(a.create_timestamp)).map((item)=>
 
       <tr key={item._id} >
         <td onClick={()=>this.setRedirection(item._id, 'display')}>{this.limitString(item.title)}</td>
@@ -443,7 +443,7 @@ render() {
       </DialogActions>
     </Dialog>
 
-<Grid container style={{ marginTop: '30px', marginBottom: '40px' }} alignItems="flex-start" justify="center" direction="row">
+<Grid container style={{ marginTop: '30px', marginBottom: '50px' }} alignItems="flex-start" justify="center" direction="row">
     <Pagination
     color="primary"
     count={Math.ceil(this.state.object.length/this.state.issues_per_page)}

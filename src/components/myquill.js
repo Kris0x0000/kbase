@@ -98,6 +98,12 @@ handleContentChange = () => {
   }
 };
 
+handleWarningChange = (e) => {
+  if(this.props.onWarningChange) {
+    this.props.onWarningChange(true, "błąd", "Przekroczono maksymalny rozmiar pliku > 512kb");
+  }
+};
+
 
   selectLocalImage = ()=> {
         const input = document.createElement('input');
@@ -135,6 +141,9 @@ handleContentChange = () => {
         })
         .catch((e)=>{
           console.log(e);
+this.handleWarningChange(e);
+
+
           if(e.response) {
       if( e.response.status === 401) {
         this.setState({isauthenticated: false});

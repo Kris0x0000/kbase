@@ -102,7 +102,7 @@ axios.post(getConf('api_url_base')+'/api/issue/getStats', {}, { withCredentials:
 axios.post(getConf('api_url_base')+'/api/user/getLastTags', {}, { withCredentials: true })
 .then(res=>{
   this.setState({last_tags: res.data});
-console.log("last tags: ", res.data);
+//console.log("last tags: ", res.data);
 })
 .catch((e)=>{console.log(e)
   if( e.response.status === 401) {
@@ -125,7 +125,7 @@ console.log("last tags: ", res.data);
           axios.post(getConf('api_url_base')+'/api/user/getLastTags', {}, { withCredentials: true })
           .then(res=>{
             this.setState({last_tags: res.data});
-          console.log("last tags: ", res.data);
+          //console.log("last tags: ", res.data);
           })
           .catch((e)=>{console.log(e)
             if( e.response.status === 401) {
@@ -484,7 +484,7 @@ showStats() {
 </Typography>
 {this.iterateOverTags(this.state.last_tags)}
 <br/><br/>
- <span style={{color:'#2196f3',fontSize: '12px'}}>* Maksymalnie 10 tagów, uszeregowanych według kolejności alfabetycznej.</span>
+ <span style={{color:'#2196f3',fontSize: '12px'}}>* Maksymalnie 11 tagów, uszeregowanych według kolejności alfabetycznej.</span>
 </CardContent>
 </Card>
 </Grid>

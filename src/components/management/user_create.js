@@ -38,9 +38,9 @@ class UserCreate extends Component {
       is_redirected: false,
       editmode: false,
       is_admin: false,
-      switch_is_admin: false,
+      is_edited_user_admin: false,
       id:'',
-      usermode: false,
+      path: '',
 
     };
   }
@@ -53,22 +53,21 @@ class UserCreate extends Component {
   };
 
 componentDidMount() {
-  let is_admin = localStorage.getItem('is_admin');
-  console.log(is_admin);
+
+  if(localStorage.getItem('is_admin') === 'true') {
+    this.setState({is_admin: true, usermode: false});
+  }
+
+
   this.setSessionTimeout();
 
-  this.setState({is_admin: localStorage.getItem('is_admin')});
-
+  //this.setState({is_admin: localStorage.getItem('is_admin')});
   if(this.props.location.state) {
     if(this.props.location.state.prev_path) {
       this.setState({prev_path: this.props.location.state.prev_path});
     }
-
-
-      this.setState({usermode: is_admin});
-      console.log(this.state.usermode);
-
-
+      //this.setState({usermode: !this.state.is_admin});
+    //  console.log(this.state.usermode);
   }
 
 
@@ -86,7 +85,7 @@ componentDidMount() {
 
   uname: res.data.username,
   password: res.data.password,
-  is_admin: res.data.is_admin,
+  is_edited_user_admin: res.data.is_admin,
   res: res.data._id,
 });
 
@@ -113,17 +112,21 @@ this.setState({password2: this.state.password});
 
 componentDidUpdate(prevState) {
     this.setSessionTimeout();
+    if(prevState.is_admin !== localStorage.getItem('is_admin')) {
+    }
+
+
 }
 
 isAuthenticated() {
   if(!this.state.is_authenticated) {
-    return (<Redirect to={{ pathname: "/login", state: { prev_path: this.props.location.pathname } }} />);
+    return (<Redirect to={{ pathname: "/login"}} />);
   }
 }
 
 handleswitch(id, value) {
   if(id === 'is_admin') {
-    this.setState({switch_is_admin: value});
+    this.setState({is_edited_user_admin: value});
   }
 }
 
@@ -184,26 +187,28 @@ if(!(data === '')) {
 
 
 setRedirection(path) {
-  this.setState({prev_path: path, is_redirected: true});
+  this.setState({path: path, is_redirected: true});
 }
 
 redirect() {
   if(this.state.is_redirected) {
-      return (<Redirect push to={{pathname: this.state.prev_path}} />);
+      return (<Redirect push to={{pathname: this.state.path}} />);
   }
 }
 
 adminSwitch() {
-  if(!this.state.usermode) {
+  if(this.state.is_admin) {
   return(<div><p>Administrator</p>
     <Switch
     id="is_admin"
- onChange={(r)=>this.handleswitch(r.target.id, !this.state.switch_is_admin)}
- checked={this.state.switch_is_admin}
+ onChange={(r)=>this.handleswitch(r.target.id, !this.state.is_edited_user_admin)}
+ checked={this.state.is_edited_user_admin}
  color="primary"
  inputProps={{ 'aria-label': 'primary checkbox' }} /></div>);
 
-  }
+} else {
+  // nothing
+}
 }
 
 submit(option) {
@@ -214,14 +219,16 @@ submit(option) {
         this.setState({show_warning: true, warning_body: "Wypełnij prawidłowo wszyskie pola."});
         setTimeout(()=>{
           this.setState({show_warning: false, warning_body: ""});
-        }, 2000);
+        }, 3000);
     } else {
 
-if(this.state.editmode && !this.state.usermode) {
 
-  axios.post(getConf('api_url_base')+'/api/user/edit', {username: this.state.uname, password: this.state.password, is_admin: this.state.switch_is_admin, id: this.state.id }, { withCredentials: true })
+if(this.state.editmode && this.state.is_admin) {
+  //console.log('editmode');
+
+  axios.post(getConf('api_url_base')+'/api/user/edit', {username: this.state.uname, password: this.state.password, is_admin: this.state.is_edited_user_admin, id: this.state.id }, { withCredentials: true })
     .then(res=>{
-      this.setRedirection('/management/main/');
+      this.setRedirection('/management/main');
     })
     .catch(e=>{console.log(e);
       if( e.response.status === 401) {
@@ -230,11 +237,11 @@ if(this.state.editmode && !this.state.usermode) {
     });
 
 
-} else if (this.state.usermode) {
+} else if (!this.state.is_admin) {
 
   axios.post(getConf('api_url_base')+'/api/user/editMyUser', {username: this.state.uname, password: this.state.password}, { withCredentials: true })
     .then(res=>{
-      this.setRedirection('/home');
+      this.setRedirection('/home/');
     })
     .catch(e=>{console.log(e);
       if( e.response.status === 401) {
@@ -244,7 +251,7 @@ if(this.state.editmode && !this.state.usermode) {
     });
 
 } else {
-  axios.post(getConf('api_url_base')+'/api/user/create',{username: this.state.uname, password: this.state.password2, is_admin: this.state.switch_is_admin}, { withCredentials: true })
+  axios.post(getConf('api_url_base')+'/api/user/create',{username: this.state.uname, password: this.state.password2, is_admin: this.state.is_edited_user_admin}, { withCredentials: true })
     .then(res=>{
       this.setRedirection('/management/main/');
     })
@@ -259,11 +266,7 @@ if(this.state.editmode && !this.state.usermode) {
 } //accept
 },500);
 
-  if(option === 'back' && !this.state.usermode) {
-    this.setRedirection('/management/main/');
-  } else {
-    this.setRedirection('/home/');
-  }
+
 }
 
 

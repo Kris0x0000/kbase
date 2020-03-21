@@ -43,7 +43,7 @@ class IssueDisplay extends Component {
     };
 
 componentDidMount() {
-console.log('this.props.location.state', this.props.location.state.prev_path);
+//console.log('this.props.location.state', this.props.location.state.prev_path);
 this.setSessionTimeout();
 
   if(this.props.location.state) {
