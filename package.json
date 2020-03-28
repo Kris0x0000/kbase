@@ -12,6 +12,7 @@
     "quill-image-resize": "^3.0.9",
     "quill-image-resize-module": "^3.0.0",
     "react": "^16.13.0",
+    "react-compound-timer": "^1.2.0",
     "react-countup": "^4.3.3",
     "react-dom": "^16.13.0",
     "react-router-dom": "^5.1.2",

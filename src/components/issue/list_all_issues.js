@@ -89,6 +89,7 @@ if(e.response.status === 401) {
   }
 
   componentDidUpdate(prevProps, prevState) {
+    clearTimeout(timeoutHandle);
     this.setSessionTimeout();
     if(prevState.current_page !== this.state.current_page ) {
     this.paginate(this.state.current_page);
@@ -236,7 +237,7 @@ renderTableRows(res) {
 
     if(window.innerHeight < window.innerWidth) {
 
-      let tab = res.sort((a, b) => parseFloat(b.create_timestamp) - parseFloat(a.create_timestamp)).map((item)=>
+      let tab = res.map((item)=>
 
       <tr key={item._id} >
         <td onClick={()=>this.setRedirection(item._id, 'display')}>{this.limitString(item.title)}</td>
@@ -381,7 +382,8 @@ paginate(page) {
 
   let indexOfLastElement = this.state.current_page * this.state.issues_per_page;
   let indexOfFirstElement = indexOfLastElement - this.state.issues_per_page;
-  let currentIssues = this.state.object.slice(indexOfFirstElement, indexOfLastElement);
+  let data = this.state.object.sort((a, b) => parseFloat(b.create_timestamp) - parseFloat(a.create_timestamp));
+  let currentIssues = data.slice(indexOfFirstElement, indexOfLastElement);
   this.renderTableRows(currentIssues);
   this.setState({current_page: page});
 

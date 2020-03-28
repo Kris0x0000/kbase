@@ -115,6 +115,7 @@ axios.post(getConf('api_url_base')+'/api/user/getLastTags', {}, { withCredential
   }
 
   componentDidUpdate(prevProps, prevState) {
+    clearTimeout(timeoutHandle);
     this.setSessionTimeout();
 
       if(prevState.search_tags !== this.props.search_tags ) {

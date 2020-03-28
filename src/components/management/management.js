@@ -43,12 +43,13 @@ class Management extends Component {
 
   setSessionTimeout = ()=>{
     timeoutHandle = setTimeout(()=>{
-        this.setState({isauthenticated: false});
+        this.setState({is_authenticated: false});
     }, getConf('session_timeout'));
   };
 
 
 componentDidUpdate() {
+  clearTimeout(timeoutHandle);
   this.setSessionTimeout();
 }
 
@@ -193,7 +194,8 @@ if(username !== uname) {
       }
 
       if(this.state.redirection_path === 'back') {
-        return <Redirect push to={{ pathname: this.state.prev_path}} />;
+        //return <Redirect push to={{ pathname: this.state.prev_path}} />;
+        return window.history.back();
       }
   }
 
@@ -266,7 +268,7 @@ if(username !== uname) {
 
 </div>
 <div class="bottom_navi">
-<Grid container alignItems="flex-start" justify="flex-end" direction="row">
+<Grid container alignItems="flex-end" justify="flex-start" direction="column" spacing={0}>
 <Tooltip title="Wróć">
 <IconButton color="secondary" onClick={()=>{this.setRedirection('','back')}}>
    <ArrowBackIcon/>

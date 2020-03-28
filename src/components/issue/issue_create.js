@@ -106,7 +106,7 @@ if(this.props.location.state) {
 }
 
 componentDidUpdate() {
-
+console.log('update');
   clearTimeout(timeoutHandle);
   this.setSessionTimeout();
 }
@@ -326,7 +326,7 @@ handleMyQuillWarning = (show, title, body) => {
 </div>
 
 <div class="bottom_navi">
-<Grid container alignItems="flex-start" justify="flex-start" direction="row">
+<Grid container alignItems="flex-end" justify="flex-start" direction="column" spacing={0}>
 <Tooltip title="Wróć">
 <IconButton color="secondary" onClick={()=>{this.submit('decline')}}>
    <ArrowBackIcon/>

@@ -70,7 +70,7 @@ this.setState({search_tags: this.props.location.state.search_tags});
 }
 
 componentDidUpdate() {
-
+clearTimeout(timeoutHandle);
   this.setSessionTimeout();
 //console.log("update");
 }
@@ -106,12 +106,14 @@ redirect() {
     }
     if(this.state.redirection_path === 'back') {
     //  console.log(this.state.search_tags);
+    if(this.props.location.state) {
       return <Redirect push to={{
         pathname: this.props.location.state.prev_path,
       state: { search_tags: this.state.search_tags, prev_path: this.props.location.pathname }
       }} />;
-    } else {
-      //return <Redirect push to={{pathname: this.props.location.state.prev_path, state: {prev_path: this.props.location}}} />;
+      } else {
+        return window.history.back();
+      }
     }
   }
 }
@@ -171,7 +173,7 @@ getTime(millis) {
 
 </div>
 <div className="bottom_navi">
-<Grid container alignItems="flex-start" justify="flex-end" direction="row">
+<Grid container alignItems="flex-end" justify="flex-start" direction="column" spacing={0}>
 <Tooltip title="Wróć">
 <IconButton color="secondary" onClick={()=>{this.setRedirection("back", 'back')}}>
    <ArrowBackIcon/>

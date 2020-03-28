@@ -20,6 +20,8 @@ class Login extends Component {
       password: '',
       isredirected: false,
       prev_path:'',
+      error: false,
+      helper_text:'',
     };
 
   }
@@ -83,7 +85,10 @@ class Login extends Component {
           });
       }
       })
-    .catch((e)=>{console.log(e)});
+    .catch((e)=>{
+      console.log(e);
+      this.setState({helper_text:'błędne hasło lub login', error: true});
+    });
   };
 
 
@@ -112,10 +117,10 @@ class Login extends Component {
       <div id="loginform">
       {this.redirect()}
 
-      <TextField  color="primary" id="Login" label="Login" type="text" variant="outlined" onChange={(r)=>this.handleLogin(r.target.value)} />
+      <TextField error={this.state.error} helperText={this.state.helper_text} color="primary" id="Login" label="Login" type="text" variant="outlined" onChange={(r)=>this.handleLogin(r.target.value)} />
 
       <br /><br />
-      <TextField id="Password" color="primary"  label="Password" type="password" variant="outlined" onKeyPress={this.handleKeyPress} onChange={(r)=>this.handlePassword(r.target.value)} />
+      <TextField error={this.state.error} helperText={this.state.helper_text} id="Password" color="primary"  label="Hasło" type="password" variant="outlined" onKeyPress={this.handleKeyPress} onChange={(r)=>this.handlePassword(r.target.value)} />
       <br /><br />
 
 <Grid container alignItems="center" justify="center" direction="row">

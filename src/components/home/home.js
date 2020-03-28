@@ -16,7 +16,7 @@ import MeetingRoomIcon from '@material-ui/icons/MeetingRoom';
 import { spacing } from '@material-ui/system';
 import ListIcon from '@material-ui/icons/List';
 
-
+let timeoutHandle;
 
 class Home extends Component {
   constructor(props) {
@@ -33,7 +33,17 @@ class Home extends Component {
     };
   }
 
+
+  setSessionTimeout = ()=>{
+    timeoutHandle = setTimeout(()=>{
+        this.setState({isauthenticated: false});
+    }, getConf('session_timeout'));
+  };
+
+
   componentDidMount() {
+
+    this.setSessionTimeout();
     let is_admin = localStorage.getItem('is_admin');
     let username = localStorage.getItem('username');
 
@@ -68,6 +78,10 @@ setTimeout(()=>{
       .catch(e=>{});
 }
 
+componentDidUpdate() {
+  clearTimeout(timeoutHandle);
+  this.setSessionTimeout();
+}
 
 
 redirect() {

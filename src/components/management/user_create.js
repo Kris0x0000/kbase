@@ -111,6 +111,7 @@ this.setState({password2: this.state.password});
 }
 
 componentDidUpdate(prevState) {
+  clearTimeout(timeoutHandle);
     this.setSessionTimeout();
     if(prevState.is_admin !== localStorage.getItem('is_admin')) {
     }
@@ -299,7 +300,7 @@ if(this.state.editmode && this.state.is_admin) {
         {this.adminSwitch()}
         </div>
         <div class="bottom_navi">
-        <Grid container alignItems="flex-start" justify="flex-start" direction="row">
+        <Grid container alignItems="flex-end" justify="flex-start" direction="column" spacing={0}>
         <IconButton color="secondary" onClick={()=>{this.submit('back')}}>
            <ArrowBackIcon/>
         </IconButton>

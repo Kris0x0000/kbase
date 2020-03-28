@@ -23,7 +23,6 @@ Quill.register('modules/imageResize', ImageResize);
     Quill.register({
       'themes/snow.js': Snow,
     });
-
   }
 
 

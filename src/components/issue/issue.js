@@ -49,6 +49,7 @@ class Issue extends Component {
   };
 
 componentDidUpdate() {
+  clearTimeout(timeoutHandle);
   this.setSessionTimeout();
 }
 
@@ -79,7 +80,11 @@ componentDidUpdate() {
 
   redirect() {
     if(this.state.is_redirected) {
+      if(this.props.location.state) {
       return <Redirect push to={{ pathname: this.props.location.state.prev_path, state: {prev_path: this.props.location.pathname} }} />;
+      } else {
+        return window.history.back();
+      }
     }
   }
 

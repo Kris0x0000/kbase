@@ -9,8 +9,10 @@ import '../../global.css';
 import Tooltip from '@material-ui/core/Tooltip';
 import AddCircleIcon from '@material-ui/icons/AddCircle';
 import MeetingRoomIcon from '@material-ui/icons/MeetingRoom';
+import MyTimeer from '../mytimeer';
+import Grid from '@material-ui/core/Grid';
 
-
+let update=true;
 
 class Navi extends Component {
   constructor(props){
@@ -19,6 +21,7 @@ class Navi extends Component {
     this.state = {
       redirection_path: '',
       username: '',
+      random: 0
     };
   }
 
@@ -29,6 +32,11 @@ class Navi extends Component {
     if(is_admin === true) {
           this.setState({is_admin: true});
         }
+  }
+
+  componentDidUpdate() {
+
+    this.flipState(); // reset logout timer
   }
 
   settings() {
@@ -63,6 +71,16 @@ beginsWith(a) {
       </Tooltip>
     );
     }
+  }
+
+  flipState() {
+    update = !update;
+  }
+
+  setTimer() {
+    return(
+<MyTimeer time={15*60*1000} update={update}/>
+  );
   }
 
 
@@ -111,7 +129,9 @@ this.setRedirection('login');
       <Fragment>
 
       {this.redirect()}
-<div className="navi">
+      <div className="navi">
+      <Grid container alignItems="flex-start" justify="flex-start" direction="row">
+
 
       <Tooltip title="Strona główna">
       <IconButton color="primary" onClick={()=>this.setRedirection("home")}>
@@ -128,7 +148,13 @@ this.setRedirection('login');
 
         {this.settings()}
           {this.addArt()}
+</Grid>
+<div className="timeout">
+koniec sesji za: {this.setTimer()}
 </div>
+</div>
+
+
       </Fragment>
     );
   }
