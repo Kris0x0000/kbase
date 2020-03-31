@@ -150,7 +150,7 @@ this.setRedirection('login');
           {this.addArt()}
 </Grid>
 <div className="timeout">
-koniec sesji za: {this.setTimer()}
+     koniec sesji za: {this.setTimer()}
 </div>
 </div>
 
