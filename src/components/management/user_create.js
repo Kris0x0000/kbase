@@ -264,6 +264,8 @@ if(this.state.editmode && this.state.is_admin) {
     }
     }
 
+} else {
+  this.setRedirection('/management/main');
 } //accept
 },500);
 

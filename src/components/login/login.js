@@ -87,7 +87,7 @@ class Login extends Component {
       })
     .catch((e)=>{
       console.log(e);
-      this.setState({helper_text:'błędne hasło lub login', error: true});
+      this.setState({helper_text:'Błędny login lub hasło', error: true});
     });
   };
 

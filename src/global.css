@@ -27,6 +27,10 @@ div.navi {
 
 }
 
+div.editor {
+  margin-top: 10px;
+}
+
 div.timeout {
   position: relative;
   width: 150px;

@@ -359,7 +359,7 @@ this.setState({show_warning: true, item_to_delete: item, warning_body: 'Dobrze s
 }
 
 handleDeleteWarningClick(acc) {
-  console.log("acc", acc);
+  //console.log("acc", acc);
   if(acc) {
 
   this.deleteItem(this.state.item_to_delete);
@@ -391,17 +391,12 @@ paginate(page) {
 
 
 render() {
-
     return(
-
       <Fragment>
 <Header />
 <Navi location={this.props.location.pathname}/>
 <br/>
-
-
       <Grid container style={{ marginTop: '30px' }} alignItems="flex-start" justify="center" direction="row">
-
       <Grid item align="center" xs>
     <div>{this.tableHeader()}</div>
     </Grid>

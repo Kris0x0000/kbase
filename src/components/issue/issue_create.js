@@ -195,7 +195,7 @@ handleAutocompleteChange(event, value) {
 
   if(value.length > 8) {
     value = this.removeLastElement(value);
-    this.setState({to_many_tags: true, show_warning: true, warning_body: "Nie możesz ustawić więcej niż 6 tagów"});
+    this.setState({to_many_tags: true, show_warning: true, warning_body: "Nie możesz ustawić więcej niż 8 tagów"});
     setTimeout(()=>{
         this.setState({show_warning: false});
     }, 3000);
@@ -294,6 +294,7 @@ handleMyQuillWarning = (show, title, body) => {
 {this.isAuthenticated()}
 
     <div id="container">
+    <div class="editor">
     <Autocomplete
            multiple
            freeSolo
@@ -323,7 +324,7 @@ handleMyQuillWarning = (show, title, body) => {
         <TextField fullWidth={true} autoComplete="off" id="title" label="Tytuł" type="text" variant="outlined" value={this.state.title} onChange={(r)=>this.handletitle(r.target.value)} />
         <br /><br /><br />
 <MyQuill content={this.state.body} onContentChange={this.handleMyQuillChange} onWarningChange={this.handleMyQuillWarning}/>
-</div>
+</div></div>
 
 <div class="bottom_navi">
 <Grid container alignItems="flex-end" justify="flex-start" direction="column" spacing={0}>
