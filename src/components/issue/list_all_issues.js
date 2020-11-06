@@ -11,6 +11,8 @@ import { CircularProgress } from '@material-ui/core';
 import { Chip } from '@material-ui/core';
 import Tooltip from '@material-ui/core/Tooltip';
 import ArrowBackIcon from '@material-ui/icons/ArrowBack';
+import ArrowDropDown from '@material-ui/icons/ArrowDropDown';
+import ArrowDropUp from '@material-ui/icons/ArrowDropUp';
 import Grid from '@material-ui/core/Grid';
 import Dialog from '@material-ui/core/Dialog';
 import DialogActions from '@material-ui/core/DialogActions';
@@ -47,6 +49,7 @@ class AllIssues extends Component {
       warning_title: '',
       current_page: 1,
       issues_per_page: 20,
+      sorting: 'by_date_from_newest',
     };
   }
 
@@ -76,6 +79,7 @@ axios.post(getConf('api_url_base')+'/api/issue/getAllIssues',{}, { withCredentia
 
   this.setState({object: res.data, is_loading_set: false});
 //  this.renderTableRows(res);
+this.SortMe();
 this.paginate(1);
 })
 .catch((e)=>{
@@ -231,11 +235,35 @@ if((itemowner === current_username) || (this.state.is_admin)) {
 }
 
 
+
+SortMe() {
+
+let data = this.state.object;
+
+
+  if(this.state.sorting == 'by_date_from_newest') {
+    data = data.sort((a, b) => parseFloat((b.create_timestamp) - parseFloat(a.create_timestamp)));
+    this.setState({object: data});
+    this.paginate(this.state.current_page);
+    this.setState({sorting: 'by_date_from_oldest'});
+
+  } else if (this.state.sorting == 'by_date_from_oldest') {
+    data = data.sort((a, b) => parseFloat((a.create_timestamp) - parseFloat(b.create_timestamp)));
+    this.setState({object: data});
+    this.paginate(this.state.current_page);
+    this.setState({sorting: 'by_date_from_newest'});
+  }
+
+
+
+}
+
 renderTableRows(res) {
   this.setState({is_loading_set: true});
   if(res) {
 
     if(window.innerHeight < window.innerWidth) {
+
 
       let tab = res.map((item)=>
 
@@ -318,7 +346,8 @@ tableHeader() {
               <th>Tytuł</th>
               <th>Tagi</th>
               <th>Dodane przez</th>
-              <th>W dniu</th>
+
+              <th onClick={()=> {this.SortMe() }} >W dniu {!(this.state.sorting === 'by_date_from_newest')? <ArrowDropDown/> : <ArrowDropUp/>}</th>
               <th>Opcje</th>
           </tr>
       </thead>
@@ -382,11 +411,11 @@ paginate(page) {
 
   let indexOfLastElement = this.state.current_page * this.state.issues_per_page;
   let indexOfFirstElement = indexOfLastElement - this.state.issues_per_page;
-  let data = this.state.object.sort((a, b) => parseFloat(b.create_timestamp) - parseFloat(a.create_timestamp));
+  let data = this.state.object;
   let currentIssues = data.slice(indexOfFirstElement, indexOfLastElement);
   this.renderTableRows(currentIssues);
   this.setState({current_page: page});
-
+  //this.SortMe();
 }
 
 
