@@ -23,7 +23,7 @@ import Card from '@material-ui/core/Card';
 import CardContent from '@material-ui/core/CardContent';
 import Typography from '@material-ui/core/Typography';
 
-let timeoutHandle;
+
 
 
 class ShowIssues extends Component {
@@ -55,15 +55,9 @@ class ShowIssues extends Component {
   }
 
 
-  setSessionTimeout = ()=>{
-    timeoutHandle = setTimeout(()=>{
-        this.setState({isauthenticated: false});
-    }, getConf('session_timeout'));
-  };
 
 
   componentDidMount(prevProps) {
-this.setSessionTimeout();
 
     let is_admin = localStorage.getItem('is_admin');
 
@@ -115,8 +109,7 @@ axios.post(getConf('api_url_base')+'/api/user/getLastTags', {}, { withCredential
   }
 
   componentDidUpdate(prevProps, prevState) {
-    clearTimeout(timeoutHandle);
-    this.setSessionTimeout();
+
 
       if(prevState.search_tags !== this.props.search_tags ) {
         this.fetchData(this.props.search_tags);

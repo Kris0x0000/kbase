@@ -16,7 +16,6 @@ import Tooltip from '@material-ui/core/Tooltip';
 import Header from '../../components/header';
 import Footer from '../../components/footer';
 
-let timeoutHandle;
 
 class UserCreate extends Component {
   constructor(props) {
@@ -46,11 +45,6 @@ class UserCreate extends Component {
   }
 
 
-  setSessionTimeout = ()=>{
-    timeoutHandle = setTimeout(()=>{
-        this.setState({isauthenticated: false});
-    }, getConf('session_timeout'));
-  };
 
 componentDidMount() {
 
@@ -58,16 +52,11 @@ componentDidMount() {
     this.setState({is_admin: true, usermode: false});
   }
 
-
-  this.setSessionTimeout();
-
-  //this.setState({is_admin: localStorage.getItem('is_admin')});
   if(this.props.location.state) {
     if(this.props.location.state.prev_path) {
       this.setState({prev_path: this.props.location.state.prev_path});
     }
-      //this.setState({usermode: !this.state.is_admin});
-    //  console.log(this.state.usermode);
+
   }
 
 
@@ -111,8 +100,7 @@ this.setState({password2: this.state.password});
 }
 
 componentDidUpdate(prevState) {
-  clearTimeout(timeoutHandle);
-    this.setSessionTimeout();
+
     if(prevState.is_admin !== localStorage.getItem('is_admin')) {
     }
 

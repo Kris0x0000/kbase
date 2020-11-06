@@ -21,7 +21,6 @@ import Tooltip from '@material-ui/core/Tooltip';
 import Footer from '../footer';
 import MyQuill from '../myquill';
 
-let timeoutHandle;
 
 class IssueCreate extends Component {
 
@@ -52,16 +51,7 @@ class IssueCreate extends Component {
       this.handleChange = this.handleChange.bind(this);
     }
 
-setSessionTimeout = ()=>{
-  timeoutHandle = setTimeout(()=>{
-      this.setState({isauthenticated: false});
-  }, getConf('session_timeout'));
-};
-
 componentDidMount() {
-
-
-  this.setSessionTimeout();
 
 // if redirected from other components
 if(this.props.location.state) {
@@ -106,13 +96,8 @@ if(this.props.location.state) {
 }
 
 componentDidUpdate() {
-console.log('update');
-  clearTimeout(timeoutHandle);
-  this.setSessionTimeout();
+
 }
-
-
-
 
 
 handletitle(data) {

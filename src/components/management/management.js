@@ -41,20 +41,13 @@ class Management extends Component {
      };
   }
 
-  setSessionTimeout = ()=>{
-    timeoutHandle = setTimeout(()=>{
-        this.setState({is_authenticated: false});
-    }, getConf('session_timeout'));
-  };
 
 
 componentDidUpdate() {
-  clearTimeout(timeoutHandle);
-  this.setSessionTimeout();
+
 }
 
   componentDidMount() {
-    this.setSessionTimeout();
 
     axios.post(getConf('api_url_base')+'/api/user/getAllUsers',{}, { withCredentials: true })
       .then(res=>{

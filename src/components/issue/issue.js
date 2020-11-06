@@ -14,7 +14,7 @@ import Header from '../header';
 import { Grid } from '@material-ui/core';
 import Footer from '../footer';
 
-let timeoutHandle;
+
 const filterOptions = (options, { inputValue }) =>
   matchSorter(options, inputValue, {threshold: matchSorter.rankings.STRING_CASE_ACRONYM});
 
@@ -42,19 +42,14 @@ class Issue extends Component {
     };
   }
 
-  setSessionTimeout = ()=>{
-    timeoutHandle = setTimeout(()=>{
-        this.setState({isauthenticated: false});
-    }, getConf('session_timeout'));
-  };
+
 
 componentDidUpdate() {
-  clearTimeout(timeoutHandle);
-  this.setSessionTimeout();
+
+
 }
 
   componentDidMount() {
-    this.setSessionTimeout();
 
     if(this.props.location.state) {
       if(this.props.location.state.search_tags) {

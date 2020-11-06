@@ -15,8 +15,10 @@ import HelpOutlineIcon from '@material-ui/icons/HelpOutline';
 import MeetingRoomIcon from '@material-ui/icons/MeetingRoom';
 import { spacing } from '@material-ui/system';
 import ListIcon from '@material-ui/icons/List';
+import MyTimeer from '../mytimeer';
 
-let timeoutHandle;
+
+let update=true;
 
 class Home extends Component {
   constructor(props) {
@@ -34,16 +36,9 @@ class Home extends Component {
   }
 
 
-  setSessionTimeout = ()=>{
-    timeoutHandle = setTimeout(()=>{
-        this.setState({isauthenticated: false});
-    }, getConf('session_timeout'));
-  };
-
-
   componentDidMount() {
 
-    this.setSessionTimeout();
+
     let is_admin = localStorage.getItem('is_admin');
     let username = localStorage.getItem('username');
 
@@ -79,8 +74,8 @@ setTimeout(()=>{
 }
 
 componentDidUpdate() {
-  clearTimeout(timeoutHandle);
-  this.setSessionTimeout();
+
+
 }
 
 
@@ -141,11 +136,22 @@ this.setState({isauthenticated: false});
     });
 }
 
+setTimer() {
+  return(
+<MyTimeer time={15*60*1000} update={update}/>
+);
+}
+
 
 render() {
   return(
     <Fragment>
+
     <Header/>
+    <div className="timeout">
+         koniec sesji za: {this.setTimer()}
+    </div>
+
     {this.isAuthenticated()}
     {this.redirect()}
 

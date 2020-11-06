@@ -25,8 +25,6 @@ import Navi from '../../components/navi/navi';
 import Header from '../header';
 import Footer from '../footer';
 
-let timeoutHandle;
-
 
 class AllIssues extends Component {
 
@@ -54,15 +52,8 @@ class AllIssues extends Component {
   }
 
 
-  setSessionTimeout = ()=>{
-    timeoutHandle = setTimeout(()=>{
-        this.setState({isauthenticated: false});
-    }, getConf('session_timeout'));
-  };
-
 
   componentDidMount(prevProps) {
-this.setSessionTimeout();
 
 
     let is_admin = localStorage.getItem('is_admin');
@@ -93,8 +84,6 @@ if(e.response.status === 401) {
   }
 
   componentDidUpdate(prevProps, prevState) {
-    clearTimeout(timeoutHandle);
-    this.setSessionTimeout();
     if(prevState.current_page !== this.state.current_page ) {
     this.paginate(this.state.current_page);
   }

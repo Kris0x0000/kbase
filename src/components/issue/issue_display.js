@@ -14,7 +14,6 @@ import Header from '../header';
 import Footer from '../footer';
 import { Chip } from '@material-ui/core';
 
-let timeoutHandle;
 
 class IssueDisplay extends Component {
 
@@ -36,15 +35,8 @@ class IssueDisplay extends Component {
     }
 
 
-    setSessionTimeout = ()=>{
-      timeoutHandle = setTimeout(()=>{
-          this.setState({isauthenticated: false});
-      }, getConf('session_timeout'));
-    };
-
 componentDidMount() {
 //console.log('this.props.location.state', this.props.location.state.prev_path);
-this.setSessionTimeout();
 
   if(this.props.location.state) {
     //console.log(this.props.location.state.search_tags);
@@ -70,9 +62,8 @@ this.setState({search_tags: this.props.location.state.search_tags});
 }
 
 componentDidUpdate() {
-clearTimeout(timeoutHandle);
-  this.setSessionTimeout();
-//console.log("update");
+
+
 }
 
 isAuthenticated() {
