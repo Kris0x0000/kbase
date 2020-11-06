@@ -1,4 +1,5 @@
 import React, { Component, Fragment } from 'react';
+import { Redirect } from 'react-router-dom';
 
     let millis;
     let timer;
@@ -12,20 +13,26 @@ class MyTimeer extends Component {
       reset: false,
       time: 0,
       time_out: '',
+      countdown: 0,
+      isauthenticated: true,
+      timer:''
     };
   }
 
   componentDidMount() {
+
 timer = window.setInterval(this.getTimer, 1000);
-  this.setState({time: this.props.time});
+  this.setState({time: this.getCurrentTimeInMillis() + this.props.time});
   }
 
   componentDidUpdate(prevProps, prevState) {
+
 if(this.props.update !== prevProps.update) {
 
     clearInterval(timer);
     timer = window.setInterval(this.getTimer, 1000);
-      this.setState({time: this.props.time});
+    this.setState({timer: timer});
+    this.setState({time: this.getCurrentTimeInMillis() + this.props.time});
     }
   }
 
@@ -34,22 +41,43 @@ if(this.props.update !== prevProps.update) {
     return (n < 10 ? '0' : '') + n;
   }
 
+
+  getCurrentTimeInMillis() {
+    var d = new Date();
+    var r = Date.now();
+    return r;
+  }
+
+  isAuthenticated() {
+    if(!this.state.isauthenticated) {
+      return (<Redirect to={{ pathname: "/login" }} />);
+    }
+  }
+
   getTimer = () => {
-    millis = this.state.time - 1000;
+
+
+    millis = this.state.time - this.getCurrentTimeInMillis();
+
+    if(millis <= 0) {
+        clearInterval(timer);
+        this.setState({isauthenticated: false});
+    }
 
     let s=millis/1000;
-    let secs = s % 60;
+    let secs = Math.round(s) % 60;
     s = (s - secs) / 60;
-    let mins = s % 60;
+    let mins = Math.round(s) % 60;
     let hrs = (s - mins) / 60;
 
-        this.setState({time: millis, time_out: this.minTwoDigits(mins)+':'+this.minTwoDigits(secs)});
+        this.setState({time_out: this.minTwoDigits(mins)+':'+this.minTwoDigits(secs)});
   };
 
 
   render() {
     return(
       <Fragment>
+      {this.isAuthenticated()}
      {this.state.time_out}
       </Fragment>
     );
