@@ -39,6 +39,10 @@ class Navi extends Component {
     this.flipState(); // reset logout timer
   }
 
+  componentWillUnmount() {
+    update=false;
+  }
+
   settings() {
     if(this.state.is_admin) {
       return (

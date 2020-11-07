@@ -21,7 +21,6 @@ import DialogContentText from '@material-ui/core/DialogContentText';
 import DialogTitle from '@material-ui/core/DialogTitle';
 import Button from '@material-ui/core/Button';
 
-let timeoutHandle;
 
 class Management extends Component {
 
@@ -106,9 +105,9 @@ renderDeleteButton(item) {
     } else {
         return (
           <Tooltip title="Usuń">
-      <IconButton disabled={true} color="secondary" onClick={()=>this.handleDelete(item._id, item.username)}>
+      <span><IconButton disabled={true} color="secondary" onClick={()=>this.handleDelete(item._id, item.username)}>
       <DeleteForeverIcon/>
-      </IconButton>
+      </IconButton></span>
     </Tooltip> );
     }
   }
@@ -260,7 +259,7 @@ if(username !== uname) {
 <br/>
 
 </div>
-<div class="bottom_navi">
+<div className="bottom_navi">
 <Grid container alignItems="flex-end" justify="flex-start" direction="column" spacing={0}>
 <Tooltip title="Wróć">
 <IconButton color="secondary" onClick={()=>{this.setRedirection('','back')}}>

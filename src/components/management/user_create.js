@@ -12,7 +12,6 @@ import Navi from '../../components/navi/navi';
 import { SnackbarContent } from '@material-ui/core';
 import '../../global.css';
 import Switch from '@material-ui/core/Switch';
-import Tooltip from '@material-ui/core/Tooltip';
 import Header from '../../components/header';
 import Footer from '../../components/footer';
 

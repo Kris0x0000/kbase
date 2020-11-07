@@ -230,13 +230,13 @@ SortMe() {
 let data = this.state.object;
 
 
-  if(this.state.sorting == 'by_date_from_newest') {
+  if(this.state.sorting === 'by_date_from_newest') {
     data = data.sort((a, b) => parseFloat((b.create_timestamp) - parseFloat(a.create_timestamp)));
     this.setState({object: data});
     this.paginate(this.state.current_page);
     this.setState({sorting: 'by_date_from_oldest'});
 
-  } else if (this.state.sorting == 'by_date_from_oldest') {
+  } else if (this.state.sorting === 'by_date_from_oldest') {
     data = data.sort((a, b) => parseFloat((a.create_timestamp) - parseFloat(b.create_timestamp)));
     this.setState({object: data});
     this.paginate(this.state.current_page);
@@ -258,7 +258,7 @@ renderTableRows(res) {
 
       <tr key={item._id} >
         <td onClick={()=>this.setRedirection(item._id, 'display')}>{this.limitString(item.title)}</td>
-        <td key={item.index} onClick={()=>this.setRedirection(item._id, 'display')}>{item.tags.sort().map((element)=><Fragment><Chip key={element.index} variant="outlined" size="small" label={element}/> </Fragment>)}</td>
+        <td onClick={()=>this.setRedirection(item._id, 'display')}>{item.tags.sort().map((element)=><Chip key={element} variant="outlined" size="small" label={element}/> )}</td>
         <td onClick={()=>this.setRedirection(item._id, 'display')}>{item.creator}</td>
         <td onClick={()=>this.setRedirection(item._id, 'display')}>{getTime(item.create_timestamp)}</td>
         <td>
@@ -273,7 +273,8 @@ renderTableRows(res) {
     {this.showDeleteButton(item.creator, item._id)}
 
         </td>
-      </tr>);
+      </tr>
+    );
       this.setState((state,props)=>{return {table: tab}});
 
     } else {

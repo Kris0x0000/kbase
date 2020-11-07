@@ -1,7 +1,7 @@
 import React, { Component, Fragment } from 'react';
 import { TextField } from '@material-ui/core';
 import axios from 'axios';
-import { Redirect, Link } from 'react-router-dom';
+import { Redirect } from 'react-router-dom';
 import * as getConf from '../../../src/conf.js';
 import '../../global.css';
 import { Grid } from '@material-ui/core';
@@ -102,7 +102,7 @@ class Login extends Component {
 
 
    handleKeyPress = (target) => {
-  if(target.charCode==13){
+  if(target.charCode===13){
     this.suubmit();
   }
 };

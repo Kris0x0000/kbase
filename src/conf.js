@@ -2,7 +2,7 @@ module.exports = function (choice) {
 
   if(choice === 'api_url_base') {
   let api_url_base = 'http://localhost:1234';
-  let session_timeout = 900*1000;
+  //let session_timeout = 900*1000;
 
   if(process.env.NODE_ENV === 'production') {
     api_url_base = 'https://api.zikom.com.pl';

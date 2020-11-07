@@ -1,5 +1,4 @@
 import Quill from 'quill/dist/quill.js';
-import Toolbar from 'quill/modules/toolbar.js';
 import Snow from 'quill/themes/snow.js';
 import React, { Component, Fragment } from 'react';
 import axios from 'axios';
@@ -57,8 +56,8 @@ Quill.register('modules/imageResize', ImageResize);
     this.setState({content: content});
     this.handleContentChange();
 
-    if (source == 'api') {
-    } else if (source == 'user') {
+    if (source === 'api') {
+    } else if (source === 'user') {
       }
   }
 );
@@ -139,7 +138,8 @@ handleWarningChange = (e) => {
   this.insertToEditor(img);
         })
         .catch((e)=>{
-          console.log(e);
+
+        console.log(e);
 this.handleWarningChange(e);
 
 

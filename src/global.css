@@ -233,11 +233,11 @@ div.bottom_navi {
 div.footer {
   position: fixed;
   bottom: 0px;
-  width: 95%;
+  width: 99%;
   float: bottom;
   font-size: 12px;
   text-align: center;
-margin-left: 2%;
+
   color:  #404040;
   background: #f2f2f2;
 }

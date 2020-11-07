@@ -445,14 +445,14 @@ handleDeleteWarningClick(acc) {
 iterateOverElements(arr) {
 
   let it =arr.map(i=>
-<Chip variant="outlined" label={i.name +" ("+ i.occurrences+")"}/>
+<Chip variant="outlined" key={i._id} label={i.name +" ("+ i.occurrences+")"}/>
   );
   return it;
 }
 
 iterateOverTags(arr) {
   let it = arr.map(i=>
-<Chip variant="outlined" label={i}/>
+<Chip variant="outlined" key={i} label={i}/>
   );
   return it;
 }
@@ -472,14 +472,7 @@ showStats() {
 >
 <Grid item xs={8}>
 <Card style={{border: '#2196f3'}} className="stats_card" variant="outlined">
-<CardContent>
-<Typography color="textSecondary" gutterBottom>
-  <p>Ostatnio wyszukiwane przez ciebie unikalne tagi:</p>
-</Typography>
-{this.iterateOverTags(this.state.last_tags)}
-<br/><br/>
- <span style={{color:'#2196f3',fontSize: '12px'}}>* Maksymalnie 11 tagów, uszeregowanych według kolejności alfabetycznej.</span>
-</CardContent>
+
 </Card>
 </Grid>
   <Grid item xs={6}>
@@ -487,15 +480,15 @@ showStats() {
 <Card style={{border: '#2196f3'}} className="stats_card" variant="outlined">
      <CardContent>
        <Typography color="textSecondary" gutterBottom>
-         <p>Liczba tagów: <CountUp redraw={true} duration={4} start={0} end={this.state.tag_count} delay={0}></CountUp></p>
+         <span>Liczba tagów: <CountUp redraw={true} duration={4} start={0} end={parseInt(this.state.tag_count, 10)} delay={0}></CountUp></span>
        </Typography>
        <Typography variant="h5" component="h2">
-         <p>Liczba wpisów: <CountUp redraw={true} duration={4} start={0} end={this.state.issue_count} delay={0}></CountUp></p>
+         <span>Liczba wpisów: <CountUp redraw={true} duration={4} start={0} end={parseInt(this.state.tag_count, 10)} delay={0}></CountUp></span>
        </Typography>
-       <Typography color="textSecondary">
+       <Typography color="textSecondary" component={'span'}>
        <br/>
        Najpopularniejsze tagi: <br/>
-           {this.iterateOverElements(this.state.top_tags)}
+       {this.iterateOverElements(this.state.top_tags)}
        </Typography><br/>
 
          <span style={{color:'#2196f3',fontSize: '12px'}}>* Statystyki są aktualizowane co godzinę.</span>

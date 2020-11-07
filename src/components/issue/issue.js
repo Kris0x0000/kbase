@@ -105,7 +105,7 @@ componentDidUpdate() {
     axios.post(getConf('api_url_base')+'/api/user/addLastTags',{last_searched_tags: value}, { withCredentials: true })
     .then(res=>{
       this.setState({isauthenticated: true});
-      console.log(res);
+      //console.log(res);
     })
     .catch((e)=>{
   if( e.response.status === 401) {
@@ -180,7 +180,7 @@ componentDidUpdate() {
 
           <br />
             </div>
-          <ShowIssues search_tags={this.state.search_tags} prev_path={this.props.location.pathname} />
+          <span><ShowIssues search_tags={this.state.search_tags} prev_path={this.props.location.pathname} /></span>
           <br /><br /><br /><br />
           <Footer/>
           </Fragment>

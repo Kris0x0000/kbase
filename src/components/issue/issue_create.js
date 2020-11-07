@@ -117,7 +117,7 @@ addImagesToArray(body) {
   let first = body.match(/https?\:\/\/\w+(\.\w+)*\:?\w*.?\w*\/uploads\/\w*.\w{3,4}/g);
   if(first) {
   first.forEach((i)=>{
-    console.log("image", i);
+    //console.log("image", i);
     let a = (i.split("/uploads/", 2));
     b.push(a[1]);
   });
@@ -241,8 +241,6 @@ normalizeTag(tag) {
 }
 
 handleMyQuillChange = (content) => {
-//  console.log(content);
-
   this.setState({body_edited: content, submit_clicked: false});
 
 };
@@ -279,7 +277,7 @@ handleMyQuillWarning = (show, title, body) => {
 {this.isAuthenticated()}
 
     <div id="container">
-    <div class="editor">
+    <div className="editor">
     <Autocomplete
            multiple
            freeSolo
@@ -311,7 +309,7 @@ handleMyQuillWarning = (show, title, body) => {
 <MyQuill content={this.state.body} onContentChange={this.handleMyQuillChange} onWarningChange={this.handleMyQuillWarning}/>
 </div></div>
 
-<div class="bottom_navi">
+<div className="bottom_navi">
 <Grid container alignItems="flex-end" justify="flex-start" direction="column" spacing={0}>
 <Tooltip title="Wróć">
 <IconButton color="secondary" onClick={()=>{this.submit('decline')}}>
