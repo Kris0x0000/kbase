@@ -116,7 +116,7 @@ handleWarningChange = (e) => {
           if (/^image\//.test(file.type)) {
             this.saveToServer(file);
           } else {
-            console.warn('You could only upload images.');
+            //console.warn('You could only upload images.');
           }
         };
       };

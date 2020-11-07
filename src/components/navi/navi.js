@@ -21,11 +21,25 @@ class Navi extends Component {
     this.state = {
       redirection_path: '',
       username: '',
-      random: 0
+      random: 0,
+      timeout: 0
     };
   }
 
   componentDidMount() {
+
+    axios.post(getConf('api_url_base')+'/api/isauthenticated',{tag: ''}, { withCredentials: true })
+    .then(res=>{
+      this.setState({timeout: res.data.timeout});
+      console.log(this.state.timeout);
+      this.setState((state,props)=>{return {all_tags: res.data}});
+      this.flipState();
+    })
+    .catch((e)=>{
+    this.setState({isauthenticated: false});
+}
+  );
+
     ///modyfikacja
     let is_admin = localStorage.getItem('is_admin');
     this.setState({username: localStorage.getItem('username')});
@@ -81,10 +95,12 @@ beginsWith(a) {
     update = !update;
   }
 
-  setTimer() {
+  setTimer(time) {
+    if(this.state.timeout > 0) {
     return(
-<MyTimeer time={15*60*1000} update={update}/>
-  );
+  <MyTimeer time={time} update={update}/>
+          );
+      }
   }
 
 
@@ -154,7 +170,7 @@ this.setRedirection('login');
           {this.addArt()}
 </Grid>
 <div className="timeout">
-     koniec sesji za: {this.setTimer()}
+     koniec sesji za: {this.setTimer(this.state.timeout)}
 </div>
 </div>
 

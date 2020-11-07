@@ -18,6 +18,7 @@ import MyTimeer from '../mytimeer';
 
 
 let update=true;
+let timeout=0;
 
 class Home extends Component {
   constructor(props) {
@@ -31,6 +32,7 @@ class Home extends Component {
       my_id:'',
       this_path: '/home',
       username:'',
+      timeout:5*60*1000,
     };
   }
 
@@ -40,6 +42,7 @@ class Home extends Component {
 
     let is_admin = localStorage.getItem('is_admin');
     let username = localStorage.getItem('username');
+
 
 setTimeout(()=>{
   if(is_admin === 'true') {
@@ -54,8 +57,12 @@ setTimeout(()=>{
 
     axios.post(getConf('api_url_base')+'/api/isauthenticated',{tag: ''}, { withCredentials: true })
     .then(res=>{
+      this.setState({timeout: res.data.timeout});
+      console.log(this.state.timeout);
       this.setState((state,props)=>{return {all_tags: res.data}});
+      this.flipState();
 
+//this.setTimer(res.data.timeout);
     })
     .catch((e)=>{
     this.setState({isauthenticated: false});
@@ -73,6 +80,7 @@ setTimeout(()=>{
 }
 
 componentDidUpdate() {
+
 
 
 }
@@ -135,12 +143,18 @@ this.setState({isauthenticated: false});
     });
 }
 
-setTimer() {
+setTimer(time) {
+  if(this.state.timeout > 0) {
   return(
-<MyTimeer time={15*60*1000} update={update}/>
-);
+<MyTimeer time={time} update={update}/>
+        );
+    }
 }
 
+
+flipState() {
+  update = !update;
+}
 
 render() {
   return(
@@ -148,7 +162,7 @@ render() {
 
     <Header/>
     <div className="timeout">
-         koniec sesji za: {this.setTimer()}
+         koniec sesji za: {this.setTimer(this.state.timeout)}
     </div>
 
     {this.isAuthenticated()}
