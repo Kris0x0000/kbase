@@ -31,7 +31,6 @@ class Navi extends Component {
     axios.post(getConf('api_url_base')+'/api/isauthenticated',{tag: ''}, { withCredentials: true })
     .then(res=>{
       this.setState({timeout: res.data.timeout});
-      console.log(this.state.timeout);
       this.setState((state,props)=>{return {all_tags: res.data}});
       this.flipState();
     })
@@ -133,7 +132,6 @@ beginsWith(a) {
     logOut() {
       axios.post(getConf('api_url_base')+'/logout', {}, { withCredentials: true })
       .then(res=>{
-        console.log("ff");
 this.setRedirection('login');
       })
       .catch((e)=>{console.log('error: ', e);

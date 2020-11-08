@@ -273,7 +273,7 @@ renderTableRows(res) {
 
       <tr key={item._id} >
         <td onClick={()=>this.setRedirection(item._id, 'display')}>{this.limitString(item.title)}</td>
-        <td onClick={()=>this.setRedirection(item._id, 'display')}>{item.tags.sort().map((element)=><Fragment><Chip variant="outlined" size="small" label={element}/> </Fragment>)}</td>
+        <td onClick={()=>this.setRedirection(item._id, 'display')}>{item.tags.sort().map((element)=><Fragment><Chip key={element} variant="outlined" size="small" label={element}/> </Fragment>)}</td>
         <td onClick={()=>this.setRedirection(item._id, 'display')}>{item.creator}</td>
         <td onClick={()=>this.setRedirection(item._id, 'display')}>{getTime(item.create_timestamp)}</td>
         <td>

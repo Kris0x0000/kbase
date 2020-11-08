@@ -84,7 +84,7 @@ displayHTML(code) {
 iterateOverElements(arr) {
 
   let it = arr.map(i=>
-<Chip variant="outlined" label={i}/>
+<Chip variant="outlined" label={i} key={i}/>
   );
   return it;
 }

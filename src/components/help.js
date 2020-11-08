@@ -94,7 +94,7 @@ Aplikacja automatycznie poprawia niektóre tagi w celu ich unifikacji.<br/><br/>
 - zamiana wszytkich liter na małe.<br/>
         </div>
         <br /><br /><br /><br />
-        <div class="bottom_navi">
+        <div className="bottom_navi">
         <Tooltip title="Wróć">
         <IconButton color="secondary" onClick={()=>{this.setRedirection('/home')}}>
            <ArrowBackIcon/>
