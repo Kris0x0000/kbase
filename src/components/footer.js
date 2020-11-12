@@ -1,25 +1,20 @@
-import React, { Component, Fragment } from 'react';
-import '../global.css';
-
+import React, { Component, Fragment } from "react";
+import "../global.css";
 
 class Footer extends Component {
-  constructor(props){
+  constructor(props) {
     super(props);
 
-    this.state = {
-
-    };
+    this.state = {};
   }
 
   render() {
-    return(
+    return (
       <Fragment>
-      <div className="footer">
-  
-
-        <hr className="hr-text"/>
-
-        Baza Wiedzy, Krzysztof Kosowski, 2020-2021. Wszelkie prawa zastrzeżone.
+        <div className="footer">
+          <hr className="hr-text" />
+          Baza Wiedzy, Krzysztof Kosowski, 2020-2021. Wszelkie prawa
+          zastrzeżone.
         </div>
       </Fragment>
     );

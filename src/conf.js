@@ -14,17 +14,6 @@ module.exports = function (choice) {
     return api_url_base;
   }
 
-  if(choice === 'session_timeout') {
-  let session_timeout = 900*1000;
 
-  if(process.env.NODE_ENV === 'production') {
-    session_timeout = 900*1000;
-  } else {
-    session_timeout = 900*1000;
-
-  }
-  //console.log(api_url_base);
-    return session_timeout;
-  }
 
 };
