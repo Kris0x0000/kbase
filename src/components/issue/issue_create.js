@@ -288,7 +288,7 @@ class IssueCreate extends Component {
     if (this.state.is_loading_set) {
       return (
         <div id="loading">
-          {" "}
+
           <CircularProgress size={64} />
         </div>
       );
@@ -369,7 +369,7 @@ class IssueCreate extends Component {
             style={{
               backgroundColor: "#cc0000",
             }}
-          />{" "}
+          />
         </Snackbar>
         {this.redirect()} {this.isAuthenticated()}
         <div id="container">
@@ -414,13 +414,13 @@ class IssueCreate extends Component {
               variant="outlined"
               value={this.state.title}
               onChange={(r) => this.handletitle(r.target.value)}
-            />{" "}
+            />
             <br /> <br /> <br />
             <MyQuill
               content={this.state.body}
               onContentChange={this.handleMyQuillChange}
               onWarningChange={this.handleMyQuillWarning}
-            />{" "}
+            />
           </div>
         </div>
         <div className="bottom_navi">
@@ -439,8 +439,8 @@ class IssueCreate extends Component {
                 }}
               >
                 <ArrowBackIcon />
-              </IconButton>{" "}
-            </Tooltip>{" "}
+              </IconButton>
+            </Tooltip>
             <Tooltip title="Zatwierdź">
               <IconButton
                 color="primary"
@@ -449,10 +449,10 @@ class IssueCreate extends Component {
                 }}
               >
                 <DoneIcon />
-              </IconButton>{" "}
-            </Tooltip>{" "}
-          </Grid>{" "}
-        </div>{" "}
+              </IconButton>
+            </Tooltip>
+          </Grid>
+        </div>
         <br /> <br /> <br /> <br />
         <Footer />
       </Fragment>

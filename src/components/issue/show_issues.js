@@ -40,8 +40,8 @@ class ShowIssues extends Component {
       warning_body: "f",
       this_path: "",
       stats: {},
-      tag_count: "",
-      issue_count: "",
+      tag_count: "0",
+      issue_count: "0",
       top_tags: [],
       item_to_delete: "",
       is_admin: false,
@@ -357,13 +357,13 @@ class ShowIssues extends Component {
               </td>
               <td onClick={() => this.setRedirection(item._id, "display")}>
                 {item.tags.sort().map((element) => (
-                  <Fragment>
+                  <Fragment key={element}>
                     <Chip
-                      key={element}
+
                       variant="outlined"
                       size="small"
                       label={element}
-                    />{" "}
+                    />
                   </Fragment>
                 ))}
               </td>
@@ -406,7 +406,7 @@ class ShowIssues extends Component {
               <td onClick={() => this.setRedirection(item._id, "display")}>
                 {item.tags.map((element) => (
                   <Fragment>
-                    <Chip variant="outlined" size="small" label={element} />{" "}
+                    <Chip variant="outlined" size="small" label={element} />
                   </Fragment>
                 ))}
               </td>
@@ -586,7 +586,7 @@ class ShowIssues extends Component {
               <CardContent>
                 <Typography color="textSecondary" gutterBottom>
                   <span>
-                    Liczba tagów:{" "}
+                    Liczba tagów:
                     <CountUp
                       redraw={true}
                       duration={4}
@@ -598,12 +598,12 @@ class ShowIssues extends Component {
                 </Typography>
                 <Typography variant="h5" component="h2">
                   <span>
-                    Liczba wpisów:{" "}
+                    Liczba wpisów:
                     <CountUp
                       redraw={true}
                       duration={4}
                       start={0}
-                      end={parseInt(this.state.tag_count, 10)}
+                      end={parseInt(this.state.issue_count, 10)}
                       delay={0}
                     ></CountUp>
                   </span>

@@ -344,7 +344,7 @@ class AllIssues extends Component {
               <td onClick={() => this.setRedirection(item._id, "display")}>
                 {item.tags.map((element) => (
                   <Fragment>
-                    <Chip variant="outlined" size="small" label={element} />{" "}
+                    <Chip variant="outlined" size="small" label={element} />
                   </Fragment>
                 ))}
               </td>
@@ -409,7 +409,7 @@ class AllIssues extends Component {
                   this.SortMe();
                 }}
               >
-                W dniu{" "}
+                W dniu
                 {!(this.state.sorting === "by_date_from_newest") ? (
                   <ArrowDropDown />
                 ) : (
@@ -558,7 +558,7 @@ class AllIssues extends Component {
               this.state.object.length / this.state.issues_per_page
             )}
             onChange={(event: object, page: number) => this.paginate(page)}
-          />{" "}
+          />
           <br />
         </Grid>
         <Footer />

@@ -171,7 +171,7 @@ class Issue extends Component {
     if (this.state.is_loading_set) {
       return (
         <div id="loading">
-          {" "}
+
           <CircularProgress size={64} />
         </div>
       );
@@ -188,12 +188,12 @@ class Issue extends Component {
           justify="flex-start"
           direction="row"
         >
-          <Navi location="/issue/find" search_tags={this.state.search_tags} />{" "}
+          <Navi location="/issue/find" search_tags={this.state.search_tags} />
         </Grid>
         <br /> <br /> <br />
-        {this.isAuthenticated()}{" "}
+        {this.isAuthenticated()}
         <div id="autocomplete">
-          {" "}
+
           {this.showLoading()}
           <Autocomplete
             multiple
@@ -232,9 +232,9 @@ class Issue extends Component {
             )}
           />
           <br />
-        </div>{" "}
+        </div>
         <span>
-          {" "}
+
           <ShowIssues
             search_tags={this.state.search_tags}
             prev_path={this.props.location.pathname}

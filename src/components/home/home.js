@@ -87,7 +87,7 @@ class Home extends Component {
     if (this.state.is_redirected) {
       return (
         <Redirect
-          push="push"
+          push
           to={{
             pathname: this.state.path,
             state: {
@@ -107,38 +107,34 @@ class Home extends Component {
     if (this.state.is_admin === true) {
       return (
         <Tooltip title="Opcje">
-          {" "}
           <IconButton
             color="primary"
             onClick={() => this.setRedirection("/management/main")}
           >
-            {" "}
             <SettingsIcon
               style={{
                 fontSize: "128px",
               }}
-            />{" "}
-          </IconButton>{" "}
+            />
+          </IconButton>
         </Tooltip>
       );
     } else {
       //this.setState({usermode: true});
       return (
         <Tooltip title="Opcje">
-          {" "}
           <IconButton
             color="primary"
             onClick={() => {
               this.setRedirection("/management/user/edit/" + this.state.my_id);
             }}
           >
-            {" "}
             <SettingsIcon
               style={{
                 fontSize: "128px",
               }}
-            />{" "}
-          </IconButton>{" "}
+            />
+          </IconButton>
         </Tooltip>
       );
     }
@@ -184,11 +180,9 @@ class Home extends Component {
   render() {
     return (
       <Fragment>
-        {" "}
-        <Header />{" "}
+        <Header />
         <div className="timeout">
-          {" "}
-          koniec sesji za : {this.setTimer(this.state.timeout)}{" "}
+          koniec sesji za : {this.setTimer(this.state.timeout)}
         </div>
         {this.isAuthenticated()} {this.redirect()}
         <div className="home_icons">
@@ -203,89 +197,81 @@ class Home extends Component {
           >
             <Grid item align="center" xs>
               <Tooltip title="Szukaj">
-                <IconButton
-                  color="primary"
-                  onClick={() => this.setRedirection("/issue / find / ")}
-                >
-                  {" "}
-                  <SearchIcon
-                    style={{
-                      fontSize: "128px",
-                    }}
-                  />{" "}
-                </IconButton>{" "}
-              </Tooltip>{" "}
-            </Grid>{" "}
+                <span>
+                  <IconButton
+                    color="primary"
+                    onClick={() => this.setRedirection("/issue/find/")}
+                  >
+                    <SearchIcon
+                      style={{
+                        fontSize: "128px",
+                      }}
+                    />
+                  </IconButton>
+                </span>
+              </Tooltip>
+            </Grid>
             <Grid item align="center" xs>
-              {" "}
               <Tooltip title="Dodaj">
-                {" "}
-                <IconButton
-                  color="primary"
-                  onClick={() => this.setRedirection("/issue/create/")}
-                >
-                  {" "}
-                  <AddCircleIcon
-                    style={{
-                      fontSize: "128px",
-                    }}
-                  />{" "}
-                </IconButton>{" "}
-              </Tooltip>{" "}
-            </Grid>{" "}
+                <span>
+                  <IconButton
+                    color="primary"
+                    onClick={() => this.setRedirection("/issue/create/")}
+                  >
+                    <AddCircleIcon
+                      style={{
+                        fontSize: "128px",
+                      }}
+                    />
+                  </IconButton>
+                </span>
+              </Tooltip>
+            </Grid>
             <Grid item align="center" xs>
-              {" "}
-              {this.settings()}{" "}
+              {this.settings()}
             </Grid>
             <Grid item align="center" xs>
               <Tooltip title={"Lista wszystkich wpisów"}>
                 <IconButton
                   color="primary"
-                  onClick={() => this.setRedirection("/issue / all ")}
+                  onClick={() => this.setRedirection("/issue/all")}
                 >
-                  {" "}
                   <ListIcon
                     style={{
                       fontSize: "128px",
                     }}
-                  />{" "}
-                </IconButton>{" "}
-              </Tooltip>{" "}
-            </Grid>{" "}
+                  />
+                </IconButton>
+              </Tooltip>
+            </Grid>
             <Grid item align="center" xs>
-              {" "}
               <Tooltip title="Pomoc">
-                {" "}
                 <IconButton
                   color="primary"
                   onClick={() => this.setRedirection("/help/")}
                 >
-                  {" "}
                   <HelpOutlineIcon
                     style={{
                       fontSize: "128px",
                     }}
-                  />{" "}
-                </IconButton>{" "}
-              </Tooltip>{" "}
-            </Grid>{" "}
+                  />
+                </IconButton>
+              </Tooltip>
+            </Grid>
             <Grid item align="center" xs>
-              {" "}
               <Tooltip title={"Wyloguj: " + this.state.username}>
-                {" "}
                 <IconButton color="primary" onClick={() => this.logOut()}>
-                  {" "}
                   <MeetingRoomIcon
                     style={{
                       fontSize: "128px",
                     }}
-                  />{" "}
-                </IconButton>{" "}
-              </Tooltip>{" "}
-            </Grid>{" "}
-          </Grid>{" "}
-        </div>{" "}
-        <br /> <br /> <br /> <br /> <Footer />{" "}
+                  />
+                </IconButton>
+              </Tooltip>
+            </Grid>
+          </Grid>
+        </div>
+        <br /> <br /> <br /> <br /> <Footer />
       </Fragment>
     );
   }

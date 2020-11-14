@@ -162,45 +162,45 @@ class IssueDisplay extends Component {
           justify="flex-start"
           direction="row"
         >
-          <Navi location={this.props.location.pathname} />{" "}
+          <Navi location={this.props.location.pathname} />
         </Grid>
         <br />
         <div id="container">
-          {" "}
+
           {this.isAuthenticated()}
           <table id="issuedisplaytab">
             <thead>
               <tr>
                 <th>
-                  {" "}
-                  {this.displayHTML(this.state.title)} <br />{" "}
+
+                  {this.displayHTML(this.state.title)} <br />
                   {this.iterateOverElements(this.state.tags)}
-                </th>{" "}
-              </tr>{" "}
+                </th>
+              </tr>
             </thead>
             <tbody>
               <tr>
-                <td valign="top"> {this.displayHTML(this.state.body)}</td>{" "}
-              </tr>{" "}
-            </tbody>{" "}
-          </table>{" "}
+                <td valign="top"> {this.displayHTML(this.state.body)}</td>
+              </tr>
+            </tbody>
+          </table>
           <br />
           {this.redirect()}
           <div className="user_info">
-            Utworzony przez <b> {this.state.creator} </b>, w dniu{" "}
-            <b>{this.getTime(this.state.create_timestamp)}</b> . <br />{" "}
+            Utworzony przez <b> {this.state.creator} </b>, w dniu
+            <b>{this.getTime(this.state.create_timestamp)}</b> . <br />
             {this.state.editor !== "" ? (
               <p>
-                {" "}
-                Zmodyfikowany przez{" "}
+
+                Zmodyfikowany przez
                 <b> {this.state.editor !== "" ? this.state.editor : ""} </b>, w
-                dniu <b>{this.getTime(this.state.edit_timestamp)}.</b>{" "}
+                dniu <b>{this.getTime(this.state.edit_timestamp)}.</b>
               </p>
             ) : (
               ""
-            )}{" "}
+            )}
           </div>
-        </div>{" "}
+        </div>
         <div className="bottom_navi">
           <Grid
             container
@@ -217,8 +217,8 @@ class IssueDisplay extends Component {
                 }}
               >
                 <ArrowBackIcon />
-              </IconButton>{" "}
-            </Tooltip>{" "}
+              </IconButton>
+            </Tooltip>
             <Tooltip title="Edytuj">
               <IconButton
                 color="primary"
@@ -227,8 +227,8 @@ class IssueDisplay extends Component {
                 }}
               >
                 <EditIcon />
-              </IconButton>{" "}
-            </Tooltip>{" "}
+              </IconButton>
+            </Tooltip>
           </Grid>
         </div>
         <br /> <br /> <br /> <br />
