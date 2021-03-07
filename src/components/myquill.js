@@ -15,7 +15,6 @@ class MyQuill extends Component {
       content: "",
     };
     Quill.register("modules/imageResize", ImageResize);
-    //Quill.register('ImageResize.js', ImageResize);
     Quill.register({
       "themes/snow.js": Snow,
     });

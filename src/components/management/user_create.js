@@ -373,7 +373,7 @@ class UserCreate extends Component {
           <br />
           {this.adminSwitch()}
         </div>
-        <div class="bottom_navi">
+        <div className="bottom_navi">
           <Grid
             container
             alignItems="flex-end"

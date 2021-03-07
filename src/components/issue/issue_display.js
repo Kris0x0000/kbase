@@ -33,7 +33,6 @@ class IssueDisplay extends Component {
   }
 
   componentDidMount() {
-    //console.log('this.props.location.state', this.props.location.state.prev_path);
 
     if (this.props.location.state) {
       //console.log(this.props.location.state.search_tags);
@@ -187,14 +186,14 @@ class IssueDisplay extends Component {
           <br />
           {this.redirect()}
           <div className="user_info">
-            Utworzony przez <b> {this.state.creator} </b>, w dniu
+            Utworzony przez <b> {this.state.creator} </b>,w dniu {" "}
             <b>{this.getTime(this.state.create_timestamp)}</b> . <br />
             {this.state.editor !== "" ? (
               <p>
 
                 Zmodyfikowany przez
-                <b> {this.state.editor !== "" ? this.state.editor : ""} </b>, w
-                dniu <b>{this.getTime(this.state.edit_timestamp)}.</b>
+                <b> {this.state.editor !== "" ? this.state.editor : ""} </b>,w
+                dniu {" "} <b>{this.getTime(this.state.edit_timestamp)}.</b>
               </p>
             ) : (
               ""

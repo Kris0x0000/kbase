@@ -23,13 +23,32 @@ class Login extends Component {
   }
 
   componentDidMount() {
-    localStorage.clear();
+  //  localStorage.clear();
 
     if (this.props.location.state) {
       if (this.props.location.state.prev_path) {
         this.setState({ prev_path: this.props.location.state.prev_path });
       }
     }
+
+    axios
+      .post(
+        getConf("api_url_base") + "/api/isauthenticated",
+        {
+          tag: "",
+        },
+        { withCredentials: true }
+      )
+      .then((res) => {
+
+    this.setState({ isredirected: true });
+      })
+      .catch((e) => {
+        this.setState({ isredirected: false });
+      });
+
+
+
   }
 
   handleLogin(data) {

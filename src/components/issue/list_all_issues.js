@@ -24,6 +24,8 @@ import { Pagination } from "@material-ui/lab";
 import Navi from "../../components/navi/navi";
 import Header from "../header";
 import Footer from "../footer";
+import ImageOutlinedIcon from '@material-ui/icons/ImageOutlined';
+
 
 class AllIssues extends Component {
   constructor(props) {
@@ -68,7 +70,7 @@ class AllIssues extends Component {
       .then((res) => {
         this.setState({ object: res.data, is_loading_set: false });
         //  this.renderTableRows(res);
-        this.SortMe();
+        this.Refresh();
         this.paginate(1);
       })
       .catch((e) => {
@@ -94,14 +96,35 @@ class AllIssues extends Component {
         { withCredentials: true }
       )
       .then((res) => {
-        this.fetchData(this.props.search_tags);
+
+        axios
+          .post(
+            getConf("api_url_base") + "/api/issue/getAllIssues",
+            {},
+            { withCredentials: true }
+          )
+          .then((res) => {
+            this.setState({ object: res.data, is_loading_set: false });
+            //  this.renderTableRows(res);
+            this.Refresh();
+            this.paginate(1);
+          })
+          .catch((e) => {
+            if (e.response) {
+              if (e.response.status === 401) {
+                this.setState({ is_authenticated: false });
+              }
+            }
+          });
+
+        //this.fetchData(this.props.search_tags);
         this.setState({ is_authenticated: true });
       })
       .catch((e) => {
-        if (e.response.status === 401) {
+        if (e.response === 401) {
           this.setState({ is_authenticated: false });
         }
-        if (e.response.status === 405) {
+        if (e.response === 405) {
           this.setState({
             warning_title: "User error",
             show_warning: true,
@@ -287,6 +310,26 @@ class AllIssues extends Component {
     }
   }
 
+  Refresh() {
+    let data = this.state.object;
+
+    if (this.state.sorting === "by_date_from_newest") {
+      data = data.sort((a, b) =>
+        parseFloat(b.create_timestamp - parseFloat(a.create_timestamp))
+      );
+      this.setState({ object: data });
+      this.paginate(this.state.current_page);
+      //this.setState({ sorting: "by_date_from_oldest" });
+    } else if (this.state.sorting === "by_date_from_oldest") {
+      data = data.sort((a, b) =>
+        parseFloat(a.create_timestamp - parseFloat(b.create_timestamp))
+      );
+      this.setState({ object: data });
+      this.paginate(this.state.current_page);
+      //this.setState({ sorting: "by_date_from_newest" });
+    }
+  }
+
   renderTableRows(res) {
     this.setState({ is_loading_set: true });
     if (res) {
@@ -295,6 +338,8 @@ class AllIssues extends Component {
           <tr key={item._id}>
             <td onClick={() => this.setRedirection(item._id, "display")}>
               {this.limitString(item.title)}
+              {' '}
+              {item.images.length > 0 ? <ImageOutlinedIcon /> : ''}
             </td>
             <td onClick={() => this.setRedirection(item._id, "display")}>
               {item.tags.sort().map((element) => (

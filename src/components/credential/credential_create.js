@@ -19,27 +19,27 @@ import { SnackbarContent } from "@material-ui/core";
 import Headerr from "../header";
 import Tooltip from "@material-ui/core/Tooltip";
 import Footer from "../footer";
-import MyQuill from "../myquill";
-import InputLabel from '@material-ui/core/InputLabel';
-import MenuItem from '@material-ui/core/MenuItem';
-import FormHelperText from '@material-ui/core/FormHelperText';
-import FormControl from '@material-ui/core/FormControl';
-import Select from '@material-ui/core/Select';
+import InputLabel from "@material-ui/core/InputLabel";
+import MenuItem from "@material-ui/core/MenuItem";
+import FormHelperText from "@material-ui/core/FormHelperText";
+import FormControl from "@material-ui/core/FormControl";
+import Select from "@material-ui/core/Select";
 
-class IssueCreate extends Component {
+class CredentailCreate extends Component {
   constructor(props) {
     super(props);
 
     this.state = {
       //editfiled / Quill
-      title: "",
-      body: "",
-      body_edited: "",
-      text: "",
+      title: "aaa",
+      login: "aaa",
+      password: "aaa",
+      notes: "aaa",
+      auth_users: [{ user_id: "5gtr54y", permission: "rw" }],
+      tags: [],
       id: "",
       editmode: false,
       all_tags: ["all_tags"],
-      tags: [],
       isauthenticated: true,
       prev_path: "",
       go_back: false,
@@ -68,7 +68,7 @@ class IssueCreate extends Component {
     // fetching all tags for autocomplete field
     axios
       .post(
-        getConf("api_url_base") + "/api/issue/getalltags",
+        getConf("api_url_base") + "/api/credential/getalltags",
         {
           tag: "",
         },
@@ -104,7 +104,7 @@ class IssueCreate extends Component {
       });
       axios
         .post(
-          getConf("api_url_base") + "/api/issue/getIssueById",
+          getConf("api_url_base") + "/api/credential/getCredentialById",
           {
             id: this.props.match.params.id,
           },
@@ -136,12 +136,8 @@ class IssueCreate extends Component {
 
   componentDidUpdate() {}
 
-  handletitle(data) {
-    this.setState((state, props) => {
-      return {
-        title: data,
-      };
-    });
+  handletitle(property, data) {
+    this.setState({ property: data });
   }
 
   handleChange(value) {
@@ -150,30 +146,15 @@ class IssueCreate extends Component {
     });
   }
 
-  addImagesToArray(body) {
-    //console.log("body", body);
-    var b = [];
-    let first = body.match(
-      /https?\:\/\/\w+(\.\w+)*\:?\w*.?\w*\/uploads\/\w*.\w{3,4}/g
-    );
-    if (first) {
-      first.forEach((i) => {
-        //console.log("image", i);
-        let a = i.split("/uploads/", 2);
-        b.push(a[1]);
-      });
-    }
-    return b;
-  }
-
   submit(option) {
     //this.setState({submit_clicked: true});
     //console.log(this.state.body_edited);
     if (option === "accept") {
       if (
-        this.state.title === "" ||
-        this.state.body_edited === "" ||
-        this.state.tags.length === 0
+        false
+        //  this.state.title === "" ||
+        //  this.state.body_edited === "" ||
+        //  this.state.tags.length === 0
       ) {
         this.setState({
           show_warning: true,
@@ -188,7 +169,7 @@ class IssueCreate extends Component {
         if (this.state.editmode) {
           axios
             .post(
-              getConf("api_url_base") + "/api/issue/edit",
+              getConf("api_url_base") + "/api/credential/edit",
               {
                 title: this.state.title,
                 body: this.state.body_edited,
@@ -214,14 +195,17 @@ class IssueCreate extends Component {
               }
             });
         } else {
+          console.log(this.state.tags);
           axios
             .post(
-              getConf("api_url_base") + "/api/issue/create",
+              getConf("api_url_base") + "/api/credential/create",
               {
                 title: this.state.title,
-                body: this.state.body_edited,
+                login: this.state.login,
+                password: this.state.password,
+                notes: this.state.notes,
+                auth_users: this.state.auth_users, // [{user_id: res.locals.id, permission:'rw'}]
                 tags: this.state.tags,
-                images: this.addImagesToArray(this.state.body_edited),
               },
               {
                 withCredentials: true,
@@ -294,7 +278,6 @@ class IssueCreate extends Component {
     if (this.state.is_loading_set) {
       return (
         <div id="loading">
-
           <CircularProgress size={64} />
         </div>
       );
@@ -329,35 +312,14 @@ class IssueCreate extends Component {
     return tag.toLowerCase();
   }
 
-  handleMyQuillChange = (content) => {
+  //  const [age, setAge] = React.useState('');
+
+  handleMode = (event, value) => {
     this.setState({
-      body_edited: content,
-      submit_clicked: false,
+      mode: value.props.value,
     });
+    console.log("val", value.props.value);
   };
-
-  handleMyQuillWarning = (show, title, body) => {
-    this.setState({
-      show_warning: show,
-      warning_title: title,
-      warning_body: body,
-    });
-    setTimeout(() => {
-      this.setState({
-        show_warning: false,
-      });
-    }, 3000);
-  };
-
-
-//  const [age, setAge] = React.useState('');
-
- handleMode = (event, value) => {
-   this.setState({
-     mode: value.props.value,
-   });
-   console.log("val", value.props.value);
- };
 
   render() {
     return (
@@ -390,10 +352,7 @@ class IssueCreate extends Component {
         {this.redirect()} {this.isAuthenticated()}
         <div id="container">
           <div className="editor">
-
-
-          <br /> <br /> <br />
-
+            <br /> <br /> <br />
             <Autocomplete
               multiple
               freeSolo
@@ -433,17 +392,80 @@ class IssueCreate extends Component {
               type="text"
               variant="outlined"
               value={this.state.title}
-              onChange={(r) => this.handletitle(r.target.value)}
+              onChange={(r) => {
+                this.setState({ title: r.target.value });
+              }}
             />
-            <br /> <br /> <br />
-
-
-            <MyQuill
-              content={this.state.body}
-              onContentChange={this.handleMyQuillChange}
-              onWarningChange={this.handleMyQuillWarning}
+            <br /> <br />
+            <TextField
+              fullWidth={true}
+              autoComplete="off"
+              id="login"
+              label="login"
+              type="text"
+              variant="outlined"
+              value={this.state.login}
+              onChange={(r) => {
+                this.setState({ login: r.target.value });
+              }}
             />
-
+            <br /> <br />
+            <TextField
+              fullWidth={true}
+              autoComplete="off"
+              id="password"
+              label="password"
+              type="password"
+              variant="outlined"
+              value={this.state.password}
+              onChange={(r) => {
+                this.setState({ password: r.target.value });
+              }}
+            />
+            <br /> <br />
+            <TextField
+              fullWidth={true}
+              autoComplete="off"
+              id="notes"
+              label="notes"
+              type="notes"
+              variant="outlined"
+              value={this.state.notes}
+              onChange={(r) => {
+                this.setState({ notes: r.target.value });
+              }}
+            />
+            <br /> <br />
+            <Autocomplete
+              multiple
+              freeSolo
+              value={this.state.tags}
+              onChange={(event, value) =>
+                this.handleAutocompleteChange(event, value)
+              }
+              options={this.state.all_tags}
+              getOptionLabel={(option) => option}
+              renderTags={(value, getTagProps) =>
+                value.map((option, index) => (
+                  <Chip
+                    variant="outlined"
+                    label={option}
+                    color="primary"
+                    {...getTagProps({
+                      index,
+                    })}
+                  />
+                ))
+              }
+              renderInput={(params) => (
+                <TextField
+                  {...params}
+                  variant="outlined"
+                  label="Wybierz uprawnione osoby..."
+                  fullWidth
+                />
+              )}
+            />
           </div>
         </div>
         <div className="bottom_navi">
@@ -483,4 +505,4 @@ class IssueCreate extends Component {
   }
 }
 
-export default IssueCreate;
+export default CredentailCreate;
