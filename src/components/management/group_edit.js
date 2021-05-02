@@ -44,7 +44,8 @@ class GroupEdit extends Component {
       selected_users: [],
       selected_group:[],
       groups: [{name: ""}],
-      activeCheckboxes: [],
+      is_checked: false,
+      activeCheckboxes:[],
     };
   }
 
@@ -74,16 +75,17 @@ class GroupEdit extends Component {
           { withCredentials: true }
         )
         .then((res) => {
-          this.displayAvailableUserOptions(res.data);
+        this.setState({users: res.data});
         })
         .catch((e) => {
-          if (e.response.status === 401) {
+          if (e === 401) {
             this.setState({ is_authenticated: false });
           }
         });
     };
 
     getAllGroups = () => {
+
       axios
         .post(
           getConf("api_url_base") + "/api/group/getallgroups",
@@ -91,43 +93,63 @@ class GroupEdit extends Component {
           { withCredentials: true }
         )
         .then((res) => {
-          console.log("data", res.data);
-          this.setState({groups: res.data});
-        
+
+          this.setState({groups: res.data, });
+          console.log(res.data);
         })
         .catch((e) => {
           if (e.response.status === 401) {
+
             this.setState({ is_authenticated: false });
           }
         });
     };
 
 
-  handleCheck(id) {
-    console.log(id);
-    console.log(this.state.activeCheckboxes);
-  let found = this.state.activeCheckboxes.includes(id)
-  if (found) {
-    console.log('found');
-    this.setState({
-      activeCheckboxes: this.state.activeCheckboxes.filter(x => x !== id)
-    })
-  } else {
-    console.log('not found');
-    this.setState({
-      activeCheckboxes: [ ...this.state.activeCheckboxes, id ]
-    })
-  }
-}
+    checkIfChecked = (id) => {
+      let found = this.state.activeCheckboxes.includes(id)
+      if(found) {
+        console.log("true");
+        return true;
+      } else {
+        console.log("false");
+        return false;
+      }
+    };
+
+    handleCheck(id) {
+        console.log(id);
+      let found = this.state.activeCheckboxes.includes(id)
+      if (found) {
+        console.log('found');
+        this.setState({
+          //activeCheckboxes: this.state.activeCheckboxes.filter(x => x !== id)
+
+        })
+        return true;
+      } else {
+        console.log('not found');
+        this.setState({
+          //activeCheckboxes: [ ...this.state.activeCheckboxes, id ]
+        })
+        return false;
+      }
+    }
 
   handleSelectedGroup = (event) => {
+    this.setState({activeCheckboxes:[]},() => {this.displayGroupMembers()});
     let gr = this.state.groups.find(element => element._id === event.target.value);
     this.setState({selected_group: event.target.value });
+    console.log(gr.members);
+    let arr=[]
     for(let i=0; i<gr.members.length;i++) {
-      this.setState({
-        activeCheckboxes: [ ...this.state.activeCheckboxes, gr.members[i].user_id ]
-      });
+      let found = this.state.activeCheckboxes.includes(gr.members[i].user_id)
+      if(!found) {
+        arr.push(gr.members[i].user_id);
+      }
     }
+      this.setState({activeCheckboxes: arr},() => {this.displayGroupMembers()});
+    console.log(this.state.activeCheckboxes);
   };
 
   setCheckbox = (id) => {
@@ -139,19 +161,20 @@ class GroupEdit extends Component {
   return false;
   };
 
-  displayAvailableUserOptions = (array_of_elements) => {
+
+  displayGroupMembers = () => {
+    let array_of_elements = this.state.users
     let tab = array_of_elements.map((item) => (
       <FormControlLabel
         key={Math.random()}
         control={
           <Checkbox
-            name={item.username}
+           onChange={(event)=>this.handleCheck(event.target.value)}
+           name={item.username}
             key={item._id}
             value={item._id}
-            onChange={() => this.handleCheck(item._id)}
+            defaultChecked={this.checkIfChecked(item._id)}
             disabled={false}
-            defaultChecked={this.state.activeCheckboxes.includes(item._id)}
-
             color="primary"
             inputProps={{ "aria-label": "primary checkbox" }}
           />
@@ -159,7 +182,7 @@ class GroupEdit extends Component {
         label={item.username}
       />
     ));
-    console.log(tab);
+
     this.setState({ table: tab });
   };
 
@@ -310,7 +333,7 @@ class GroupEdit extends Component {
               onChange={(event) => this.handleSelectedGroup(event)}
             >
             {this.state.groups.map((i)=>(
-        <MenuItem value={i._id} key={i._id} name={i.name}>
+        <MenuItem value={i._id} key={Math.random()} name={i.name}>
           {i.name}
         </MenuItem>
       ))}
